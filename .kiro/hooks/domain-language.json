@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Scottish domain language guard",
+      "description": "After agent edits, remind Kiro to keep Scottish care verbs and block crypto wording in product copy.",
+      "trigger": "PostFileSave",
+      "matcher": "\\.(tsx?|jsx?|md|css)$",
+      "action": {
+        "type": "agent",
+        "prompt": "You just saved a product file. Quickly scan your recent edits against .kiro/steering/scottish-folklore.md and product.md. If you introduced ETH, wallet, mint, blockchain, DeFi, yield, or generic Feed/Play labels where Scottish care verbs belong, fix them now. Do not expand scope into quests, shops, leaderboards, or dating."
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+:root {
+  --peat: #2c2118;
+  --moss: #3d5c45;
+  --moss-deep: #243528;
+  --heather: #7a4e6d;
+  --thistle: #9b6b8a;
+  --cream: #e8e0d0;
+  --mist: #c5d0c0;
+  --tartan-red: #8b2e2e;
+  --gold: #c4a35a;
+  --font-display: "Fraunces", "Palatino Linotype", Palatino, serif;
+  --font-body: "Nunito", "Trebuchet MS", sans-serif;
+  color: var(--cream);
+  background: var(--moss-deep);
+  font-family: var(--font-body);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 120% 80% at 70% 20%, #4a6b52 0%, transparent 55%),
+    radial-gradient(ellipse 90% 70% at 10% 90%, #1a241c 0%, transparent 50%),
+    linear-gradient(165deg, #2f4536 0%, #1c261e 45%, #2c2118 100%);
+}
+
+a {
+  color: inherit;
+}
