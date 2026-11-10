@@ -9,6 +9,7 @@ import {
   type CareAction,
   type EggRecord,
 } from './lib/storage'
+import { sendClaimSms } from './lib/sendClaimSms'
 import {
   careActionSynced,
   mintPhoneTransferSynced,
@@ -62,6 +63,9 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   } | null>(null)
   const [copied, setCopied] = useState<'link' | 'code' | null>(null)
   const [shareNote, setShareNote] = useState('')
+  const [smsTo, setSmsTo] = useState('')
+  const [smsBusy, setSmsBusy] = useState(false)
+  const [smsNote, setSmsNote] = useState('')
   const h = egg.haggling
   const temp = temperamentForChaos(egg.answers.chaos)
   const onPhone = h?.livingOn === 'phone'
@@ -104,7 +108,8 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       if (!minted) return
       const phoneOrigin =
         import.meta.env.VITE_PHONE_ORIGIN ?? 'http://localhost:5174'
-      const link = `${phoneOrigin}/#/c/${minted.token}`
+      // Short-code deep link — scannable QR. Full packet stays available via token if needed.
+      const link = `${phoneOrigin}/#/c/${minted.code}`
       setTransfer({ code: minted.code, link })
       onChange()
       void navigator.clipboard?.writeText(link).then(() => flashCopied('link'))
@@ -134,6 +139,24 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       setShareNote('Share cancelled')
     }
     window.setTimeout(() => setShareNote(''), 3000)
+  }
+
+  async function textClaimLink() {
+    if (!transfer || !h) return
+    setSmsNote('')
+    setSmsBusy(true)
+    const result = await sendClaimSms({
+      to: smsTo,
+      link: transfer.link,
+      name: h.name,
+      code: transfer.code,
+    })
+    setSmsBusy(false)
+    if (result.ok) {
+      setSmsNote(`Text sent to ${smsTo.trim()}`)
+      return
+    }
+    setSmsNote(result.error)
   }
 
   async function shareOnSocial() {
@@ -199,8 +222,11 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
                 <p className="signup-kicker">Send to your phone</p>
                 <p className="transfer-code">{transfer.code}</p>
                 <ol className="transfer-steps">
-                  <li>Copy the claim link (or share it to yourself).</li>
-                  <li>On your phone, open the phone app / paste into Safari or Chrome.</li>
+                  <li>Scan the QR with your phone camera, or Copy / Share the link.</li>
+                  <li>
+                    On the phone site, sign in with the <strong>same email</strong> as
+                    Mother.
+                  </li>
                   <li>
                     Same Haggling arrives — not a twin. Mother keeps the brood
                     record.
@@ -209,13 +235,43 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
                 <img
                   className="transfer-qr"
                   alt={`QR code to collect ${h.name}`}
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(transfer.link)}`}
+                  width={220}
+                  height={220}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(transfer.link)}`}
                 />
                 <p className="care-sub">
-                  Scan from your phone camera if the link is reachable on your
-                  network. Local demo: paste the link into the phone browser on
-                  this Mac first.
+                  QR opens the phone site with code <strong>{transfer.code}</strong>{' '}
+                  filled in. Sign in, then Bring them home.
                 </p>
+                <form
+                  className="transfer-sms"
+                  onSubmit={(ev) => {
+                    ev.preventDefault()
+                    void textClaimLink()
+                  }}
+                >
+                  <label>
+                    <span>Send link as a text</span>
+                    <input
+                      type="tel"
+                      name="smsTo"
+                      autoComplete="tel"
+                      inputMode="tel"
+                      placeholder="07… or +44…"
+                      value={smsTo}
+                      onChange={(e) => setSmsTo(e.target.value)}
+                      required
+                    />
+                  </label>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={smsBusy || !smsTo.trim()}
+                  >
+                    {smsBusy ? 'Sending…' : 'Text the claim link'}
+                  </button>
+                  {smsNote ? <p className="care-sub">{smsNote}</p> : null}
+                </form>
                 <div className="transfer-actions">
                   <button
                     type="button"

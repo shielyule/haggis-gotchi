@@ -101,7 +101,7 @@ export function AuthBar({
     setStatus(
       intent === 'retrieve'
         ? 'Code sent. Enter it below to retrieve your Haggling(s).'
-        : 'Your egg is ready — we emailed a 6-digit code. Type it below (ignore the link).',
+        : 'Your egg is ready — use this nest link + the 6-digit code. Type the code below.',
     )
     return true
   }

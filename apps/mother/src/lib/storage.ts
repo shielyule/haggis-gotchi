@@ -9,6 +9,7 @@ import {
   penaliseMissedSchedule,
   sootheHealth,
 } from './health'
+import { slugifyName } from './slug'
 
 const KEY = 'haggis-gotchi:v1'
 
@@ -23,6 +24,8 @@ export type SignupAnswers = {
   teenIdentityOptIn: boolean
   teenDisclaimerAck: boolean
   displayName: string
+  /** URL nest: haggisgotchi.com/{slug} — Haggling never lives on `/`. */
+  slug: string
   /** Carer email — used when the egg is ready (code) and to retrieve brood. */
   email: string
 }
@@ -155,17 +158,30 @@ export function replaceLocalBrood(eggs: EggRecord[]) {
 export function claimEgg(answers: SignupAnswers, waitMs = 30 * 60 * 1000): EggRecord {
   const store = loadStore()
   const created = Date.now()
+  const slug =
+    answers.slug?.trim() ||
+    slugifyName(answers.displayName) ||
+    'carer'
   const egg: EggRecord = {
     id: crypto.randomUUID(),
     createdAt: new Date(created).toISOString(),
     readyAt: new Date(created + waitMs).toISOString(),
-    answers,
+    answers: { ...answers, slug },
     storyId: pickStory(answers).id,
     status: 'waiting',
   }
   store.eggs.unshift(egg)
   saveStore(store)
   return egg
+}
+
+export function eggSlug(egg: EggRecord): string {
+  return egg.answers.slug?.trim() || slugifyName(egg.answers.displayName)
+}
+
+export function findEggsBySlug(eggs: EggRecord[], slug: string): EggRecord[] {
+  const want = slug.trim().toLowerCase()
+  return eggs.filter((e) => eggSlug(e) === want)
 }
 
 function addScrap(haggling: Haggling, text: string) {
@@ -670,6 +686,7 @@ export const defaultAnswers = (): SignupAnswers => ({
   teenIdentityOptIn: false,
   teenDisclaimerAck: false,
   displayName: '',
+  slug: '',
   email: '',
 })
 

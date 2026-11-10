@@ -57,6 +57,16 @@ function readClaimFromHash(): string | null {
   return null
 }
 
+function isShortClaimCode(value: string): boolean {
+  return (
+    value.length > 0 &&
+    value.length <= 12 &&
+    !value.includes('.') &&
+    !value.includes('#') &&
+    !value.includes('/')
+  )
+}
+
 export default function App() {
   const [child, setChild] = useState<EggRecord | null>(
     () => loadPhoneStore().child,
@@ -65,6 +75,7 @@ export default function App() {
   const [error, setError] = useState('')
   const [now, setNow] = useState(() => Date.now())
   const [carerEmail, setCarerEmail] = useState<string | null>(null)
+  const [pendingHashClaim, setPendingHashClaim] = useState<string | null>(null)
 
   const onAuthChange = useCallback((email: string | null) => {
     setCarerEmail(email)
@@ -73,6 +84,15 @@ export default function App() {
   useEffect(() => {
     const token = readClaimFromHash()
     if (!token || child) return
+
+    // Short code from QR: prefill and wait for the same Mother email sign-in.
+    if (isShortClaimCode(token)) {
+      setClaimInput(token.toUpperCase())
+      setPendingHashClaim(token.toUpperCase())
+      return
+    }
+
+    // Legacy full-packet deep link (long token in the hash).
     const result = claimOnPhone(token)
     if (result.ok) {
       setChild(result.egg)
@@ -81,6 +101,25 @@ export default function App() {
       setError(result.error)
     }
   }, [])
+
+  useEffect(() => {
+    if (!carerEmail || !pendingHashClaim || child) return
+    let cancelled = false
+    void claimChildByTransferCode(pendingHashClaim).then((cloud) => {
+      if (cancelled) return
+      if (cloud.ok) {
+        savePhoneStore({ child: cloud.egg })
+        setChild(cloud.egg)
+        setPendingHashClaim(null)
+        window.history.replaceState(null, '', window.location.pathname)
+        return
+      }
+      setError(cloud.error)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [carerEmail, pendingHashClaim, child])
 
   useEffect(() => {
     void ensureNotifyPermission()
@@ -104,7 +143,7 @@ export default function App() {
     const trimmed = claimInput.trim()
 
     // Short code → cloud claim when signed in
-    if (trimmed.length <= 12 && !trimmed.includes('.') && !trimmed.includes('#')) {
+    if (isShortClaimCode(trimmed)) {
       const cloud = await claimChildByTransferCode(trimmed)
       if (cloud.ok) {
         savePhoneStore({ child: cloud.egg })

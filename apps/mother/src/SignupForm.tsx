@@ -4,6 +4,7 @@ import {
   temperamentForChaos,
 } from './data/temperaments'
 import { defaultAnswers, type SignupAnswers } from './lib/storage'
+import { slugifyName } from './lib/slug'
 import { claimEggSynced } from './lib/syncActions'
 
 type Props = {
@@ -19,7 +20,7 @@ const CHAOS_INFO =
   'This slider sets the starting Scots temperament for your egg. It colours the birth story and how wild Baby feels out of the shell. You can still calm or wind them up with care — but Douce and Fair Wud are very different mornings.'
 
 export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
-  const [answers, setAnswers] = useState<SignupAnswers>(defaultAnswers)
+  const [answers, setAnswers] = useState<SignupAnswers>(() => defaultAnswers())
   const [error, setError] = useState('')
   const [teenInfoOpen, setTeenInfoOpen] = useState(false)
   const [chaosInfoOpen, setChaosInfoOpen] = useState(false)
@@ -51,8 +52,16 @@ export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
       return
     }
     const waitMs = demoCompress ? 90 * 1000 : 30 * 60 * 1000
-    void claimEggSynced(answers, waitMs).then((egg) => onClaimed(egg.id))
+    const withSlug: SignupAnswers = {
+      ...answers,
+      slug: slugifyName(answers.displayName),
+    }
+    void claimEggSynced(withSlug, waitMs).then((egg) => onClaimed(egg.id))
   }
+
+  const nestPreview = answers.displayName.trim()
+    ? `/${slugifyName(answers.displayName)}`
+    : '/your-name'
 
   return (
     <form className="signup" onSubmit={submit} noValidate>
@@ -60,8 +69,9 @@ export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
         <p className="signup-kicker">Claim an egg</p>
         <h2>Tell the mother a little about you</h2>
         <p>
-          Answers seed the birth story. Your email is how we tell you the egg is
-          ready and how you get your Haggling back later — no password.
+          Answers seed the birth story. Your Haggling will live at{' '}
+          <strong>haggisgotchi.com{nestPreview}</strong> (new tab) — never on the
+          mother home. Email brings the ready link + code.
         </p>
       </header>
 
@@ -74,6 +84,7 @@ export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
           autoComplete="nickname"
           required
         />
+        <span className="field-hint">Nest URL: haggisgotchi.com{nestPreview}</span>
       </label>
 
       <label className="field">

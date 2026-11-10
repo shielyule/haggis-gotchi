@@ -21,9 +21,25 @@ const cors = {
 type EggRow = {
   id: string
   email: string | null
-  answers: { displayName?: string; email?: string }
+  answers: {
+    displayName?: string
+    email?: string
+    slug?: string
+  }
   ready_at: string
   status: string
+}
+
+function slugifyName(raw: string): string {
+  const base = raw
+    .trim()
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40)
+  return base || 'carer'
 }
 
 Deno.serve(async (req) => {
@@ -70,6 +86,9 @@ Deno.serve(async (req) => {
       }
 
       const name = egg.answers?.displayName?.trim() || 'carer'
+      const slug =
+        (egg.answers?.slug || '').trim() || slugifyName(name)
+      const nestUrl = `${siteUrl.replace(/\/$/, '')}/${slug}`
       const subject = `Your Haggis-gotchi egg is ready, ${name}`
       const html = `
         <h2 style="font-family: Georgia, serif; color: #3f5a45;">Haggis-gotchi</h2>
@@ -77,11 +96,16 @@ Deno.serve(async (req) => {
           Hello ${name}, your egg is ready to hatch.
         </p>
         <p style="font-family: system-ui, sans-serif;">
-          Open <a href="${siteUrl}">${siteUrl}</a>, enter the 6-digit code we can
-          send from the ready panel (or tap Retrieve if you are on another device).
+          Open your nest (this is where the Haggling lives — not the mother home):
+          <br />
+          <a href="${nestUrl}"><strong>${nestUrl}</strong></a>
+        </p>
+        <p style="font-family: system-ui, sans-serif;">
+          On that page, enter the <strong>6-digit code</strong> from the ready
+          panel / OTP email. Link + code together keep the nest secure.
         </p>
         <p style="font-family: system-ui, sans-serif; color: #555; font-size: 14px;">
-          Mother is waiting.
+          Mother keeps the brood list only. Your Haggling stays at /${slug}.
         </p>
       `
 
