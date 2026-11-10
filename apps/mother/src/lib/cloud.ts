@@ -55,10 +55,30 @@ export async function requireUserId(): Promise<string | null> {
   return getSessionUserId()
 }
 
-/** Upsert egg row. No-op if signed out or Supabase missing. */
+/**
+ * Register egg in cloud at claim time (works before magic-code login)
+ * so the ready-email cron can fire at 3am with the browser closed.
+ */
+export async function registerEggInCloud(egg: EggRecord): Promise<void> {
+  if (!supabaseConfigured || !supabase) return
+  const { error } = await supabase.rpc('register_egg', {
+    p_id: egg.id,
+    p_ready_at: egg.readyAt,
+    p_story_id: egg.storyId ?? null,
+    p_answers: egg.answers,
+  })
+  if (error) console.error('registerEggInCloud', error.message)
+}
+
+/** Upsert egg row when signed in. */
 export async function syncEggToCloud(egg: EggRecord): Promise<void> {
+  if (!supabaseConfigured || !supabase) return
+
   const userId = await requireUserId()
-  if (!userId || !supabase) return
+  if (!userId) {
+    await registerEggInCloud(egg)
+    return
+  }
 
   const { error } = await supabase.from('eggs').upsert(
     {
@@ -69,6 +89,7 @@ export async function syncEggToCloud(egg: EggRecord): Promise<void> {
       status: egg.status,
       story_id: egg.storyId ?? null,
       answers: egg.answers,
+      email: egg.answers.email?.trim().toLowerCase() || null,
     },
     { onConflict: 'id' },
   )
@@ -194,6 +215,9 @@ function childToHaggling(child: ChildRow, scraps: ScrapEntry[]): Haggling {
 export async function pullBroodFromCloud(): Promise<EggRecord[] | null> {
   const userId = await requireUserId()
   if (!userId || !supabase) return null
+
+  // Attach any eggs claimed by this email before verify
+  await supabase.rpc('claim_my_eggs_by_email')
 
   const { data: eggs, error } = await supabase
     .from('eggs')

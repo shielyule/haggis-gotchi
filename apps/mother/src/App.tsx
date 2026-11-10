@@ -11,7 +11,10 @@ import { SignupForm } from './SignupForm'
 import { careAlertFor } from './lib/health'
 import { pullBroodFromCloud } from './lib/cloud'
 import {
+  eggsInBrood,
+  eggsOnPhone,
   loadStore,
+  markReadyCodeSent,
   replaceLocalBrood,
   type EggRecord,
 } from './lib/storage'
@@ -67,8 +70,11 @@ export default function App() {
   const [demoCompress, setDemoCompress] = useState(true)
   const [now, setNow] = useState(() => Date.now())
   const [carerEmail, setCarerEmail] = useState<string | null>(null)
+  const [showRetrieve, setShowRetrieve] = useState(false)
 
   const active = eggs.find((e) => e.id === activeEggId) ?? null
+  const broodEggs = eggsInBrood(eggs)
+  const collectedEggs = eggsOnPhone(eggs)
 
   const onAuthChange = useCallback((email: string | null) => {
     setCarerEmail(email)
@@ -93,11 +99,21 @@ export default function App() {
   const remaining = active
     ? Math.max(0, new Date(active.readyAt).getTime() - now)
     : 0
+  const eggReady =
+    Boolean(active) &&
+    active!.status !== 'hatched' &&
+    remaining === 0
 
   useEffect(() => {
     if (!active || active.status !== 'waiting' || remaining > 0) return
     void setEggStatusSynced(active.id, 'ready').then((next) => {
-      if (next) setEggs(loadStore().eggs)
+      if (next) {
+        setEggs(loadStore().eggs)
+        if (!next.readyCodeSentAt && next.answers.email) {
+          markReadyCodeSent(next.id)
+          setEggs(loadStore().eggs)
+        }
+      }
     })
   }, [active, remaining])
 
@@ -217,23 +233,37 @@ export default function App() {
             <div className="wait-card">
               <p className="signup-kicker">Birthing</p>
               <h2>
-                {remaining === 0
-                  ? 'The egg is ready'
+                {eggReady
+                  ? `Ready for you, ${active.answers.displayName || 'carer'}`
                   : `Hatching in ${formatRemaining(remaining)}`}
               </h2>
               <p className="story-beat">{shownBeat}</p>
-              {remaining === 0 ? (
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => {
-                    void setEggStatusSynced(active.id, 'hatched').then(() => {
-                      setEggs(loadStore().eggs)
-                    })
-                  }}
-                >
-                  Hatch
-                </button>
+              {eggReady ? (
+                <>
+                  <p className="care-sub">
+                    We&rsquo;ll email a 6-digit code to{' '}
+                    <strong>{active.answers.email || 'your email'}</strong>.
+                    Enter it here, then hatch.
+                  </p>
+                  <AuthBar
+                    onAuthChange={onAuthChange}
+                    presetEmail={active.answers.email}
+                    intent="hatch"
+                    autoSend={Boolean(active.answers.email)}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    disabled={!carerEmail}
+                    onClick={() => {
+                      void setEggStatusSynced(active.id, 'hatched').then(() => {
+                        setEggs(loadStore().eggs)
+                      })
+                    }}
+                  >
+                    {carerEmail ? 'Hatch' : 'Verify your email to hatch'}
+                  </button>
+                </>
               ) : null}
             </div>
           </div>
@@ -296,22 +326,20 @@ export default function App() {
       <section className="brood" id="brood">
         <h2>Brood</h2>
         <p className="brood-lede">
-          {eggs.length === 0
-            ? 'Empty for now. After hatch, check-ins land here — not a second pet.'
-            : `${eggs.length} egg${eggs.length === 1 ? '' : 's'} with the mother.`}
+          {broodEggs.length === 0
+            ? 'Empty for now. Claim an egg above — when it is ready you verify by email, then it can move to your phone.'
+            : `${broodEggs.length} with the mother (phone-collected pets are hidden until you retrieve).`}
         </p>
 
-        <AuthBar onAuthChange={onAuthChange} compact />
-
-        {eggs.length === 0 ? (
+        {broodEggs.length === 0 ? (
           <div className="brood-empty">
-            <strong>No eggs yet</strong>
-            When you claim one, the mother holds the wait, the birth story, and
-            later the scrapbook.
+            <strong>No eggs with the mother</strong>
+            Claim one to start. After it lives on your phone it leaves this list —
+            use Retrieve below to get it back.
           </div>
         ) : (
           <ul className="egg-list">
-            {eggs.map((egg) => (
+            {broodEggs.map((egg) => (
               <li key={egg.id}>
                 <button
                   type="button"
@@ -328,21 +356,63 @@ export default function App() {
                       'Unnamed'}
                   </strong>
                   <span>
-                    {egg.haggling?.livingOn === 'phone'
-                      ? 'on phone'
-                      : egg.haggling
-                        ? careAlertFor(egg.haggling) === 'red'
-                          ? 'sick'
-                          : careAlertFor(egg.haggling) === 'amber'
-                            ? 'peaky'
-                            : 'with mother'
-                        : egg.status}
+                    {egg.haggling
+                      ? careAlertFor(egg.haggling) === 'red'
+                        ? 'sick'
+                        : careAlertFor(egg.haggling) === 'amber'
+                          ? 'peaky'
+                          : 'with mother'
+                      : egg.status}
                   </span>
                 </button>
               </li>
             ))}
           </ul>
         )}
+
+        <div className="retrieve-block">
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => setShowRetrieve((v) => !v)}
+          >
+            {showRetrieve ? 'Hide retrieve' : 'Retrieve my Haggling'}
+          </button>
+          {collectedEggs.length > 0 && carerEmail ? (
+            <p className="care-sub">
+              {collectedEggs.length} on phone — open care from Retrieve list after
+              sign-in, or use the phone app.
+            </p>
+          ) : null}
+          {showRetrieve ? (
+            <>
+              <AuthBar
+                onAuthChange={onAuthChange}
+                intent="retrieve"
+              />
+              {carerEmail && collectedEggs.length > 0 ? (
+                <ul className="egg-list">
+                  {collectedEggs.map((egg) => (
+                    <li key={egg.id}>
+                      <button
+                        type="button"
+                        className="egg-row"
+                        onClick={() => openEgg(egg)}
+                      >
+                        <strong>
+                          {egg.haggling?.name ||
+                            egg.answers.displayName ||
+                            'Unnamed'}
+                        </strong>
+                        <span>on phone · reopen</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </>
+          ) : null}
+        </div>
 
         <div className="yard">
           <div className="yard-block">

@@ -23,6 +23,8 @@ export type SignupAnswers = {
   teenIdentityOptIn: boolean
   teenDisclaimerAck: boolean
   displayName: string
+  /** Carer email — used when the egg is ready (code) and to retrieve brood. */
+  email: string
 }
 
 export type ScrapEntry = {
@@ -96,6 +98,8 @@ export type EggRecord = {
   /** Which skeleton from birthStories.ts. Missing on eggs claimed before stories landed. */
   storyId?: string
   status: 'waiting' | 'ready' | 'hatched'
+  /** Set when we emailed the ready / OTP code for this egg. */
+  readyCodeSentAt?: string
   haggling?: Haggling
 }
 
@@ -666,4 +670,21 @@ export const defaultAnswers = (): SignupAnswers => ({
   teenIdentityOptIn: false,
   teenDisclaimerAck: false,
   displayName: '',
+  email: '',
 })
+
+/** Brood list: still with mother (not collected onto phone). */
+export function eggsInBrood(eggs: EggRecord[]): EggRecord[] {
+  return eggs.filter((e) => e.haggling?.livingOn !== 'phone')
+}
+
+/** Collected onto phone — hidden from brood until retrieved. */
+export function eggsOnPhone(eggs: EggRecord[]): EggRecord[] {
+  return eggs.filter((e) => e.haggling?.livingOn === 'phone')
+}
+
+export function markReadyCodeSent(eggId: string): EggRecord | null {
+  return updateEgg(eggId, (egg) => {
+    egg.readyCodeSentAt = new Date().toISOString()
+  })
+}

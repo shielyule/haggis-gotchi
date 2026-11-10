@@ -1,50 +1,74 @@
 # Haggis-gotchi
 
-A Scottish folklore Tamagotchi for [Kiroween 2026](https://kiroween.devpost.com/) — **Frankenstein** category.
+Scottish folklore Tamagotchi. A cloud **mother** hatches a baby **Haggling**; day-to-day care lives on the **phone**. One creature, many surfaces — never a twin.
 
-Cloud **mother** births eggs. Kids live on phone / browser extension. An optional **Raspberry Pi** is a second body for the same child (bonus unlock), not a required stage.
+**Live (target):** [haggisgotchi.com](https://haggisgotchi.com) · phone: [phone.haggisgotchi.com](https://phone.haggisgotchi.com)  
+**Redirects:** `haggis-gotchi.com` · `haggisgotchi.co.uk` → primary  
 
-**Spine:** care + brood + sync. Not crypto. Not a world editor. Not an RPG quest map.
+© Shiel Yule · MIT — see [LICENSE](./LICENSE).
+
+## Spine
+
+Care + brood + sync.
+
+1. Claim egg → birth wait → hatch film (six temperaments) → name + breakfast/dinner/bed  
+2. Care meters + **Health XP** (amber warning → red/sick on penalties)  
+3. **Send to phone** (claim code) — same Haggling  
+4. Scrapbook remembers misses, care, and penalties  
+
+Temperaments: Douce → Skeigh → Ill-trickit → Ree → Radge → Fair Wud.
 
 ## Repo layout
 
 ```
-.kiro/                 # specs / steering (kept; product is not Kiro-dependent)
-apps/mother/           # Cloud mother — claim, birth, brood, send-to-phone
-apps/phone/            # Living care surface (mobile web)
-docs/art/              # Character + UI reference
+apps/mother/     # Brood / hatch / send-to-phone (Vite + React + TS)
+apps/phone/      # Living care surface (Vite + React + TS)
+supabase/        # schema.sql for Postgres + RLS
+docs/art/        # Character reference
+.kiro/           # Optional Kiroween steering/specs (not required to run)
 ```
 
 ## Run locally
 
 ```bash
-# Terminal 1 — mother (http://localhost:5173)
+# Terminal 1 — mother → http://localhost:5173
 cd apps/mother && npm install && npm run dev
 
-# Terminal 2 — phone (http://localhost:5174)
+# Terminal 2 — phone → http://localhost:5174
 cd apps/phone && npm install && npm run dev
 ```
 
-Flow: claim → hatch → name → **Send to phone** → open claim link on the phone app.
+Copy env examples:
 
-## Kiro usage (build as we go)
+```bash
+cp apps/mother/.env.example apps/mother/.env.local
+cp apps/phone/.env.example apps/phone/.env.local
+```
 
-- **Steering:** `.kiro/steering/` — product rules, Scottish tone, tech stack
-- **Specs:** `.kiro/specs/brood-sync`, `.kiro/specs/birthing-ritual`
-- **Hooks:** `.kiro/hooks/` — domain language guard
-- **MCP (next):** weather for rainy-day / storm happiness
-- **Surfaces:** start with Kiro IDE; CLI / Crew optional later
+Fill `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (publishable/anon key only).  
+Run `supabase/schema.sql` in the Supabase SQL editor once.
 
-The Devpost “how we used Kiro” write-up will be written from this trail at submission time — not invented up front.
+Flow: sign in (Brood panel, 6-digit email code) → claim → hatch → name → **Send to phone** → open phone app with code.
 
-## Scope fence (reign-in)
+## Stack
 
-**In for the entry:** signup → ~30 min birth story → Baby care (Scottish verbs) → mother check-ins → fixed span / scrapbook / graveyard → film one Pi pair.
+| Layer | Choice |
+| --- | --- |
+| Frontend | Vite + React + TypeScript |
+| Auth / DB | Supabase (magic link / OTP, Postgres, RLS) |
+| Email | Resend SMTP → `hello@haggisgotchi.com` |
+| Hosting | Cloudflare Pages (mother + phone) |
+| Domains | Cloudflare DNS |
 
-**Out until after entry:** adventure maps, “defeat brambles,” leaderboards, full shop/gacha, dating, Game of Life careers, multi-folklore mothers, merch store.
+## Go live
 
-UI boards in `docs/art/` set **mood and costume language** only. Extract face, meters, feed/skin slots, mother chrome — not the whole RPG.
+Step-by-step (Resend DNS, SMTP, Pages, redirects):  
+**`~/Desktop/Kiroween/SMTP-DUMMIES.md`**
 
-## License
+## Product notes (not hackathon-dependent)
 
-MIT — see [LICENSE](./LICENSE).
+Built as a real product. Kiroween entry is optional; if submitting, use Kiro for a focused specs/hooks pass and keep `/.kiro` in the public repo. Pi pairing is parked — phone handoff is the living surface.
+
+## Out of scope (for now)
+
+Adventure maps, combat quests, leaderboards, gacha shop, dating, multi-folklore mothers, App Store wrappers (PWA first), crypto.

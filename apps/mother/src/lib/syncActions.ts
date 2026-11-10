@@ -1,5 +1,6 @@
 import {
   pushCheckIn,
+  registerEggInCloud,
   syncChildToCloud,
   syncEggToCloud,
 } from './cloud'
@@ -24,6 +25,8 @@ export async function claimEggSynced(
   waitMs?: number,
 ): Promise<EggRecord> {
   const egg = claimEgg(answers, waitMs)
+  // Always register for cron ready-email (even before OTP login)
+  await registerEggInCloud(egg)
   await syncEggToCloud(egg)
   return egg
 }

@@ -38,6 +38,10 @@ export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
       setError('Give the mother a name to call you by.')
       return
     }
+    if (!answers.email.trim() || !answers.email.includes('@')) {
+      setError('Add your email — we use it when the egg is ready and to retrieve your Haggling.')
+      return
+    }
     if (!answers.place || !answers.weatherDay) {
       setError('Pick where you feel at home and a perfect day — they colour the birth story.')
       return
@@ -56,8 +60,8 @@ export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
         <p className="signup-kicker">Claim an egg</p>
         <h2>Tell the mother a little about you</h2>
         <p>
-          Answers seed the birthing story and temperament. If you are signed in,
-          the egg also syncs to Supabase for phone care.
+          Answers seed the birth story. Your email is how we tell you the egg is
+          ready and how you get your Haggling back later — no password.
         </p>
       </header>
 
@@ -68,6 +72,18 @@ export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
           onChange={(e) => set('displayName', e.target.value)}
           placeholder="e.g. Ewan"
           autoComplete="nickname"
+          required
+        />
+      </label>
+
+      <label className="field">
+        <span>Your email</span>
+        <input
+          type="email"
+          value={answers.email}
+          onChange={(e) => set('email', e.target.value)}
+          placeholder="you@email.com"
+          autoComplete="email"
           required
         />
       </label>

@@ -610,7 +610,22 @@
 
 .auth-bar-brood {
   width: 100%;
-  margin: 0 0 1.25rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.retrieve-block {
+  margin: 1.25rem 0 0;
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
+}
+
+.wait-card .auth-bar {
+  margin-top: 0.75rem;
+}
+
+.wait-card .btn-primary {
+  margin-top: 0.5rem;
 }
 
 .auth-bar-in {
