@@ -9,18 +9,23 @@ Cloud **mother** births eggs. Kids live on phone / browser extension. An optiona
 ## Repo layout
 
 ```
-.kiro/                 # specs, steering, hooks — required for Kiroween (never gitignore)
-apps/mother/           # Cloud mother web stub (Vite + React + TS)
-docs/art/              # Character + UI reference (look & feel only)
+.kiro/                 # specs / steering (kept; product is not Kiro-dependent)
+apps/mother/           # Cloud mother — claim, birth, brood, send-to-phone
+apps/phone/            # Living care surface (mobile web)
+docs/art/              # Character + UI reference
 ```
 
-## Run the mother stub
+## Run locally
 
 ```bash
-cd apps/mother
-npm install
-npm run dev
+# Terminal 1 — mother (http://localhost:5173)
+cd apps/mother && npm install && npm run dev
+
+# Terminal 2 — phone (http://localhost:5174)
+cd apps/phone && npm install && npm run dev
 ```
+
+Flow: claim → hatch → name → **Send to phone** → open claim link on the phone app.
 
 ## Kiro usage (build as we go)
 
