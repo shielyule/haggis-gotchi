@@ -23,9 +23,9 @@ Temperaments: Douce → Skeigh → Ill-trickit → Ree → Radge → Fair Wud.
 ```
 apps/mother/     # Brood / hatch / send-to-phone (Vite + React + TS)
 apps/phone/      # Living care surface (Vite + React + TS)
-supabase/        # schema.sql for Postgres + RLS
+supabase/        # migrations/ (source of truth), schema.sql (generated), functions/
 docs/art/        # Character reference
-.kiro/           # Optional Kiroween steering/specs (not required to run)
+.kiro/           # Kiro steering, hooks, specs - how this product is built (committed)
 ```
 
 ## Run locally
@@ -65,10 +65,10 @@ Flow: sign in (Brood panel, 6-digit email code) → claim → hatch → name →
 Step-by-step (Resend DNS, SMTP, Pages, redirects):  
 **`~/Desktop/Kiroween/SMTP-DUMMIES.md`**
 
-## Product notes (not hackathon-dependent)
-
-Built as a real product. Kiroween entry is optional; if submitting, use Kiro for a focused specs/hooks pass and keep `/.kiro` in the public repo. Pi pairing is parked — phone handoff is the living surface.
-
+## Built with Kiro
+Specs live in `.kiro/specs/` (requirements -> design -> tasks). Steering in `.kiro/steering/`, hooks in `.kiro/hooks/`.
+The first working version was built in Cursor before the hackathon credits arrived; see [`docs/PROVENANCE.md`](docs/PROVENANCE.md). From 16 Nov 2026 Kiro owns the repo and every feature is spec-first.
+Pi pairing is parked. Phone hand-off uses QR, link and share (no paid SMS).
 ## Out of scope (for now)
 
 Adventure maps, combat quests, leaderboards, gacha shop, dating, multi-folklore mothers, App Store wrappers (PWA first), crypto.

@@ -1,39 +1,29 @@
-# Requirements: birthing-ritual
+# Kiro - Requirements: birthing-ritual (reconciled 16 Nov 2026)
 
 ## Overview
+Claiming an egg starts a ~30 minute birth wait with a templated story. Templates
+come first; AI may only elaborate within a chosen template (not built yet).
 
-First egg claim waits about 30 minutes with a birthing story. Templates (10–20) are elaborated from signup answers by AI. This is the AI theatre for MVP — not a full sentient training fantasy.
+## Requirements (EARS)
 
-## User stories
+### R1 Signup
+1. THE SYSTEM SHALL collect: display name, email, pet, home (city/town/countryside/seaside), games, comfort food, perfect day (rainy/beach/forest), family quirk, chaos 0-100, teen opt-in with disclaimer acknowledgement.
+2. WHEN the carer submits, THE SYSTEM SHALL create the egg with `ready_at = now + wait` and store answers on it.
+3. THE SYSTEM SHALL derive a URL slug from the display name (`/{slug}`).
 
-### Signup
+### R2 Wait
+1. WHILE the egg is waiting, THE SYSTEM SHALL show the picked story's three beats in order across the wait.
+2. WHERE demo mode is on, THE SYSTEM SHALL compress the wait to 90 seconds.
+3. WHEN `ready_at` passes, THE SYSTEM SHALL mark the egg ready and play the hatch film for the temperament.
+4. WHEN the browser is closed at ready time, THE SYSTEM SHALL email the nest link (see `nest-and-ready`).
 
-**As** a new carer, **I want** to answer a short questionnaire, **so that** my egg’s story and temperament feel personal.
+### R3 Templates
+1. THE SYSTEM SHALL hold 20 story skeletons, tagged by chaos band, with `{{slots}}` filled from answers.
+2. THE SYSTEM SHALL pick a story by temperament band first.
+3. IF AI elaboration is added, THEN it SHALL change wording only, not temperament, species, facts or add quests; failure SHALL fall back to the filled template.
 
-Acceptance:
-
-- Questions cover pet history, place, weather preference, comfort food, chaos level, teen-identity opt-in (stored for later; not enacted in MVP).
-- Answers stored with the egg.
-
-### Wait
-
-**As** a carer, **I want** a ~30 minute wait with a readable birth story, **so that** claiming feels like a ritual, not an empty spinner.
-
-Acceptance:
-
-- Timer ~30 minutes (demo mode may compress).
-- Story text shown and updated from a selected template + answers.
-- On complete, hatch is available.
-
-### Templates
-
-**As** the system, **I want** bounded templates, **so that** AI elaboration stays on-brand and Scottish for gen-zero.
-
-Acceptance:
-
-- At least 3 templates in MVP stub; target 10–20 later.
-- Elaboration must not invent crypto, combat quests, or other folklore packs.
+### R4 Hatch film
+1. THE SYSTEM SHALL play `haggling-hatch-{temperament}.mp4` and fall back to `haggling-hatching-1.mp4` on error.
 
 ## Non-goals
-
-Full LLM ops platform, user-authored template marketplace, adult reproduction scene.
+LLM ops, template marketplace, enacting teen morphing (opt-in is stored only).

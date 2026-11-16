@@ -1,29 +1,17 @@
-# Design: birthing-ritual
+# Kiro - Design: birthing-ritual (reconciled 16 Nov 2026)
 
-## Signup fields (seed)
+## As built
 
-- Current / wished pet
-- Grew up with (animals, place, weather)
-- City / town / countryside
-- Games played
-- Comfort food
-- Rainy day vs beach day
-- Hills vs flat
-- Family quirk or saying
-- Chaos slider (calm → feral)
-- Teen identity opt-in (boolean + disclaimer ack)
+- `SignupForm.tsx` -> `claimEggSynced(answers, waitMs)`; wait is 90s (demo) or 30 min.
+- `data/birthStories.ts`: 20 skeletons. `pickStory`, `storyForAnswers`, `fillBeat`, `filledBeats`, `beatIndex(createdAt, readyAt, now)` returns which beat to show.
+- `data/temperaments.ts`: six bands by chaos (Douce 0-16, Skeigh 17-33, Ill-trickit 34-50, Ree 51-66, Radge 67-83, Fair Wud 84-100); `hatchFilmFor`, `carePortraitFor`.
+- `NestApp.tsx` runs the waiting view, `HatchFilm` (falls back on error), then `NameHagglingForm`.
 
-## Templates
+## Decisions
+- Templates first, AI second. Elaboration (if built) is one beat, constrained by `scottish-folklore.md`, with the filled template as fallback.
+- Teen opt-in is stored in answers and never acted on in MVP.
+- Wait duration is a number, not a mode: `waitMs` is set at claim and persisted as `ready_at`, so the cron email and the UI agree.
 
-Store as markdown or JSON under `apps/mother/src/data/birth-templates/`. Each has:
-
-- `id`, `title`, `beats[]` (timed story paragraphs)
-- slots: `{{comfort_food}}`, `{{place}}`, `{{quirk}}`, etc.
-
-## Elaboration
-
-MVP: fill slots locally. Later: Kiro/agent or API call with steering constraints from `scottish-folklore.md`.
-
-## Demo compression
-
-`?demo=1` or env flag: wait becomes ~60–90 seconds so the YouTube demo can show birth → baby without a real half hour.
+## Known issues
+- Signup answers (including email) are stored in `eggs.answers` jsonb and `eggs.email`: duplicate PII, handled in `security-hardening` (T4).
+- `slug` is user-derived and not unique per carer: `nest-and-ready` covers collisions.

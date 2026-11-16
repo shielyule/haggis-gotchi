@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Schema regen reminder",
+      "trigger": "PostFileSave",
+      "description": "After a migration changes, keep schema.sql generated and the owning spec task ticked (sync-conflict R7).",
+      "matcher": "supabase/migrations/.*\\.sql$",
+      "action": {
+        "type": "agent",
+        "prompt": "A Supabase migration was saved. 1) Do not hand-edit supabase/schema.sql: regenerate it from the migrations (supabase db dump --schema public) or tell the user to. 2) Check the migration against .kiro/steering/security.md: RLS on, update policies have with check, no anon execute on write functions. 3) Update the owning spec's tasks.md only for tasks that are verified. 4) Remind the user the commit message must name the spec and task."
+      }
+    }
+  ]
+}

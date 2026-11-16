@@ -1,38 +1,30 @@
 # Product
 
 ## One sentence
-
-Haggis-gotchi is a Scottish folklore Tamagotchi: a cloud mother births eggs; children live on a phone or browser extension; an optional Raspberry Pi is a second body for the same child.
+Haggis-gotchi is a Scottish folklore Tamagotchi: a cloud mother keeps the brood; each Haggling lives on its nest page and on the carer's phone. One child id, many surfaces, never a twin.
 
 ## Category
-
-Kiroween 2026 — **Frankenstein** (cloud + phone/extension + filmed Pi). Resurrection story. Costume polish via Highlands UI.
+Kiroween 2026, **Frankenstein** (cloud mother + nest/phone stitched into one creature). Costume polish via Highlands UI.
 
 ## Spine (never drop)
-
 Care + brood + episodic sync.
-
-1. Hatch: traits down from mother to device.
-2. Check-in: vitals up from device to mother.
-3. Mother record changes because of how the child was treated.
+1. Hatch: traits flow from mother to surface.
+2. Check-in: vitals flow back; merge rules in `sync-conflict`.
+3. The mother record changes because of how the child was treated.
 4. Two surfaces never invent a second pet.
 
-## Hackathon MVP
+## MVP (what ships for 4 Dec 2026)
+- Claim egg, 30 minute birth (or 90 second demo), 20 story templates, six temperaments, hatch films
+- Nest `/{slug}`, ready email, email OTP sign-in, send to phone by QR / code / link
+- Care meters, Health XP, schedules, scrapbook
+- Weather three times a day, per-temperament reactions, morning-swing moment (`weather-mood`)
+- Fixed lifespan, tone darkening without early death, graveyard, read-only ghost (`lifespan-graveyard`)
+- Merge rules and shared engine (`sync-conflict`); security baseline (`security-hardening`)
 
-- Signup questions → ~30 minute birth wait with AI-elaborated story templates
-- Scottish Baby care loop (photo Irn-Bru, neeps, rain/weather, hills, sheep; hates city / hot sun)
-- Monday-morning mood beat (rain smug / city peely-wally)
-- Neglect darkens mood and scrapbook; fixed lifespan; no early death
-- Mother: brood overview, claim egg, scrapbook, graveyard
-- Ghost = optional read-only memory in graveyard
-- Pi = optional bonus body (hearth + clan drip); film one build
+## Out of MVP
+Pi / QNX (parked), browser extension, paid SMS and WhatsApp Business, adventure maps, quests, leaderboards, shop, dating, other folklores, merch, crypto of any kind.
 
-## Explicitly out of MVP
-
-Adventure quest maps, combat daily quests, leaderboards, full item shop / mystery crates, dating / nearby flirt, Young Adult Game of Life, multi-country mothers, merch store, Minecraft worlds, games engine, crypto / ETH / real tokens.
-
-Joke economy (Irn-Bru points, neep tokens, deep-fried Mars bar) is garnish only — not DeFi.
+Joke economy (Irn-Bru points, neep tokens, deep-fried Mars bar) is garnish only.
 
 ## Art
-
-Reference: `docs/art/`. Hero face = fluffy tartan haggis with heather. Highlands moss, wood, thistle. Intro animation is mascot motion reference; ship stills / short loop, not a 3D engine.
+Reference: `docs/art/`. Hero face = fluffy tartan haggis with heather. Highlands moss, wood, thistle.
