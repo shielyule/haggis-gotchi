@@ -1,0 +1,9 @@
+{
+  "name": "haggis-gotchi",
+  "private": true,
+  "type": "module",
+  "description": "Repo-level tooling only. Apps have their own package.json.",
+  "scripts": {
+    "test": "node --test \"supabase/functions/_shared/*.test.ts\" \"packages/care-engine/test/*.test.ts\""
+  }
+}

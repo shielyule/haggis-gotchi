@@ -1,50 +1,44 @@
 /**
  * Cron job: email carers when an egg's ready_at has passed (browser can be closed).
  *
- * Deploy + schedule: see Kiroween/SMTP-DUMMIES.md → "Egg-ready cron"
+ * Spec: .kiro/specs/security-hardening (R2, R3). Setup: docs/SECURITY-SETUP.md
  *
- * Secrets (Supabase → Edge Functions → Secrets):
+ * Called ONLY by pg_cron with header `x-cron-secret`. Deploy with --no-verify-jwt
+ * because this function does its own authentication (the shared secret).
+ *
+ * Secrets (supabase secrets set ...):
+ *   CRON_SECRET        long random string (>= 24 chars), same value as Vault `cron_secret`
  *   RESEND_API_KEY
- *   READY_EMAIL_FROM=Haggis-gotchi mother <hello@haggisgotchi.com>
- *   SITE_URL=https://haggisgotchi.com
+ *   READY_EMAIL_FROM   Haggis-gotchi mother <hello@haggisgotchi.com>
+ *   SITE_URL           https://haggisgotchi.com
  * (SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY are provided automatically)
  */
-
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
+import { isAuthorizedCron } from '../_shared/auth.ts'
+import { buildReadyEmail, isPlausibleEmail } from '../_shared/email.ts'
 
-const cors = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
-}
+const MAX_PER_ADDRESS_PER_DAY = 3
+const BATCH = 50
 
 type EggRow = {
   id: string
   email: string | null
-  answers: {
-    displayName?: string
-    email?: string
-    slug?: string
-  }
-  ready_at: string
-  status: string
+  answers: { displayName?: string; email?: string; slug?: string } | null
 }
 
-function slugifyName(raw: string): string {
-  const base = raw
-    .trim()
-    .toLowerCase()
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 40)
-  return base || 'carer'
-}
+const json = (status: number, body: unknown) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  })
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: cors })
+  // No CORS: no browser should ever call this.
+  if (req.method !== 'POST') return json(405, { error: 'POST only' })
+
+  // Fail closed, same answer whether the secret is missing, wrong or unset.
+  if (!isAuthorizedCron(req.headers.get('x-cron-secret'), Deno.env.get('CRON_SECRET'))) {
+    return json(401, { error: 'Unauthorized' })
   }
 
   try {
@@ -56,58 +50,70 @@ Deno.serve(async (req) => {
       'Haggis-gotchi mother <hello@haggisgotchi.com>'
     const siteUrl = Deno.env.get('SITE_URL') ?? 'https://haggisgotchi.com'
 
-    if (!supabaseUrl || !serviceKey) {
-      throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY')
-    }
-    if (!resendKey) {
-      throw new Error('Missing RESEND_API_KEY secret')
+    if (!supabaseUrl || !serviceKey || !resendKey) {
+      console.error('notify-ready-eggs: missing server configuration')
+      return json(500, { error: 'Server not configured' })
     }
 
     const admin = createClient(supabaseUrl, serviceKey)
 
     const { data: eggs, error } = await admin
       .from('eggs')
-      .select('id, email, answers, ready_at, status')
+      .select('id, email, answers')
       .is('ready_code_sent_at', null)
       .in('status', ['waiting', 'ready'])
       .lte('ready_at', new Date().toISOString())
-      .limit(50)
+      .limit(BATCH)
 
     if (error) throw error
 
     const rows = (eggs ?? []) as EggRow[]
-    const results: { id: string; ok: boolean; detail: string }[] = []
+    // Results contain egg ids and outcomes only. Never email addresses.
+    const results: { id: string; outcome: string }[] = []
+    const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
 
     for (const egg of rows) {
       const to = (egg.email || egg.answers?.email || '').trim().toLowerCase()
-      if (!to || !to.includes('@')) {
-        results.push({ id: egg.id, ok: false, detail: 'no email' })
+      const claimedAt = new Date().toISOString()
+
+      // 1. Claim the row atomically so two overlapping cron runs cannot both send.
+      const { data: claimed, error: claimErr } = await admin
+        .from('eggs')
+        .update({ status: 'ready', ready_code_sent_at: claimedAt })
+        .eq('id', egg.id)
+        .is('ready_code_sent_at', null)
+        .select('id')
+        .maybeSingle()
+
+      if (claimErr || !claimed) {
+        results.push({ id: egg.id, outcome: 'skipped-not-claimed' })
         continue
       }
 
-      const name = egg.answers?.displayName?.trim() || 'carer'
-      const slug =
-        (egg.answers?.slug || '').trim() || slugifyName(name)
-      const nestUrl = `${siteUrl.replace(/\/$/, '')}/${slug}`
-      const subject = `Your Haggis-gotchi egg is ready, ${name}`
-      const html = `
-        <h2 style="font-family: Georgia, serif; color: #3f5a45;">Haggis-gotchi</h2>
-        <p style="font-family: system-ui, sans-serif;">
-          Hello ${name}, your egg is ready to hatch.
-        </p>
-        <p style="font-family: system-ui, sans-serif;">
-          Open your nest (this is where the Haggling lives — not the mother home):
-          <br />
-          <a href="${nestUrl}"><strong>${nestUrl}</strong></a>
-        </p>
-        <p style="font-family: system-ui, sans-serif;">
-          On that page, enter the <strong>6-digit code</strong> from the ready
-          panel / OTP email. Link + code together keep the nest secure.
-        </p>
-        <p style="font-family: system-ui, sans-serif; color: #555; font-size: 14px;">
-          Mother keeps the brood list only. Your Haggling stays at /${slug}.
-        </p>
-      `
+      // 2. Refuse bad or abused addresses. The row stays marked, so it is not retried.
+      if (!isPlausibleEmail(to)) {
+        results.push({ id: egg.id, outcome: 'invalid-email' })
+        continue
+      }
+
+      const { count: sentToday } = await admin
+        .from('eggs')
+        .select('id', { count: 'exact', head: true })
+        .eq('email', to)
+        .gte('ready_code_sent_at', dayAgo)
+        .neq('id', egg.id)
+
+      if ((sentToday ?? 0) >= MAX_PER_ADDRESS_PER_DAY) {
+        results.push({ id: egg.id, outcome: 'rate-limited-address' })
+        continue
+      }
+
+      // 3. Build a safe email (escaped, strict slug) and send.
+      const mail = buildReadyEmail({
+        displayName: egg.answers?.displayName,
+        slug: egg.answers?.slug,
+        siteUrl,
+      })
 
       const sendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -118,42 +124,34 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           from,
           to: [to],
-          subject,
-          html,
+          subject: mail.subject,
+          html: mail.html,
         }),
       })
 
-      if (!sendRes.ok) {
-        const body = await sendRes.text()
-        results.push({ id: egg.id, ok: false, detail: body })
+      if (sendRes.ok) {
+        results.push({ id: egg.id, outcome: 'sent' })
         continue
       }
 
-      const now = new Date().toISOString()
-      const { error: upErr } = await admin
-        .from('eggs')
-        .update({
-          status: 'ready',
-          ready_code_sent_at: now,
-        })
-        .eq('id', egg.id)
-
-      if (upErr) {
-        results.push({ id: egg.id, ok: false, detail: upErr.message })
-        continue
+      // Log the status only. The body can echo the recipient address.
+      console.error(`notify-ready-eggs: resend ${sendRes.status} for egg ${egg.id}`)
+      if (sendRes.status === 429 || sendRes.status >= 500) {
+        // Transient: release the claim so the next run retries.
+        await admin
+          .from('eggs')
+          .update({ ready_code_sent_at: null })
+          .eq('id', egg.id)
+        results.push({ id: egg.id, outcome: 'retry-later' })
+      } else {
+        results.push({ id: egg.id, outcome: 'rejected' })
       }
-
-      results.push({ id: egg.id, ok: true, detail: `emailed ${to}` })
     }
 
-    return new Response(JSON.stringify({ checked: rows.length, results }), {
-      headers: { ...cors, 'Content-Type': 'application/json' },
-    })
+    return json(200, { checked: rows.length, results })
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err)
-    return new Response(JSON.stringify({ error: message }), {
-      status: 500,
-      headers: { ...cors, 'Content-Type': 'application/json' },
-    })
+    // Detail to our logs, a generic message to the caller.
+    console.error('notify-ready-eggs failed:', err instanceof Error ? err.message : err)
+    return json(500, { error: 'Internal error' })
   }
 })
