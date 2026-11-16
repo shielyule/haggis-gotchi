@@ -9,6 +9,30 @@ Cloudflare Turnstile docs (test keys and server check).
 
 You do 3 small things. Kiro does the database switch-over in between.
 
+## Where we are (checked by Kiro, 16 Nov evening)
+
+| Part | Status |
+| --- | --- |
+| 1 Cloudflare setting | **Not live yet.** The live mother site has no Turnstile key in it, so the claim form will say the bot check is not configured. Do Part 1, then **Deployments -> Retry deployment** on haggis-gotchi-mother (the setting only takes effect on a new build). |
+| 2 Push | **Done.** GitHub matches the Mac. |
+| 3 Kiro switch-over | **Done.** Backup saved, test data wiped (sign-in kept), old claim path closed, hand-off fields locked, claim-egg re-checked (200). |
+| 1b Phone site | **Problem found.** phone.haggisgotchi.com and haggis-gotchi-phone.pages.dev both serve the **Mother** app, not the phone app. See Part 1b. |
+| 4 Phone test | After 1 and 1b. |
+
+## Part 1b - Point the phone project at the phone app (3 minutes)
+
+1. Cloudflare -> **Compute** -> **Workers & Pages** -> click **haggis-gotchi-phone**.
+2. **Settings** -> find **Build** (or **Build configuration**).
+3. Read the three values. They must be exactly:
+   - Root directory: `apps/phone`
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+4. If any differs, click **Edit**, fix it, **Save**.
+5. **Deployments** -> **Retry deployment**. Wait for **Success**.
+
+**You should see:** opening phone.haggisgotchi.com shows the page title "Haggis-gotchi — Phone" and the words "Collect your Haggling".
+**If the three values were already right:** do not change anything. Click the newest deployment, copy the last 20 log lines, and paste them to Kiro. Also check **Custom domains** on both projects: phone.haggisgotchi.com must be listed under haggis-gotchi-phone, not haggis-gotchi-mother.
+
 ---
 
 ## Part 1 - Add one setting to Cloudflare (2 minutes)
