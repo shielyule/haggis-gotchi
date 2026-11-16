@@ -68,32 +68,34 @@ Also delete the old step 3 key paste from `Kiroween/SMTP-DUMMIES.md` history if 
 
 **A8. Tell me "A done"** and I will tick T3 in `tasks.md`.
 
----
-
-## B. Close the row-security gap (T6) and prove it (T1)
-
-1. SQL Editor -> paste `supabase/migrations/20261116_eggs_policies_with_check.sql` -> Run.
-2. SQL Editor -> paste `supabase/tests/rls_isolation.sql` -> Run.
-   Expected message: `RLS isolation: all checks passed`. It rolls back, so it leaves nothing behind.
-3. If it prints `FAIL n`, paste me the line. That is the attack working, and we fix it.
-
-These SQL files were written without being run (I cannot reach your database). Treat the first run as the real test.
+**If curl returns 500 with Logs saying `permission denied for table eggs`:**
+table grants were stripped. In SQL Editor run all of
+`supabase/migrations/20261116_restore_table_grants.sql`, then re-curl.
+(RLS still applies; this only restores normal SELECT/INSERT/UPDATE/DELETE.)
 
 ---
 
-## C. Cloudflare Turnstile (bot check for claiming an egg) - T4 prep, about 5 minutes
+## B. Close the row-security gap (T6) and prove it (T1) — DONE 16 Nov
 
-You already use Cloudflare, so no new account.
+Applied on live project via CLI:
+1. `20261116_eggs_policies_with_check.sql` — `eggs_update_own` now has `WITH CHECK (auth.uid() = carer_id)` + protect-columns trigger.
+2. `rls_isolation.sql` — ran clean (no `FAIL n`), rolled back, no leftover test rows.
 
-1. Cloudflare dashboard -> **Turnstile** (left menu) -> **Add widget**.
-2. Name: `haggis-claim`. Hostnames: `haggisgotchi.com` and `localhost`. Widget mode: **Managed**. Create.
-3. You get two keys:
-   - **Site key** (public). Put in `apps/mother/.env.local` as `VITE_TURNSTILE_SITE_KEY=...` and as an environment variable in Cloudflare Pages (mother project).
-   - **Secret key** (private). Only here: `supabase secrets set TURNSTILE_SECRET=...`
-4. Tell me when done. Never send me the secret key. The site key is safe to share.
+Do not re-run unless policies are changed again.
 
-For local development Cloudflare publishes always-pass test keys, so the form works
-offline. I will confirm the exact values from their docs when I build T4.
+---
+
+## C. Cloudflare Turnstile (bot check for claiming an egg) - T4 prep
+
+**Local / T4 coding (done 16 Nov):** Cloudflare always-pass test keys are wired so Kiro can build T4 without a dashboard login:
+- `apps/mother/.env.local` → `VITE_TURNSTILE_SITE_KEY=1x00000000000000000000AA`
+- Supabase secret `TURNSTILE_SECRET` → always-pass test secret
+
+**Before go-live (you, ~5 min — needs Cloudflare login):**
+1. dash.cloudflare.com → **Turnstile** → **Add widget**
+2. Name `haggis-claim`. Hostnames: `haggisgotchi.com`, `localhost`. Mode **Managed**.
+3. Put the real **site key** in Cloudflare Pages (mother) as `VITE_TURNSTILE_SITE_KEY` and in `.env.local`.
+4. `supabase secrets set TURNSTILE_SECRET=<real secret>` (replace the test secret).
 
 ---
 
@@ -117,7 +119,8 @@ provider can be swapped.
 
 ## F. Order of work from here
 
-1. A and B above (you).
-2. `security-hardening` T4-T5, T7, T9 (claim-egg function, claim codes, headers).
-3. `sync-conflict` T4-T9 (database columns, cloud merge wiring, schema CI).
+1. ~~A and B~~ **done**.
+2. In **Kiro** (section E): continue `security-hardening` from T4 (claim-egg + Turnstile).
+3. Then T5, T7, T9; then `sync-conflict` T4–T9.
 4. `weather-mood`, then `lifespan-graveyard` (span length still to be agreed).
+5. Before public launch: replace Turnstile **test** keys with a real widget (section C go-live).
