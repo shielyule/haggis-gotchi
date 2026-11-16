@@ -51,7 +51,13 @@ Deno.serve(async (req) => {
     const siteUrl = Deno.env.get('SITE_URL') ?? 'https://haggisgotchi.com'
 
     if (!supabaseUrl || !serviceKey || !resendKey) {
-      console.error('notify-ready-eggs: missing server configuration')
+      // Names only, never values. Visible in Supabase -> Edge Functions -> Logs.
+      const missing = [
+        !supabaseUrl && 'SUPABASE_URL',
+        !serviceKey && 'SUPABASE_SERVICE_ROLE_KEY',
+        !resendKey && 'RESEND_API_KEY',
+      ].filter(Boolean)
+      console.error(`notify-ready-eggs: missing server configuration: ${missing.join(', ')}`)
       return json(500, { error: 'Server not configured' })
     }
 

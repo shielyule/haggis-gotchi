@@ -53,6 +53,14 @@ curl -i -X POST "https://<project-ref>.supabase.co/functions/v1/notify-ready-egg
   -H "x-cron-secret: PASTE_THE_RANDOM_STRING"
 ```
 
+**If A6 returns 500 `Server not configured`:** the secret check passed (good), but one
+server setting is missing. Run `supabase secrets list` and look for the names
+`RESEND_API_KEY`, `READY_EMAIL_FROM`, `SITE_URL`, `CRON_SECRET`. Any that are absent:
+`supabase secrets set NAME=value`. Then redeploy (A4) and open Supabase -> Edge
+Functions -> notify-ready-eggs -> Logs: the line `missing server configuration: <names>`
+says exactly which one. `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are normally
+provided automatically. Do not set them by hand unless the log names them.
+
 **A7. Rotate the service-role key** (it has lived in cron SQL and your notes):
 Supabase -> Project Settings -> API Keys -> Secret keys -> regenerate `default`.
 Edge Functions get the new value automatically. Delete any copy in Notes.
