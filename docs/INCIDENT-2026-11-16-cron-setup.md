@@ -51,5 +51,6 @@ ready email delivered, cron authenticated (`security-hardening` T2, T3 ticked by
 undoes the protection Supabase just added: every future table becomes reachable
 by anyone with the public key unless RLS is enabled on it. The current tables all
 have RLS, so nothing is exposed today. Supabase's guidance is to grant each role
-only what it needs, in the same migration as the RLS policy. A tighter migration
-is proposed, not applied, pending the owner's approval.
+only what it needs, in the same migration as the RLS policy. Fixed 16 Nov in
+`20261116200000_claim_egg_and_handoff.sql`: future tables no longer get API
+grants automatically. Existing tables and Grok's file are unchanged.

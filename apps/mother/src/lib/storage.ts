@@ -16,7 +16,8 @@ import { slugifyName } from './slug'
 
 export type { CareAction, Haggling, LivingSurface, ScrapEntry }
 
-const KEY = 'haggis-gotchi:v1'
+// v2 = clean slate after security-hardening T4/T5 (16 Nov 2026). Old v1 data is dropped.
+const KEY = 'haggis-gotchi:v2'
 
 export type SignupAnswers = {
   pet: string
@@ -33,14 +34,6 @@ export type SignupAnswers = {
   slug: string
   /** Carer email — used when the egg is ready (code) and to retrieve brood. */
   email: string
-}
-
-/** Packet the phone adopts. Same child id — never a clone. */
-export type TransferPacket = {
-  v: 1
-  code: string
-  createdAt: string
-  egg: EggRecord
 }
 
 export type EggRecord = {
@@ -105,14 +98,14 @@ export function replaceLocalBrood(eggs: EggRecord[]) {
   saveStore({ eggs })
 }
 
-export function claimEgg(answers: SignupAnswers, waitMs = 30 * 60 * 1000): EggRecord {
-  const store = loadStore()
+/**
+ * Build (do not save) a new egg. The cloud claim (claim-egg Edge Function) decides
+ * the real ready time; call saveNewEgg only after it accepts the claim.
+ */
+export function newEggRecord(answers: SignupAnswers, waitMs = 30 * 60 * 1000): EggRecord {
   const created = Date.now()
-  const slug =
-    answers.slug?.trim() ||
-    slugifyName(answers.displayName) ||
-    'carer'
-  const egg: EggRecord = {
+  const slug = answers.slug?.trim() || slugifyName(answers.displayName) || 'carer'
+  return {
     id: crypto.randomUUID(),
     createdAt: new Date(created).toISOString(),
     readyAt: new Date(created + waitMs).toISOString(),
@@ -120,7 +113,11 @@ export function claimEgg(answers: SignupAnswers, waitMs = 30 * 60 * 1000): EggRe
     storyId: pickStory(answers).id,
     status: 'waiting',
   }
-  store.eggs.unshift(egg)
+}
+
+export function saveNewEgg(egg: EggRecord): EggRecord {
+  const store = loadStore()
+  store.eggs = [egg, ...store.eggs.filter((e) => e.id !== egg.id)]
   saveStore(store)
   return egg
 }
@@ -169,108 +166,46 @@ export function nameHaggling(
   })
 }
 
-const TRANSFER_KEY = 'haggis-gotchi:transfers:v1'
-const PHONE_KEY = 'haggis-gotchi:phone:v1'
+const PHONE_KEY = 'haggis-gotchi:phone:v2'
 
-type TransferVault = Record<string, TransferPacket>
-
-function loadTransfers(): TransferVault {
-  try {
-    const raw = localStorage.getItem(TRANSFER_KEY)
-    if (!raw) return {}
-    return JSON.parse(raw) as TransferVault
-  } catch {
-    return {}
-  }
+/** Old builds kept claim codes in this browser key. Codes now live only on the server. */
+const LEGACY_KEYS = [
+  'haggis-gotchi:v1',
+  'haggis-gotchi:phone:v1',
+  'haggis-gotchi:transfers:v1',
+]
+try {
+  for (const k of LEGACY_KEYS) localStorage.removeItem(k)
+} catch {
+  // storage unavailable
 }
 
-function saveTransfers(vault: TransferVault) {
-  localStorage.setItem(TRANSFER_KEY, JSON.stringify(vault))
-}
-
-function makeTransferCode(): string {
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-  let out = ''
-  const bytes = crypto.getRandomValues(new Uint8Array(6))
-  for (const b of bytes) out += alphabet[b % alphabet.length]
-  return out
-}
-
-function toBase64Url(json: string): string {
-  const bytes = new TextEncoder().encode(json)
-  let bin = ''
-  bytes.forEach((b) => {
-    bin += String.fromCharCode(b)
-  })
-  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
-}
-
-function fromBase64Url(token: string): string {
-  const padded = token.replace(/-/g, '+').replace(/_/g, '/')
-  const pad = padded.length % 4 === 0 ? '' : '='.repeat(4 - (padded.length % 4))
-  const bin = atob(padded + pad)
-  const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0))
-  return new TextDecoder().decode(bytes)
-}
-
-export function encodeTransferPacket(packet: TransferPacket): string {
-  return toBase64Url(JSON.stringify(packet))
-}
-
-export function decodeTransferPacket(token: string): TransferPacket | null {
-  try {
-    const parsed = JSON.parse(fromBase64Url(token)) as TransferPacket
-    if (parsed?.v !== 1 || !parsed.egg?.haggling) return null
-    return parsed
-  } catch {
-    return null
-  }
-}
-
-/**
- * Mint a phone handoff for a named Haggling.
- * Mother keeps the brood row; living care moves to phone once claimed.
- * Link carries the full packet (works across devices before cloud sync).
- */
-export function mintPhoneTransfer(eggId: string): {
-  code: string
-  token: string
-  packet: TransferPacket
-} | null {
-  const store = loadStore()
-  const egg = store.eggs.find((e) => e.id === eggId)
-  if (!egg?.haggling) return null
-
-  const code = makeTransferCode()
-  const now = new Date().toISOString()
-  const packet: TransferPacket = {
-    v: 1,
-    code,
-    createdAt: now,
-    egg: structuredClone(egg),
-  }
-
-  const vault = loadTransfers()
-  vault[code] = packet
-  saveTransfers(vault)
-
-  updateEgg(eggId, (e) => {
+/** Record the server-minted claim code on the nest copy (display only). */
+export function setTransferCode(eggId: string, code: string | undefined): EggRecord | null {
+  return updateEgg(eggId, (e) => {
     if (!e.haggling) return
-    e.haggling.transferCode = code
-    e.haggling.sentToPhoneAt = now
-    e.haggling.livingOn = 'phone'
+    if (code) {
+      e.haggling.transferCode = code
+      e.haggling.sentToPhoneAt = new Date().toISOString()
+    } else {
+      delete e.haggling.transferCode
+    }
+  })
+}
+
+/** Mirror where the cloud says the Haggling lives. Only the server decides this. */
+export function setLivingOn(eggId: string, surface: LivingSurface): EggRecord | null {
+  return updateEgg(eggId, (e) => {
+    if (!e.haggling || e.haggling.livingOn === surface) return
+    e.haggling.livingOn = surface
+    if (surface === 'phone') delete e.haggling.transferCode
     addScrap(
       e.haggling,
-      `${e.haggling.name} packed for the phone. Mother keeps the brood record — not a second pet.`,
+      surface === 'phone'
+        ? `${e.haggling.name} moved to the phone. Mother keeps the brood record.`
+        : `${e.haggling.name} came back to the nest.`,
     )
   })
-
-  return { code, token: encodeTransferPacket(packet), packet }
-}
-
-export function lookupTransferCode(code: string): TransferPacket | null {
-  const vault = loadTransfers()
-  return vault[code.trim().toUpperCase()] ?? null
 }
 
 export type PhoneStore = {
@@ -289,44 +224,6 @@ export function loadPhoneStore(): PhoneStore {
 
 export function savePhoneStore(store: PhoneStore) {
   localStorage.setItem(PHONE_KEY, JSON.stringify(store))
-}
-
-/** Phone adopts the packet. Same egg id — replaces any prior phone child. */
-export function claimOnPhone(
-  input: string,
-): { ok: true; egg: EggRecord } | { ok: false; error: string } {
-  const trimmed = input.trim()
-  let packet: TransferPacket | null = null
-
-  if (trimmed.length <= 12 && !trimmed.includes('.')) {
-    packet = lookupTransferCode(trimmed.toUpperCase())
-  }
-  if (!packet) packet = decodeTransferPacket(trimmed)
-  if (!packet && trimmed.includes('#')) {
-    const hash = trimmed.split('#')[1] ?? ''
-    const token = hash.replace(/^\/?c\//, '').replace(/^c\//, '')
-    packet = decodeTransferPacket(token)
-  }
-  if (!packet) {
-    return {
-      ok: false,
-      error:
-        'Could not read that claim. Paste the full link from Mother, or the code if you opened Mother on this same browser.',
-    }
-  }
-
-  const egg = structuredClone(packet.egg)
-  if (!egg.haggling) {
-    return { ok: false, error: 'That packet has no Haggling yet.' }
-  }
-  egg.haggling.livingOn = 'phone'
-  addScrap(
-    egg.haggling,
-    `${egg.haggling.name} arrived on the phone. Care continues here.`,
-  )
-  egg.haggling.lastTickAt = new Date().toISOString()
-  savePhoneStore({ child: egg })
-  return { ok: true, egg }
 }
 
 /** Apply care mutations against the phone-local child. */

@@ -5,7 +5,9 @@ import {
 } from './data/temperaments'
 import { defaultAnswers, type SignupAnswers } from './lib/storage'
 import { slugifyName } from './lib/slug'
+import { supabaseConfigured } from './lib/supabase'
 import { claimEggSynced } from './lib/syncActions'
+import { Turnstile } from './Turnstile'
 
 type Props = {
   demoCompress: boolean
@@ -24,6 +26,9 @@ export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
   const [error, setError] = useState('')
   const [teenInfoOpen, setTeenInfoOpen] = useState(false)
   const [chaosInfoOpen, setChaosInfoOpen] = useState(false)
+  const [botToken, setBotToken] = useState<string | null>(null)
+  const [botReset, setBotReset] = useState(0)
+  const [busy, setBusy] = useState(false)
   const teenInfoTitleId = useId()
   const chaosInfoTitleId = useId()
   const temperament = temperamentForChaos(answers.chaos)
@@ -51,12 +56,24 @@ export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
       setError('Tick the disclaimer if you want the teen identity path later.')
       return
     }
-    const waitMs = demoCompress ? 90 * 1000 : 30 * 60 * 1000
+    if (supabaseConfigured && !botToken) {
+      setError('Tick the "I am human" box just above the button first.')
+      return
+    }
     const withSlug: SignupAnswers = {
       ...answers,
       slug: slugifyName(answers.displayName),
     }
-    void claimEggSynced(withSlug, waitMs).then((egg) => onClaimed(egg.id))
+    setBusy(true)
+    void claimEggSynced(withSlug, demoCompress, botToken ?? '').then((result) => {
+      setBusy(false)
+      if (result.ok) {
+        onClaimed(result.egg.id)
+        return
+      }
+      setError(result.error)
+      setBotReset((n) => n + 1) // tokens are single use: get a fresh one
+    })
   }
 
   const nestPreview = answers.displayName.trim()
@@ -318,14 +335,22 @@ export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
         </div>
       ) : null}
 
+      {supabaseConfigured ? (
+        <Turnstile onToken={setBotToken} resetKey={botReset} />
+      ) : null}
+
       {error ? <p className="form-error" role="alert">{error}</p> : null}
 
       <div className="signup-actions">
         <button type="button" className="btn btn-ghost" onClick={onCancel}>
           Cancel
         </button>
-        <button type="submit" className="btn btn-primary">
-          {demoCompress ? 'Start demo birth (~90s)' : 'Begin ~30 min birth'}
+        <button type="submit" className="btn btn-primary" disabled={busy}>
+          {busy
+            ? 'Asking the mother…'
+            : demoCompress
+              ? 'Start demo birth (~90s)'
+              : 'Begin ~30 min birth'}
         </button>
       </div>
     </form>

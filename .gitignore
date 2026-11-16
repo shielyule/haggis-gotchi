@@ -10,6 +10,8 @@ build/
 
 # Supabase CLI local link state (project ref, pooler URL) - never commit
 supabase/.temp/
+# Local data backups (contain emails) - never commit
+backups/
 # Env
 .env
 .env.*

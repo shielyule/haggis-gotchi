@@ -9,7 +9,8 @@ import type {
 
 type EggRow = {
   id: string
-  carer_id: string
+  carer_id: string | null
+  email: string | null
   created_at: string
   ready_at: string
   status: EggRecord['status']
@@ -55,44 +56,54 @@ export async function requireUserId(): Promise<string | null> {
   return getSessionUserId()
 }
 
+export type ClaimResult =
+  | { ok: true; readyAt: string; slug: string }
+  | { ok: false; error: string }
+
 /**
- * Register egg in cloud at claim time (works before magic-code login)
- * so the ready-email cron can fire at 3am with the browser closed.
+ * Claim an egg through the claim-egg Edge Function (security-hardening T4).
+ * Works before sign-in, so the ready email can arrive with the browser closed.
+ * The server validates, runs the bot check and rate limits, and sets ready_at.
  */
-export async function registerEggInCloud(egg: EggRecord): Promise<void> {
-  if (!supabaseConfigured || !supabase) return
-  const { error } = await supabase.rpc('register_egg', {
-    p_id: egg.id,
-    p_ready_at: egg.readyAt,
-    p_story_id: egg.storyId ?? null,
-    p_answers: egg.answers,
+export async function claimEggInCloud(
+  egg: EggRecord,
+  demo: boolean,
+  turnstileToken: string,
+): Promise<ClaimResult> {
+  if (!supabaseConfigured || !supabase) {
+    return { ok: false, error: 'Cloud is not configured on this build.' }
+  }
+  const { data, error } = await supabase.functions.invoke('claim-egg', {
+    body: {
+      eggId: egg.id,
+      storyId: egg.storyId ?? null,
+      demo,
+      turnstileToken,
+      answers: egg.answers,
+    },
   })
-  if (error) console.error('registerEggInCloud', error.message)
+  if (error) {
+    // Non-2xx: the function's JSON message is on the response.
+    const ctx = (error as { context?: Response }).context
+    try {
+      const body = (await ctx?.json()) as { error?: string } | undefined
+      if (body?.error) return { ok: false, error: body.error }
+    } catch {
+      // fall through
+    }
+    return { ok: false, error: 'Could not reach the mother. Check your connection and try again.' }
+  }
+  const body = data as { ok?: boolean; readyAt?: string; slug?: string; error?: string }
+  if (!body?.ok || !body.readyAt) return { ok: false, error: body?.error ?? 'Claim failed.' }
+  return { ok: true, readyAt: body.readyAt, slug: body.slug ?? egg.answers.slug }
 }
 
-/** Upsert egg row when signed in. */
+/** Update an existing egg's status (signed in). Eggs are only created by claim-egg. */
 export async function syncEggToCloud(egg: EggRecord): Promise<void> {
   if (!supabaseConfigured || !supabase) return
-
   const userId = await requireUserId()
-  if (!userId) {
-    await registerEggInCloud(egg)
-    return
-  }
-
-  const { error } = await supabase.from('eggs').upsert(
-    {
-      id: egg.id,
-      carer_id: userId,
-      created_at: egg.createdAt,
-      ready_at: egg.readyAt,
-      status: egg.status,
-      story_id: egg.storyId ?? null,
-      answers: egg.answers,
-      email: egg.answers.email?.trim().toLowerCase() || null,
-    },
-    { onConflict: 'id' },
-  )
+  if (!userId) return
+  const { error } = await supabase.from('eggs').update({ status: egg.status }).eq('id', egg.id)
   if (error) console.error('syncEggToCloud', error.message)
 }
 
@@ -117,12 +128,8 @@ export async function syncChildToCloud(egg: EggRecord): Promise<string | null> {
     mood: h.mood,
     energy: h.energy,
     mess: h.mess,
-    living_on: h.livingOn,
     last_tick_at: h.lastTickAt,
-    transfer_code: h.transferCode ?? null,
-    transfer_expires_at: h.sentToPhoneAt
-      ? new Date(new Date(h.sentToPhoneAt).getTime() + 7 * 24 * 60 * 60 * 1000).toISOString()
-      : null,
+    // living_on, transfer_code, transfer_expires_at: server-only (mint/claim/return RPCs)
   }
 
   let childId = h.cloudChildId
@@ -185,7 +192,6 @@ export async function pushCheckIn(egg: EggRecord, surface: 'mother' | 'phone'): 
       energy: h.energy,
       mess: h.mess,
       last_tick_at: h.lastTickAt,
-      living_on: h.livingOn,
     })
     .eq('id', h.cloudChildId)
 }
@@ -267,7 +273,7 @@ export async function pullBroodFromCloud(): Promise<EggRecord[] | null> {
       readyAt: egg.ready_at,
       status: egg.status,
       storyId: egg.story_id ?? undefined,
-      answers: egg.answers,
+      answers: { ...egg.answers, email: egg.email ?? '' },
     }
     if (child) {
       record.haggling = childToHaggling(
@@ -279,38 +285,80 @@ export async function pullBroodFromCloud(): Promise<EggRecord[] | null> {
   })
 }
 
-/** Phone: load child by transfer code (must be signed in as owning carer). */
+export type MintResult =
+  | { ok: true; code: string; expiresAt: string }
+  | { ok: false; error: string }
+
+/** Ask the server for a claim code (security-hardening T5). Signed-in owner only. */
+export async function mintTransferCode(childId: string): Promise<MintResult> {
+  if (!supabase) return { ok: false, error: 'Cloud is not configured on this build.' }
+  if (!(await requireUserId())) {
+    return { ok: false, error: 'Sign in on this nest first (the 6-digit email code), then try again.' }
+  }
+  const { data, error } = await supabase.rpc('mint_transfer_code', { p_child_id: childId })
+  const row = (Array.isArray(data) ? data[0] : data) as { code?: string; expires_at?: string } | null
+  if (error || !row?.code || !row.expires_at) {
+    if (error) console.error('mintTransferCode', error.message)
+    return { ok: false, error: 'Could not make a code just now. Try again in a moment.' }
+  }
+  return { ok: true, code: row.code, expiresAt: row.expires_at }
+}
+
+/** Where does the cloud say this Haggling lives? null when unknown/offline. */
+export async function fetchLivingOn(childId: string): Promise<'mother' | 'phone' | null> {
+  if (!supabase || !(await requireUserId())) return null
+  const { data, error } = await supabase
+    .from('children')
+    .select('living_on')
+    .eq('id', childId)
+    .maybeSingle()
+  if (error || !data) return null
+  return (data as { living_on: 'mother' | 'phone' }).living_on
+}
+
+/** Bring a Haggling back from the phone to the nest. Owner only. */
+export async function returnChildToNest(childId: string): Promise<boolean> {
+  if (!supabase || !(await requireUserId())) return false
+  const { data, error } = await supabase.rpc('return_child_to_nest', { p_child_id: childId })
+  if (error) console.error('returnChildToNest', error.message)
+  return data === true
+}
+
+/**
+ * Phone: claim with a code (security-hardening T5). The server checks owner,
+ * expiry and single use, locks after 5 wrong tries, and moves the Haggling to the
+ * phone. Then we load that same child (never a copy).
+ */
 export async function claimChildByTransferCode(
   code: string,
 ): Promise<{ ok: true; egg: EggRecord } | { ok: false; error: string }> {
-  const userId = await requireUserId()
-  if (!userId || !supabase) {
-    return { ok: false, error: 'Sign in with the same email you used on Mother first.' }
+  if (!supabase || !(await requireUserId())) {
+    return { ok: false, error: 'Sign in with the same email you used on the nest first.' }
   }
 
-  const cleaned = code.trim().toUpperCase()
-  const { data: child, error } = await supabase
+  const { data, error } = await supabase.rpc('claim_child_by_code', { p_code: code })
+  const result = data as { ok?: boolean; child_id?: string; error?: string } | null
+  if (error || !result) {
+    if (error) console.error('claim_child_by_code', error.message)
+    return { ok: false, error: 'Could not reach the mother. Try again in a moment.' }
+  }
+  if (!result.ok || !result.child_id) {
+    return { ok: false, error: result.error ?? 'That code did not work.' }
+  }
+
+  const { data: child, error: childErr } = await supabase
     .from('children')
     .select('*')
-    .eq('transfer_code', cleaned)
-    .eq('carer_id', userId)
-    .maybeSingle()
-
-  if (error) return { ok: false, error: error.message }
-  if (!child) {
-    return {
-      ok: false,
-      error: 'No Haggling for that code under this account. Check the code / email.',
-    }
-  }
-
+    .eq('id', result.child_id)
+    .single()
+  if (childErr || !child) return { ok: false, error: 'Haggling record missing in the cloud.' }
   const row = child as ChildRow
+
   const { data: egg, error: eggErr } = await supabase
     .from('eggs')
     .select('*')
     .eq('id', row.egg_id)
     .single()
-
   if (eggErr || !egg) return { ok: false, error: 'Egg record missing in the cloud.' }
 
   const { data: scraps } = await supabase
@@ -319,21 +367,7 @@ export async function claimChildByTransferCode(
     .eq('child_id', row.id)
     .order('at', { ascending: false })
 
-  await supabase
-    .from('children')
-    .update({ living_on: 'phone' })
-    .eq('id', row.id)
-
   const eggRow = egg as EggRow
-  const haggling = childToHaggling(
-    { ...row, living_on: 'phone' },
-    ((scraps ?? []) as ScrapRow[]).map((s) => ({
-      id: s.id,
-      at: s.at,
-      text: s.text,
-    })),
-  )
-
   return {
     ok: true,
     egg: {
@@ -342,8 +376,11 @@ export async function claimChildByTransferCode(
       readyAt: eggRow.ready_at,
       status: eggRow.status,
       storyId: eggRow.story_id ?? undefined,
-      answers: eggRow.answers,
-      haggling,
+      answers: { ...eggRow.answers, email: eggRow.email ?? '' },
+      haggling: childToHaggling(
+        row,
+        ((scraps ?? []) as ScrapRow[]).map((s) => ({ id: s.id, at: s.at, text: s.text })),
+      ),
     },
   }
 }

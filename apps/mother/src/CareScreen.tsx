@@ -1,3 +1,4 @@
+import QRCode from 'qrcode'
 import { useEffect, useState } from 'react'
 import { carePortraitFor, temperamentForChaos } from './data/temperaments'
 import { careAlertFor, healthLabel } from './lib/health'
@@ -14,7 +15,14 @@ import {
   careActionSynced,
   mintPhoneTransferSynced,
   nameHagglingSynced,
+  refreshLivingOn,
+  returnToNestSynced,
 } from './lib/syncActions'
+
+/** Paid SMS (Twilio) is parked: shown only if explicitly enabled (nest-and-ready R4.4). */
+const SMS_ENABLED = import.meta.env.VITE_SMS_ENABLED === 'true'
+const PHONE_ORIGIN = (import.meta.env.VITE_PHONE_ORIGIN as string | undefined) ?? 'https://phone.haggisgotchi.com'
+const PHONE_IS_LOCAL = /localhost|127\.0\.0\.1/.test(PHONE_ORIGIN)
 import { WatchMemories } from './WatchMemories'
 
 type Props = {
@@ -60,7 +68,12 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const [transfer, setTransfer] = useState<{
     code: string
     link: string
+    expiresAt: string
+    qr: string
   } | null>(null)
+  const [transferBusy, setTransferBusy] = useState(false)
+  const [transferError, setTransferError] = useState('')
+  const [justMoved, setJustMoved] = useState(false)
   const [copied, setCopied] = useState<'link' | 'code' | null>(null)
   const [shareNote, setShareNote] = useState('')
   const [smsTo, setSmsTo] = useState('')
@@ -86,6 +99,20 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
     return () => window.clearInterval(t)
   }, [egg.id, onPhone])
 
+  useEffect(() => {
+    if (!transfer || onPhone) return
+    const t = window.setInterval(() => {
+      void refreshLivingOn(egg.id).then((next) => {
+        if (next?.haggling?.livingOn === 'phone') {
+          setTransfer(null)
+          setJustMoved(true)
+          onChange()
+        }
+      })
+    }, 5000)
+    return () => window.clearInterval(t)
+  }, [transfer, onPhone, egg.id])
+
   if (!h) return null
 
   const breakfastHour = h.breakfastHour ?? h.feedHour ?? 8
@@ -104,15 +131,33 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   }
 
   function sendToPhone() {
-    void mintPhoneTransferSynced(egg.id).then((minted) => {
-      if (!minted) return
-      const phoneOrigin =
-        import.meta.env.VITE_PHONE_ORIGIN ?? 'http://localhost:5174'
-      // Short-code deep link — scannable QR. Full packet stays available via token if needed.
-      const link = `${phoneOrigin}/#/c/${minted.code}`
-      setTransfer({ code: minted.code, link })
+    setTransferError('')
+    setJustMoved(false)
+    setTransferBusy(true)
+    void mintPhoneTransferSynced(egg.id).then(async (minted) => {
+      setTransferBusy(false)
+      if (!minted.ok) {
+        setTransferError(minted.error)
+        return
+      }
+      // The link carries ONLY the short code. The phone must still sign in as you.
+      const link = `${PHONE_ORIGIN}/#/c/${minted.code}`
+      // Drawn here in the browser: the link is never sent to a QR website.
+      const qr = await QRCode.toDataURL(link, { margin: 1, width: 220 })
+      setTransfer({ code: minted.code, link, expiresAt: minted.expiresAt, qr })
       onChange()
-      void navigator.clipboard?.writeText(link).then(() => flashCopied('link'))
+    })
+  }
+
+  function bringBack() {
+    setTransferError('')
+    void returnToNestSynced(egg.id).then((ok) => {
+      if (!ok) {
+        setTransferError('Could not bring them back. Sign in on this nest and try again.')
+        return
+      }
+      setJustMoved(false)
+      onChange()
     })
   }
 
@@ -126,7 +171,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   async function shareTransfer() {
     if (!transfer) return
     const title = `Collect ${h?.name ?? 'your Haggling'}`
-    const text = `${h?.name ?? 'Your Haggling'} is ready on your phone. Open this link to collect them — same pet, not a twin.`
+    const text = `Collect ${h?.name ?? 'your Haggling'} on your phone. Sign in with your Haggis-gotchi email, then the code fills in by itself.`
     try {
       if (navigator.share) {
         await navigator.share({ title, text, url: transfer.link })
@@ -204,103 +249,113 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       </header>
 
       <section className="care-transfer">
-        {onPhone && !transfer ? (
-          <p className="care-sub">
-            Care lives on the phone now. Mother keeps the brood record — open the
-            phone app with your claim link to look after {h.name}.
-          </p>
+        {onPhone ? (
+          <div className="transfer-card">
+            <p className="signup-kicker">Living on your phone</p>
+            <p className="care-sub">
+              {justMoved ? `${h.name} has arrived on your phone. ` : ''}
+              Care happens on the phone now, so this nest is read-only. Mother still
+              keeps the brood record.
+            </p>
+            <button type="button" className="btn btn-ghost" onClick={bringBack}>
+              Bring {h.name} back to this nest
+            </button>
+          </div>
         ) : null}
-        {!onPhone || transfer ? (
-          <>
-            {!transfer ? (
-              <button type="button" className="btn btn-primary" onClick={sendToPhone}>
-                Send to phone
-              </button>
+
+        {!onPhone && !transfer ? (
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={sendToPhone}
+            disabled={transferBusy}
+          >
+            {transferBusy ? 'Making a code…' : 'Send to phone'}
+          </button>
+        ) : null}
+
+        {transferError ? <p className="form-error">{transferError}</p> : null}
+
+        {!onPhone && transfer ? (
+          <div className="transfer-card">
+            <p className="signup-kicker">Send {h.name} to your phone</p>
+            <ol className="transfer-steps">
+              <li>Point your phone camera at the square code below and tap the link.</li>
+              <li>
+                On the phone, sign in with the <strong>same email</strong>. You get a
+                6-digit number by email: that number is only for signing in.
+              </li>
+              <li>{h.name} moves across by itself. This page then goes read-only.</li>
+            </ol>
+            <img
+              className="transfer-qr"
+              alt={`QR code to collect ${h.name}`}
+              width={220}
+              height={220}
+              src={transfer.qr}
+            />
+            {PHONE_IS_LOCAL ? (
+              <p className="form-error">
+                Test build: this QR points at {PHONE_ORIGIN}, which a phone cannot
+                open. Use the live site to test on a real phone.
+              </p>
             ) : null}
-            {transfer ? (
-              <div className="transfer-card">
-                <p className="signup-kicker">Send to your phone</p>
-                <p className="transfer-code">{transfer.code}</p>
-                <ol className="transfer-steps">
-                  <li>Scan the QR with your phone camera, or Copy / Share the link.</li>
-                  <li>
-                    On the phone site, sign in with the <strong>same email</strong> as
-                    Mother.
-                  </li>
-                  <li>
-                    Same Haggling arrives — not a twin. Mother keeps the brood
-                    record.
-                  </li>
-                </ol>
-                <img
-                  className="transfer-qr"
-                  alt={`QR code to collect ${h.name}`}
-                  width={220}
-                  height={220}
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(transfer.link)}`}
-                />
-                <p className="care-sub">
-                  QR opens the phone site with code <strong>{transfer.code}</strong>{' '}
-                  filled in. Sign in, then Bring them home.
-                </p>
-                <form
-                  className="transfer-sms"
-                  onSubmit={(ev) => {
-                    ev.preventDefault()
-                    void textClaimLink()
-                  }}
+            <p className="care-sub">
+              No camera? Open {PHONE_ORIGIN.replace(/^https?:\/\//, '')} on the phone
+              and type this claim code (letters and numbers, not the email number):
+            </p>
+            <p className="transfer-code">{transfer.code}</p>
+            <p className="care-sub">
+              Works once, only for you, until{' '}
+              {new Date(transfer.expiresAt).toLocaleDateString(undefined, {
+                day: 'numeric',
+                month: 'short',
+              })}
+              . Waiting for your phone…
+            </p>
+            {SMS_ENABLED ? (
+              <form
+                className="transfer-sms"
+                onSubmit={(ev) => {
+                  ev.preventDefault()
+                  void textClaimLink()
+                }}
+              >
+                <label>
+                  <span>Send link as a text</span>
+                  <input
+                    type="tel"
+                    name="smsTo"
+                    autoComplete="tel"
+                    inputMode="tel"
+                    placeholder="07… or +44…"
+                    value={smsTo}
+                    onChange={(e) => setSmsTo(e.target.value)}
+                    required
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={smsBusy || !smsTo.trim()}
                 >
-                  <label>
-                    <span>Send link as a text</span>
-                    <input
-                      type="tel"
-                      name="smsTo"
-                      autoComplete="tel"
-                      inputMode="tel"
-                      placeholder="07… or +44…"
-                      value={smsTo}
-                      onChange={(e) => setSmsTo(e.target.value)}
-                      required
-                    />
-                  </label>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={smsBusy || !smsTo.trim()}
-                  >
-                    {smsBusy ? 'Sending…' : 'Text the claim link'}
-                  </button>
-                  {smsNote ? <p className="care-sub">{smsNote}</p> : null}
-                </form>
-                <div className="transfer-actions">
-                  <button
-                    type="button"
-                    className="btn btn-ghost"
-                    onClick={() => void copyTransfer('link')}
-                  >
-                    {copied === 'link' ? 'Link copied' : 'Copy link'}
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-ghost"
-                    onClick={() => void copyTransfer('code')}
-                  >
-                    {copied === 'code' ? 'Code copied' : 'Copy code'}
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-ghost"
-                    onClick={() => void shareTransfer()}
-                  >
-                    Share to phone
-                  </button>
-                </div>
-                <a className="transfer-link" href={transfer.link}>
-                  Open phone claim on this device
-                </a>
-              </div>
+                  {smsBusy ? 'Sending…' : 'Text the claim link'}
+                </button>
+                {smsNote ? <p className="care-sub">{smsNote}</p> : null}
+              </form>
             ) : null}
-          </>
+            <div className="transfer-actions">
+              <button type="button" className="btn btn-ghost" onClick={() => void copyTransfer('link')}>
+                {copied === 'link' ? 'Link copied' : 'Copy link'}
+              </button>
+              <button type="button" className="btn btn-ghost" onClick={() => void copyTransfer('code')}>
+                {copied === 'code' ? 'Code copied' : 'Copy code'}
+              </button>
+              <button type="button" className="btn btn-ghost" onClick={() => void shareTransfer()}>
+                Share to phone
+              </button>
+            </div>
+          </div>
         ) : null}
 
         <button
