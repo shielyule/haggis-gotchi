@@ -1,15 +1,20 @@
 import { pickStory } from '../data/birthStories'
+import { temperamentForChaos } from '../data/temperaments'
 import {
-  temperamentForChaos,
-  type MemoryFilm,
-} from '../data/temperaments'
-import {
-  applyHealthRules,
-  ensureHealth,
-  penaliseMissedSchedule,
-  sootheHealth,
-} from './health'
+  addScrap,
+  applyCare,
+  tick,
+  type CareAction,
+  type EngineContext,
+  type Haggling,
+  type LivingSurface,
+  type Notice,
+  type ScrapEntry,
+} from './engine'
+import { notifyCare } from './notifications'
 import { slugifyName } from './slug'
+
+export type { CareAction, Haggling, LivingSurface, ScrapEntry }
 
 const KEY = 'haggis-gotchi:v1'
 
@@ -28,61 +33,6 @@ export type SignupAnswers = {
   slug: string
   /** Carer email — used when the egg is ready (code) and to retrieve brood. */
   email: string
-}
-
-export type ScrapEntry = {
-  id: string
-  at: string
-  text: string
-}
-
-export type CareAction = 'feed' | 'cuddle' | 'walk' | 'treat' | 'clean'
-
-/** Where the living care surface is right now. Mother keeps the brood record either way. */
-export type LivingSurface = 'mother' | 'phone'
-
-export type Haggling = {
-  eggId: string
-  name: string
-  /** Supabase children.id when cloud-synced */
-  cloudChildId?: string
-  /** 0–23 local hour for breakfast window */
-  breakfastHour: number
-  /** 0–23 local hour for dinner window */
-  dinnerHour: number
-  bedHour: number
-  hunger: number
-  mood: number
-  energy: number
-  mess: number
-  /** Can go negative → sick (red). */
-  healthXp: number
-  sick?: boolean
-  hungerZeroAt?: string
-  moodZeroAt?: string
-  messHighAt?: string
-  lastCleanAt?: string
-  alertFlags?: {
-    hungerZeroNotified: boolean
-    moodZeroNotified: boolean
-    messWarnNotified: boolean
-    hungerPenaltyDone: boolean
-    moodPenaltyDone: boolean
-    messPenaltyDone: boolean
-  }
-  lastTickAt: string
-  lastFeedAt?: string
-  lastBedAt?: string
-  scrapbook: ScrapEntry[]
-  /** Extra rewatchable clips beyond the hatch film (growth moments later). */
-  memoryFilms?: MemoryFilm[]
-  /** Care happens here; mother brood never becomes a second pet. */
-  livingOn: LivingSurface
-  /** Short human code shown when sending to phone (e.g. BRAW7K). */
-  transferCode?: string
-  sentToPhoneAt?: string
-  /** Legacy single feed hour — migrated on tick/name */
-  feedHour?: number
 }
 
 /** Packet the phone adopts. Same child id — never a clone. */
@@ -182,15 +132,6 @@ export function eggSlug(egg: EggRecord): string {
 export function findEggsBySlug(eggs: EggRecord[], slug: string): EggRecord[] {
   const want = slug.trim().toLowerCase()
   return eggs.filter((e) => eggSlug(e) === want)
-}
-
-function addScrap(haggling: Haggling, text: string) {
-  haggling.scrapbook.unshift({
-    id: crypto.randomUUID(),
-    at: new Date().toISOString(),
-    text,
-  })
-  if (haggling.scrapbook.length > 40) haggling.scrapbook.length = 40
 }
 
 export function nameHaggling(
@@ -397,142 +338,36 @@ export function updatePhoneChild(patch: (egg: EggRecord) => void): EggRecord | n
   return store.child
 }
 
+function engineContext(egg: EggRecord, nowMs = Date.now()): EngineContext {
+  return { temperamentId: temperamentForChaos(egg.answers.chaos).id, nowMs }
+}
+
+function showNotices(notices: Notice[]) {
+  for (const n of notices) notifyCare(n.title, n.body, n.tag)
+}
+
+/** Phone: advance vitals using the shared care engine (one set of rules, everywhere). */
 export function tickPhoneChild(nowMs = Date.now()): EggRecord | null {
   const store = loadPhoneStore()
   const egg = store.child
   if (!egg?.haggling) return null
-  // Reuse mother tick by writing through a temp id path is messy; inline same decay.
-  const h = egg.haggling
-  ensureMeals(h)
-  const last = new Date(h.lastTickAt).getTime()
-  const hours = Math.max(0, (nowMs - last) / (1000 * 60 * 60))
-  if (hours < 0.02) return egg
-
-  const temp = temperamentForChaos(egg.answers.chaos)
-  const wild = temp.id === 'fair-wud' || temp.id === 'radge' || temp.id === 'ree' ? 1.15 : 1
-  const calm = temp.id === 'douce' ? 0.85 : 1
-
-  h.hunger = clamp(h.hunger - hours * 9 * wild)
-  h.energy = clamp(h.energy - hours * 6 * calm)
-  h.mess = clamp(h.mess + hours * 5 * wild)
-  h.mood = clamp(h.mood - hours * 4)
-
-  const startHour = new Date(last).getHours()
-  const endHour = new Date(nowMs).getHours()
-  const crossed = (target: number) => {
-    if (hours >= 24) return true
-    if (startHour === endHour && hours < 1) return false
-    if (startHour < endHour) return target > startHour && target <= endHour
-    return target > startHour || target <= endHour
-  }
-
-  if (crossed(h.breakfastHour) && h.hunger < 55) {
-    h.mood = clamp(h.mood - 12)
-    penaliseMissedSchedule(h, 'breakfast')
-  }
-  if (crossed(h.dinnerHour) && h.hunger < 55) {
-    h.mood = clamp(h.mood - 12)
-    penaliseMissedSchedule(h, 'dinner')
-  }
-  if (crossed(h.bedHour) && h.energy < 45) {
-    h.mood = clamp(h.mood - 10)
-    penaliseMissedSchedule(h, 'bedtime')
-  }
-
-  if (h.hunger < 25) h.mood = clamp(h.mood - 3)
-  if (h.mess > 70) h.mood = clamp(h.mood - 4)
-
-  applyHealthRules(h, nowMs)
-  h.lastTickAt = new Date(nowMs).toISOString()
+  const result = tick(egg.haggling, engineContext(egg, nowMs))
+  egg.haggling = result.haggling
   savePhoneStore(store)
+  showNotices(result.notices)
   return egg
 }
 
 export function carePhoneAction(action: CareAction): EggRecord | null {
-  tickPhoneChild()
-  return updatePhoneChild((egg) => {
-    const h = egg.haggling
-    if (!h) return
-    ensureMeals(h)
-    const now = new Date()
-    const hour = now.getHours()
-    const nearBreakfast = nearHour(hour, h.breakfastHour)
-    const nearDinner = nearHour(hour, h.dinnerHour)
-    const nearFeed = nearBreakfast || nearDinner
-    const nearBed = nearHour(hour, h.bedHour)
-    const mealLabel = nearBreakfast ? 'breakfast' : nearDinner ? 'dinner' : null
-
-    switch (action) {
-      case 'feed':
-        h.hunger = clamp(h.hunger + 28)
-        h.mood = clamp(h.mood + (nearFeed ? 14 : 6))
-        h.mess = clamp(h.mess + 8)
-        h.lastFeedAt = now.toISOString()
-        sootheHealth(h, nearFeed ? 4 : 2)
-        addScrap(
-          h,
-          mealLabel
-            ? `Fed ${h.name} at ${mealLabel}. Pure delight.`
-            : `Fed ${h.name} between meals. Still grateful, a bit confused.`,
-        )
-        break
-      case 'cuddle':
-        h.mood = clamp(h.mood + 12)
-        h.energy = clamp(h.energy + 4)
-        sootheHealth(h, 3)
-        addScrap(h, `A cuddle. ${h.name} went soft as a clootie dumpling.`)
-        break
-      case 'walk':
-        h.energy = clamp(h.energy - 10)
-        h.mood = clamp(h.mood + 10)
-        h.hunger = clamp(h.hunger - 6)
-        h.mess = clamp(h.mess + 5)
-        sootheHealth(h, 2)
-        addScrap(h, `A walk. ${h.name} came back with heather in the fur.`)
-        break
-      case 'treat':
-        h.mood = clamp(h.mood + 16)
-        h.hunger = clamp(h.hunger + 8)
-        h.mess = clamp(h.mess + 4)
-        sootheHealth(h, 2)
-        addScrap(h, `A treat. ${h.name} did a wee dance of nonsense.`)
-        break
-      case 'clean':
-        h.mess = clamp(h.mess - 35)
-        h.mood = clamp(h.mood + (h.mess < 40 ? 8 : 3))
-        h.lastCleanAt = now.toISOString()
-        h.messHighAt = undefined
-        sootheHealth(h, 5)
-        addScrap(h, `Cleaned up after ${h.name}. The room smells of rain again.`)
-        break
-    }
-
-    if (nearBed && action === 'cuddle') {
-      h.energy = clamp(h.energy + 12)
-      h.lastBedAt = now.toISOString()
-      sootheHealth(h, 3)
-      addScrap(h, `Bedtime cuddle. ${h.name} settled.`)
-    }
-
-    applyHealthRules(h, now.getTime())
-    h.lastTickAt = now.toISOString()
+  let notices: Notice[] = []
+  const egg = updatePhoneChild((child) => {
+    if (!child.haggling) return
+    const result = applyCare(child.haggling, action, engineContext(child))
+    child.haggling = result.haggling
+    notices = result.notices
   })
-}
-
-/** Migrate old single-feed saves → breakfast + dinner. */
-function ensureMeals(h: Haggling) {
-  if (typeof h.breakfastHour !== 'number') {
-    h.breakfastHour = typeof h.feedHour === 'number' ? h.feedHour : 8
-  }
-  if (typeof h.dinnerHour !== 'number') {
-    h.dinnerHour = 18
-  }
-  if (!h.livingOn) h.livingOn = 'mother'
-  ensureHealth(h)
-}
-
-function nearHour(hour: number, target: number) {
-  return Math.abs(hour - target) <= 1 || Math.abs(hour - target) >= 23
+  showNotices(notices)
+  return egg
 }
 
 /** Format 0–23 as 12-hour clock, e.g. "8:00 AM". */
@@ -543,129 +378,29 @@ export function formatClockHour(hour: number): string {
   return `${twelve}:00 ${period}`
 }
 
-function clamp(n: number) {
-  return Math.max(0, Math.min(100, Math.round(n)))
-}
-
-/** Advance vitals from lastTickAt → now. Missed feed/bed windows hurt mood. */
+/** Mother/nest: advance vitals using the shared care engine. */
 export function tickHaggling(eggId: string, nowMs = Date.now()): EggRecord | null {
-  return updateEgg(eggId, (egg) => {
-    const h = egg.haggling
-    if (!h) return
-    ensureMeals(h)
-    const last = new Date(h.lastTickAt).getTime()
-    const hours = Math.max(0, (nowMs - last) / (1000 * 60 * 60))
-    if (hours < 0.02) return
-
-    const temp = temperamentForChaos(egg.answers.chaos)
-    const wild = temp.id === 'fair-wud' || temp.id === 'radge' || temp.id === 'ree' ? 1.15 : 1
-    const calm = temp.id === 'douce' ? 0.85 : 1
-
-    h.hunger = clamp(h.hunger - hours * 9 * wild)
-    h.energy = clamp(h.energy - hours * 6 * calm)
-    h.mess = clamp(h.mess + hours * 5 * wild)
-    h.mood = clamp(h.mood - hours * 4)
-
-    // Missed breakfast / dinner / bed windows since last tick
-    const startHour = new Date(last).getHours()
-    const endHour = new Date(nowMs).getHours()
-    const crossed = (target: number) => {
-      if (hours >= 24) return true
-      if (startHour === endHour && hours < 1) return false
-      if (startHour < endHour) return target > startHour && target <= endHour
-      return target > startHour || target <= endHour
-    }
-
-    if (crossed(h.breakfastHour) && h.hunger < 55) {
-      h.mood = clamp(h.mood - 12)
-      penaliseMissedSchedule(h, 'breakfast')
-    }
-    if (crossed(h.dinnerHour) && h.hunger < 55) {
-      h.mood = clamp(h.mood - 12)
-      penaliseMissedSchedule(h, 'dinner')
-    }
-    if (crossed(h.bedHour) && h.energy < 45) {
-      h.mood = clamp(h.mood - 10)
-      penaliseMissedSchedule(h, 'bedtime')
-    }
-
-    if (h.hunger < 25) h.mood = clamp(h.mood - 3)
-    if (h.mess > 70) h.mood = clamp(h.mood - 4)
-
-    applyHealthRules(h, nowMs)
-    h.lastTickAt = new Date(nowMs).toISOString()
+  let notices: Notice[] = []
+  const egg = updateEgg(eggId, (e) => {
+    if (!e.haggling) return
+    const result = tick(e.haggling, engineContext(e, nowMs))
+    e.haggling = result.haggling
+    notices = result.notices
   })
+  showNotices(notices)
+  return egg
 }
 
 export function careAction(eggId: string, action: CareAction): EggRecord | null {
-  tickHaggling(eggId)
-  return updateEgg(eggId, (egg) => {
-    const h = egg.haggling
-    if (!h) return
-    ensureMeals(h)
-    const now = new Date()
-    const hour = now.getHours()
-    const nearBreakfast = nearHour(hour, h.breakfastHour)
-    const nearDinner = nearHour(hour, h.dinnerHour)
-    const nearFeed = nearBreakfast || nearDinner
-    const nearBed = nearHour(hour, h.bedHour)
-    const mealLabel = nearBreakfast ? 'breakfast' : nearDinner ? 'dinner' : null
-
-    switch (action) {
-      case 'feed':
-        h.hunger = clamp(h.hunger + 28)
-        h.mood = clamp(h.mood + (nearFeed ? 14 : 6))
-        h.mess = clamp(h.mess + 8)
-        h.lastFeedAt = now.toISOString()
-        sootheHealth(h, nearFeed ? 4 : 2)
-        addScrap(
-          h,
-          mealLabel
-            ? `Fed ${h.name} at ${mealLabel}. Pure delight.`
-            : `Fed ${h.name} between meals. Still grateful, a bit confused.`,
-        )
-        break
-      case 'cuddle':
-        h.mood = clamp(h.mood + 12)
-        h.energy = clamp(h.energy + 4)
-        sootheHealth(h, 3)
-        addScrap(h, `A cuddle. ${h.name} went soft as a clootie dumpling.`)
-        break
-      case 'walk':
-        h.energy = clamp(h.energy - 10)
-        h.mood = clamp(h.mood + 10)
-        h.hunger = clamp(h.hunger - 6)
-        h.mess = clamp(h.mess + 5)
-        sootheHealth(h, 2)
-        addScrap(h, `A walk. ${h.name} came back with heather in the fur.`)
-        break
-      case 'treat':
-        h.mood = clamp(h.mood + 16)
-        h.hunger = clamp(h.hunger + 8)
-        h.mess = clamp(h.mess + 4)
-        sootheHealth(h, 2)
-        addScrap(h, `A treat. ${h.name} did a wee dance of nonsense.`)
-        break
-      case 'clean':
-        h.mess = clamp(h.mess - 35)
-        h.mood = clamp(h.mood + (h.mess < 40 ? 8 : 3))
-        h.lastCleanAt = now.toISOString()
-        h.messHighAt = undefined
-        sootheHealth(h, 5)
-        addScrap(h, `Cleaned up after ${h.name}. The room smells of rain again.`)
-        break
-    }
-
-    if (nearBed && action === 'cuddle') {
-      h.energy = clamp(h.energy + 12)
-      h.lastBedAt = now.toISOString()
-      sootheHealth(h, 3)
-      addScrap(h, `Bedtime cuddle. ${h.name} settled.`)
-    }
-
-    applyHealthRules(h, now.getTime())
-    h.lastTickAt = now.toISOString()
+  let notices: Notice[] = []
+  const egg = updateEgg(eggId, (e) => {
+    if (!e.haggling) return
+    const result = applyCare(e.haggling, action, engineContext(e))
+    e.haggling = result.haggling
+    notices = result.notices
   })
+  showNotices(notices)
+  return egg
 }
 
 export function moodLabel(mood: number): string {

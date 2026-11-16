@@ -11,7 +11,7 @@ may keep a read-only ghost.
 
 ### R1 Fixed lifespan
 1. WHEN a Haggling is named (hatched), THE SYSTEM SHALL record `born_at` and `span_ends_at = born_at + span` on the server.
-2. THE default span SHALL be 14 days; demo mode SHALL use 4 minutes. (Open question: confirm 14 days.)
+2. THE span SHALL be a single configuration value (`LIFESPAN`), with a demo value of a few minutes. **OPEN DECISION (16 Nov):** 14 days was rejected as too short. The product vision is ~6 months with life stages (Baby, Child, Teen with optional gender morphing, Young Adult, Adult). Decide: full length, or a condensed span with compressed stages. Do not build until agreed.
 3. `born_at` and `span_ends_at` SHALL be immutable after hatch.
 4. THE nest and phone SHALL show time remaining from the last sync plus local elapsed time.
 
