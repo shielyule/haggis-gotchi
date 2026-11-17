@@ -13,10 +13,14 @@ Kiro adds to this file as features land. Times are targets.
 | Different temperaments reacting | See `docs/WEATHER-REACTIONS.md`; e.g. Douce + rain = big smile, Radge + hot = big sulk, Fair Wud + storm = delight |
 | A notification right now | Tell Kiro "test reminder" (sends one to your phone) |
 | Photo Treat | Any photo works until AWS recognition is switched on; then use a real Irn-Bru can |
-| The playing film (after play-film is built) | Demo eggs unlock it 3 minutes after hatching |
+| The playing film | Demo eggs unlock it 3 minutes after hatching: notification + "New film in Watch again" |
+| Mist / haar love | Demo menu: Mist and fog (+8 Mood for all), Haar (+10) |
+| Public scrapbook | Mother page on the Mac shows "Fred just fed Harry · 2 min ago" as you care on the phone |
+| Share card | Share on social -> WhatsApp shows "{name} the {temperament} Haggling" with the portrait |
 
-Tip: in the installed app there is no address bar. Film weather reactions in Chrome
-(open `haggisgotchi.com/?weather=storm`), or ask Kiro to add a hidden demo menu.
+**Hidden demo menu (works in the installed app):** tap the Haggling's name **5 times
+quickly**. Buttons for all 12 kinds of weather (each once per day). Tap the name 5 times
+again to hide it.
 
 ## Shot list
 
@@ -54,8 +58,10 @@ Screen-record Kiro in `haggis-gotchi-app`:
 - Haggling on the phone, rain outside the window if Scotland obliges.
 - "Get your own egg at haggisgotchi.com."
 
+### Extra shots now available (fit into sections 3 and 5)
+- Split screen: feed on the phone, the Mac mother page's public scrapbook updates ("Fred just fed Harry").
+- Share to WhatsApp: the link preview card, then tap it to show the public card and "Get your own egg".
+- Demo egg's playing film notification after 3 minutes, then play it in Watch again.
+
 ## To add when built
-- Public scrapbook feed on the mother page ("Fred just fed Harry").
-- Share card preview in WhatsApp.
-- The 24-hour playing film arriving.
 - Real photo recognition of an Irn-Bru can (AWS Rekognition).

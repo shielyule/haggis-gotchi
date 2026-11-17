@@ -32,7 +32,7 @@ import {
   weatherChoice,
   type WeatherChip,
 } from './lib/weather'
-import { fetchShareInfo, setShareEnabled } from './lib/cloud'
+import { fetchShareInfo, fetchShowInFeed, saveShowInFeed, setShareEnabled } from './lib/cloud'
 import { WatchMemories } from './WatchMemories'
 
 const WEATHER_ICON: Record<string, string> = {
@@ -113,6 +113,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const taps = useRef<number[]>([])
   const [filmNote, setFilmNote] = useState('')
   const [share, setShare] = useState<{ publicId: string; on: boolean } | null>(null)
+  const [inFeed, setInFeed] = useState<boolean | null>(null)
   const h = egg.haggling
   const temp = temperamentForChaos(egg.answers.chaos)
   // phone-home R4: only the home device cares; others watch.
@@ -177,6 +178,11 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
     if (!childId) return
     void fetchShareInfo(childId).then(setShare)
   }, [h?.cloudChildId])
+
+  // public-feed R5: the carer's tick box.
+  useEffect(() => {
+    void fetchShowInFeed().then(setInFeed)
+  }, [])
 
   // Demo eggs unlock after 3 minutes: keep the clock moving while the screen is open.
   useEffect(() => {
@@ -511,6 +517,19 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
               see it
             </a>
           ) : null}
+        </label>
+      ) : null}
+      {inFeed !== null && isHome ? (
+        <label className="demo-toggle share-toggle">
+          <input
+            type="checkbox"
+            checked={inFeed}
+            onChange={(e) => {
+              const v = e.target.checked
+              void saveShowInFeed(v).then((ok) => ok && setInFeed(v))
+            }}
+          />
+          Show {h.name} in the mother&rsquo;s public scrapbook
         </label>
       ) : null}
       {shareNote ? <p className="care-sub">{shareNote}</p> : null}

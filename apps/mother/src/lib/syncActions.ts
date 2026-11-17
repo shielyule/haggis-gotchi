@@ -129,7 +129,7 @@ export async function careActionSynced(
       if (childId) updateEggCloudChildId(eggId, childId)
     }
     const fresh = loadStore().eggs.find((e) => e.id === eggId)
-    if (fresh) await pushCheckIn(fresh, surface)
+    if (fresh) await pushCheckIn(fresh, surface, action)
   }
   return loadStore().eggs.find((e) => e.id === eggId) ?? null
 }
@@ -140,7 +140,7 @@ export async function carePhoneActionSynced(
   carePhoneAction(action)
   const egg = loadPhoneStore().child
   if (egg?.haggling) {
-    await pushCheckIn(egg, 'phone')
+    await pushCheckIn(egg, 'phone', action)
     // Keep phone-local scrapbook if cloud push updated nothing else
     savePhoneStore({ child: loadPhoneStore().child })
   }

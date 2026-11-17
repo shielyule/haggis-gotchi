@@ -136,6 +136,18 @@ Deno.serve(async (req) => {
     if (upErr) throw upErr
     if (!saved?.length) return json(200, { ok: false, error: `${row.name} has had today's treat already.` })
 
+    // public-feed: record the treat (only this function may write 'photo_treat').
+    await admin.from('check_ins').insert({
+      child_id: row.id,
+      carer_id: auth.user.id,
+      surface: 'phone',
+      hunger: t.hunger,
+      mood: t.mood,
+      energy: t.energy,
+      mess: t.mess,
+      action: 'photo_treat',
+    })
+
     const scrap = t.scrapbook[0]
     if (scrap) {
       await admin.from('scrapbook_entries').insert({

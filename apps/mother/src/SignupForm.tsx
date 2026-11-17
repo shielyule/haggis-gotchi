@@ -6,6 +6,7 @@ import {
 import { defaultAnswers, type SignupAnswers } from './lib/storage'
 import { slugifyName } from './lib/slug'
 import { supabaseConfigured } from './lib/supabase'
+import { saveShowInFeed } from './lib/cloud'
 import { claimEggSynced } from './lib/syncActions'
 import { Turnstile } from './Turnstile'
 
@@ -34,6 +35,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
   const [botToken, setBotToken] = useState<string | null>(null)
   const [botReset, setBotReset] = useState(0)
   const [busy, setBusy] = useState(false)
+  const [showInFeed, setShowInFeed] = useState(true)
   const teenInfoTitleId = useId()
   const chaosInfoTitleId = useId()
   const temperament = temperamentForChaos(answers.chaos)
@@ -73,6 +75,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
     void claimEggSynced(withSlug, demoCompress, botToken ?? '').then((result) => {
       setBusy(false)
       if (result.ok) {
+        void saveShowInFeed(showInFeed) // public-feed R5 (signed in on the phone)
         onClaimed(result.egg.id)
         return
       }
@@ -340,6 +343,12 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
           </div>
         </div>
       ) : null}
+
+      <label className="demo-toggle">
+        <input type="checkbox" checked={showInFeed} onChange={(e) => setShowInFeed(e.target.checked)} />
+        Show my Haggling in the mother&rsquo;s public scrapbook (your first name and your
+        Haggling&rsquo;s name only)
+      </label>
 
       {supabaseConfigured ? (
         <Turnstile onToken={setBotToken} resetKey={botReset} />

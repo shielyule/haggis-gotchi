@@ -178,7 +178,7 @@ export async function syncWeather(eggId: string): Promise<WeatherSync> {
 
   if (changed) {
     replaceHaggling(eggId, h)
-    void pushCheckIn({ ...egg, haggling: h }, 'phone')
+    void pushCheckIn({ ...egg, haggling: h }, 'phone', 'weather')
   }
   return { chip, swingLine }
 }
@@ -199,7 +199,7 @@ export function applyDemoWeather(eggId: string, bucket: WeatherBucket): WeatherS
   })
   if (r.applied) {
     replaceHaggling(eggId, r.haggling)
-    void pushCheckIn({ ...egg, haggling: r.haggling }, 'phone')
+    void pushCheckIn({ ...egg, haggling: r.haggling }, 'phone', 'weather')
   }
   return { chip, swingLine: r.line, applied: r.applied }
 }

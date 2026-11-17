@@ -187,7 +187,14 @@ export async function syncChildToCloud(egg: EggRecord): Promise<string | null> {
   return childId
 }
 
-export async function pushCheckIn(egg: EggRecord, surface: 'mother' | 'phone'): Promise<void> {
+/** What happened (public-feed). Weather check-ins never appear in the feed. */
+export type CheckInAction = 'feed' | 'cuddle' | 'walk' | 'treat' | 'clean' | 'weather'
+
+export async function pushCheckIn(
+  egg: EggRecord,
+  surface: 'mother' | 'phone',
+  action?: CheckInAction,
+): Promise<void> {
   const userId = await requireUserId()
   if (!userId || !supabase || !egg.haggling?.cloudChildId) return
   const h = egg.haggling
@@ -199,6 +206,7 @@ export async function pushCheckIn(egg: EggRecord, surface: 'mother' | 'phone'): 
     mood: h.mood,
     energy: h.energy,
     mess: h.mess,
+    action: action ?? null,
   })
   if (error) console.error('pushCheckIn', error.message)
 
@@ -520,4 +528,29 @@ export async function fetchShareInfo(childId: string): Promise<{ publicId: strin
   const { data } = await supabase.from('children').select('public_id, share_enabled').eq('id', childId).maybeSingle()
   const row = data as { public_id: string | null; share_enabled: boolean } | null
   return row?.public_id ? { publicId: row.public_id, on: row.share_enabled } : null
+}
+
+export type FeedRow = { carer_name: string; haggling_name: string; action: string; at: string }
+
+/** public-feed: last 10 brood events. Public (no sign-in); names and actions only. */
+export async function fetchPublicFeed(): Promise<FeedRow[] | null> {
+  if (!supabase) return null
+  const { data, error } = await supabase.rpc('public_feed')
+  if (error) return null
+  return (data ?? []) as FeedRow[]
+}
+
+/** public-feed R4-R5: the carer's tick box. */
+export async function saveShowInFeed(show: boolean): Promise<boolean> {
+  if (!supabase || !(await requireUserId())) return false
+  const { data, error } = await supabase.rpc('set_show_in_feed', { p_show: show })
+  if (error) console.error('set_show_in_feed', error.message)
+  return data === true
+}
+
+export async function fetchShowInFeed(): Promise<boolean | null> {
+  const uid = await requireUserId()
+  if (!supabase || !uid) return null
+  const { data } = await supabase.from('carers').select('show_in_feed').eq('id', uid).maybeSingle()
+  return (data as { show_in_feed?: boolean } | null)?.show_in_feed ?? null
 }

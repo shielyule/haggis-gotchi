@@ -4,7 +4,9 @@ import { AuthBar } from './AuthBar'
 import { NestApp } from './NestApp'
 import { PhoneApp } from './PhoneApp'
 import { PublicCard, readCardIdFromPath } from './PublicCard'
+import { fetchPublicFeed, type FeedRow } from './lib/cloud'
 import { isDesktopLayout } from './lib/device'
+import { feedSentence, timeAgo } from './lib/feed'
 import { careAlertFor } from './lib/health'
 import { pullBroodFromCloud } from './lib/cloud'
 import {
@@ -32,6 +34,34 @@ export default function App() {
   const nestSlug = readNestSlugFromPath()
   if (nestSlug) return <NestApp slug={nestSlug} />
   return <MotherApp />
+}
+
+/** public-feed: the brood's last 10 moments, for everyone. Polls every 30 s. */
+function BroodFeed() {
+  const [rows, setRows] = useState<FeedRow[] | null>(null)
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    const load = () =>
+      void fetchPublicFeed().then((r) => {
+        if (r) setRows(r)
+        setNow(Date.now())
+      })
+    load()
+    const t = window.setInterval(load, 30_000)
+    return () => window.clearInterval(t)
+  }, [])
+  if (rows === null) return <p>Listening to the glen…</p>
+  if (rows.length === 0) return <p>Quiet in the glen. Claim an egg to start the story.</p>
+  return (
+    <ul className="brood-feed">
+      {rows.map((r) => (
+        <li key={`${r.at}-${r.carer_name}-${r.haggling_name}-${r.action}`}>
+          <span>{feedSentence(r)}</span>
+          <time dateTime={r.at}>{timeAgo(r.at, now)}</time>
+        </li>
+      ))}
+    </ul>
+  )
 }
 
 /** QR to the site itself: scanning it on a phone opens the phone flow. */
@@ -215,9 +245,7 @@ function MotherApp() {
         <div className="yard">
           <div className="yard-block">
             <h3>Scrapbook</h3>
-            <p>
-              Opens with the Haggling on its nest page — not on the mother home.
-            </p>
+            <BroodFeed />
           </div>
           <div className="yard-block">
             <h3>Graveyard</h3>
