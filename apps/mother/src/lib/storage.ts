@@ -337,3 +337,48 @@ export function markReadyCodeSent(eggId: string): EggRecord | null {
     egg.readyCodeSentAt = new Date().toISOString()
   })
 }
+
+/** Mirror the server's home device for this Haggling (display only). */
+export function setHomeDeviceLocal(eggId: string, deviceId: string | null): EggRecord | null {
+  return updateEgg(eggId, (e) => {
+    if (!e.haggling) return
+    if (deviceId) e.haggling.homeDeviceId = deviceId
+    else delete e.haggling.homeDeviceId
+  })
+}
+
+/** Apply the server's Photo Treat result: it is the newest state, so it wins. */
+export function applyTreatLocal(
+  eggId: string,
+  child: {
+    hunger: number
+    mood: number
+    energy: number
+    mess: number
+    health_xp: number
+    life_xp: number
+    last_treat_day: string
+    last_tick_at: string
+  },
+  scrap?: ScrapEntry,
+): EggRecord | null {
+  return updateEgg(eggId, (e) => {
+    const h = e.haggling
+    if (!h) return
+    h.hunger = child.hunger
+    h.mood = child.mood
+    h.energy = child.energy
+    h.mess = child.mess
+    h.healthXp = child.health_xp
+    h.sick = child.health_xp < 0
+    h.lifeXp = Math.max(h.lifeXp ?? 0, child.life_xp)
+    h.lastTreatDay = child.last_treat_day
+    h.lastTickAt = child.last_tick_at
+    h.lastCleanAt = child.last_tick_at
+    h.messHighAt = undefined
+    if (scrap && !h.scrapbook.some((x) => x.id === scrap.id)) {
+      h.scrapbook.unshift(scrap)
+      if (h.scrapbook.length > 40) h.scrapbook.length = 40
+    }
+  })
+}

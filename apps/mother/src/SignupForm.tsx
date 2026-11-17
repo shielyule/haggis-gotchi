@@ -11,7 +11,9 @@ import { Turnstile } from './Turnstile'
 
 type Props = {
   demoCompress: boolean
-  onCancel: () => void
+  /** Signed-in email (phone-home R3.3): the egg is linked to this account. */
+  presetEmail?: string
+  onCancel?: () => void
   onClaimed: (eggId: string) => void
 }
 
@@ -21,8 +23,11 @@ const TEEN_INFO =
 const CHAOS_INFO =
   'This slider sets the starting Scots temperament for your egg. It colours the birth story and how wild Baby feels out of the shell. You can still calm or wind them up with care — but Douce and Fair Wud are very different mornings.'
 
-export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
-  const [answers, setAnswers] = useState<SignupAnswers>(() => defaultAnswers())
+export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: Props) {
+  const [answers, setAnswers] = useState<SignupAnswers>(() => ({
+    ...defaultAnswers(),
+    email: presetEmail ?? '',
+  }))
   const [error, setError] = useState('')
   const [teenInfoOpen, setTeenInfoOpen] = useState(false)
   const [chaosInfoOpen, setChaosInfoOpen] = useState(false)
@@ -112,6 +117,7 @@ export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
           onChange={(e) => set('email', e.target.value)}
           placeholder="you@email.com"
           autoComplete="email"
+          readOnly={Boolean(presetEmail)}
           required
         />
       </label>
@@ -342,9 +348,11 @@ export function SignupForm({ demoCompress, onCancel, onClaimed }: Props) {
       {error ? <p className="form-error" role="alert">{error}</p> : null}
 
       <div className="signup-actions">
-        <button type="button" className="btn btn-ghost" onClick={onCancel}>
-          Cancel
-        </button>
+        {onCancel ? (
+          <button type="button" className="btn btn-ghost" onClick={onCancel}>
+            Cancel
+          </button>
+        ) : null}
         <button type="submit" className="btn btn-primary" disabled={busy}>
           {busy
             ? 'Asking the mother…'

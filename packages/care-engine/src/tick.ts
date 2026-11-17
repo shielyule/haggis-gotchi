@@ -18,6 +18,35 @@ export function clamp(n: number) {
   return Math.max(0, Math.min(100, Math.round(n)))
 }
 
+/** Local calendar date for a moment, e.g. "2026-11-17". */
+export function dayKey(nowMs: number): string {
+  const d = new Date(nowMs)
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}-${mm}-${dd}`
+}
+
+export type LifeLevel = { level: number; xp: number; levelStart: number; nextAt: number }
+
+/** D&D-style level from Life XP. */
+export function lifeLevel(xp: number): LifeLevel {
+  const t = RULES.levelThresholds
+  const value = Math.max(0, Math.floor(xp))
+  let level = 1
+  let start = 0
+  let next = t[1]
+  for (let i = 1; ; i++) {
+    const at = i < t.length ? t[i] : t[t.length - 1] + (i - t.length + 1) * RULES.levelStepAfter
+    if (value < at) {
+      next = at
+      break
+    }
+    level = i + 1
+    start = at
+  }
+  return { level, xp: value, levelStart: start, nextAt: next }
+}
+
 export function nearHour(hour: number, target: number) {
   return Math.abs(hour - target) <= 1 || Math.abs(hour - target) >= 23
 }
@@ -46,6 +75,9 @@ function tickInPlace(h: Haggling, notices: Notice[], ctx: EngineContext) {
   h.energy = clamp(h.energy - hours * d.energy * calm)
   h.mess = clamp(h.mess + hours * d.mess * wild)
   h.mood = clamp(h.mood - hours * d.mood)
+
+  // Life XP grows with age, never down.
+  h.lifeXp = (h.lifeXp ?? 0) + (hours * RULES.lifeXpPerDayAlive) / 24
 
   // Missed breakfast / dinner / bed windows since the last tick.
   const startHour = new Date(last).getHours()
@@ -148,6 +180,17 @@ export function applyCare(
       break
   }
 
+  // Life XP for care, capped per day so button-mashing does not level up.
+  const today = dayKey(ctx.nowMs)
+  if (h.careXpDay !== today) {
+    h.careXpDay = today
+    h.careXpToday = 0
+  }
+  if ((h.careXpToday ?? 0) < RULES.lifeXpCareCapPerDay) {
+    h.careXpToday = (h.careXpToday ?? 0) + 1
+    h.lifeXp = (h.lifeXp ?? 0) + RULES.lifeXpPerCare
+  }
+
   if (nearBed && action === 'cuddle') {
     h.energy = clamp(h.energy + 12)
     h.lastBedAt = now.toISOString()
@@ -158,4 +201,39 @@ export function applyCare(
   applyHealthRules(h, notices, ctx.nowMs)
   h.lastTickAt = now.toISOString()
   return { haggling: h, notices }
+}
+
+export type TreatResult =
+  | { accepted: true; haggling: Haggling; notices: Notice[] }
+  | { accepted: false; reason: 'already-today'; haggling: Haggling; notices: Notice[] }
+
+/**
+ * Photo Treat (photo-care R2): full refill, Mess cleared, big XP boost, once a day.
+ * Pure. The server calls this; the phone only shows the result.
+ */
+export function applyPhotoTreat(
+  input: Haggling,
+  treatName: string,
+  ctx: EngineContext,
+): TreatResult {
+  const h = structuredClone(input)
+  const notices: Notice[] = []
+  tickInPlace(h, notices, ctx)
+  const today = dayKey(ctx.nowMs)
+  if (h.lastTreatDay === today) {
+    return { accepted: false, reason: 'already-today', haggling: h, notices }
+  }
+  h.hunger = 100
+  h.mood = 100
+  h.energy = 100
+  h.mess = 0
+  h.messHighAt = undefined
+  h.lastCleanAt = new Date(ctx.nowMs).toISOString()
+  sootheHealth(h, RULES.healthXpPhotoTreat)
+  h.lifeXp = (h.lifeXp ?? 0) + RULES.lifeXpPhotoTreat
+  h.lastTreatDay = today
+  addScrap(h, `Photo Treat: ${treatName}! ${h.name} is fit to burst, every bar full.`)
+  applyHealthRules(h, notices, ctx.nowMs)
+  h.lastTickAt = new Date(ctx.nowMs).toISOString()
+  return { accepted: true, haggling: h, notices }
 }

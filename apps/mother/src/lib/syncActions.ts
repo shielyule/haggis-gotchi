@@ -1,13 +1,13 @@
 import {
   claimEggInCloud,
-  fetchLivingOn,
-  mintTransferCode,
+  fetchHomeDevice,
   pushCheckIn,
-  returnChildToNest,
+  sendPhotoTreat,
+  setHomeDevice,
   syncChildToCloud,
   syncEggToCloud,
-  type MintResult,
 } from './cloud'
+import { deviceTimezone, getDeviceId } from './device'
 import { supabaseConfigured } from './supabase'
 import {
   careAction,
@@ -19,8 +19,8 @@ import {
   savePhoneStore,
   saveNewEgg,
   setEggStatus,
-  setLivingOn,
-  setTransferCode,
+  applyTreatLocal,
+  setHomeDeviceLocal,
   updateEggCloudChildId,
   type CareAction,
   type EggRecord,
@@ -73,49 +73,47 @@ export async function nameHagglingSynced(
   const egg = loadStore().eggs.find((e) => e.id === eggId) ?? null
   if (!egg) return null
   const childId = await syncChildToCloud(egg)
-  if (childId) updateEggCloudChildId(eggId, childId)
+  if (childId) {
+    updateEggCloudChildId(eggId, childId)
+    // phone-home R4.2: the device that names the Haggling is its home.
+    const device = getDeviceId()
+    if (await setHomeDevice(childId, device)) setHomeDeviceLocal(eggId, device)
+  }
   return loadStore().eggs.find((e) => e.id === eggId) ?? null
 }
 
-/** Get a server-minted claim code for the phone. Needs sign-in on the nest. */
-export async function mintPhoneTransferSynced(eggId: string): Promise<MintResult> {
-  let egg = loadStore().eggs.find((e) => e.id === eggId)
-  if (!egg?.haggling) return { ok: false, error: 'Name your Haggling first.' }
-  if (!egg.haggling.cloudChildId) {
-    const childId = await syncChildToCloud(egg)
-    if (childId) updateEggCloudChildId(eggId, childId)
-    egg = loadStore().eggs.find((e) => e.id === eggId)
-  }
-  const childId = egg?.haggling?.cloudChildId
-  if (!childId) {
-    return { ok: false, error: 'Sign in on this nest first (the 6-digit email code), then try again.' }
-  }
-  const minted = await mintTransferCode(childId)
-  if (minted.ok) setTransferCode(eggId, minted.code)
-  return minted
-}
-
-/** Ask the cloud where the Haggling lives and mirror it locally. */
-export async function refreshLivingOn(eggId: string): Promise<EggRecord | null> {
-  const egg = loadStore().eggs.find((e) => e.id === eggId)
-  const childId = egg?.haggling?.cloudChildId
-  if (!childId) return egg ?? null
-  const where = await fetchLivingOn(childId)
-  if (where) setLivingOn(eggId, where)
-  return loadStore().eggs.find((e) => e.id === eggId) ?? null
-}
-
-/** Bring the Haggling back from the phone to this nest. */
-export async function returnToNestSynced(eggId: string): Promise<boolean> {
-  const egg = loadStore().eggs.find((e) => e.id === eggId)
-  const childId = egg?.haggling?.cloudChildId
+/** phone-home R5: make this device the Haggling's home. Never copies. */
+export async function moveHereSynced(eggId: string): Promise<boolean> {
+  const childId = loadStore().eggs.find((e) => e.id === eggId)?.haggling?.cloudChildId
   if (!childId) return false
-  const ok = await returnChildToNest(childId)
-  if (ok) {
-    setTransferCode(eggId, undefined)
-    setLivingOn(eggId, 'mother')
-  }
+  const device = getDeviceId()
+  const ok = await setHomeDevice(childId, device)
+  if (ok) setHomeDeviceLocal(eggId, device)
   return ok
+}
+
+/** Ask the server which device is home; mirror it. Returns true when THIS device is home. */
+export async function refreshHomeDevice(eggId: string): Promise<boolean | null> {
+  const childId = loadStore().eggs.find((e) => e.id === eggId)?.haggling?.cloudChildId
+  if (!childId) return null
+  const home = await fetchHomeDevice(childId)
+  if (home === undefined) return null
+  setHomeDeviceLocal(eggId, home)
+  return !home || home === getDeviceId()
+}
+
+/** photo-care: send the photo, apply the server's reward locally. */
+export async function photoTreatSynced(
+  eggId: string,
+  photo: Blob,
+): Promise<{ ok: true; line: string; placeholder: boolean } | { ok: false; error: string }> {
+  const egg = loadStore().eggs.find((e) => e.id === eggId)
+  const childId = egg?.haggling?.cloudChildId
+  if (!childId) return { ok: false, error: 'Sign in first, so the mother knows this Haggling.' }
+  const res = await sendPhotoTreat(childId, getDeviceId(), deviceTimezone(), photo)
+  if (!res.ok) return res
+  applyTreatLocal(eggId, res.child, res.scrap)
+  return { ok: true, line: res.scrap?.text ?? 'Photo Treat!', placeholder: res.placeholder }
 }
 
 export async function careActionSynced(

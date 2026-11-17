@@ -54,6 +54,13 @@ export function mergeHaggling(local: Haggling, remote: Haggling): Haggling {
   if (sent !== undefined) out.sentToPhoneAt = sent
   else delete out.sentToPhoneAt
 
+  // Life XP never decreases; the latest treat day wins.
+  const xp = Math.max(local.lifeXp ?? 0, remote.lifeXp ?? 0)
+  if (xp > 0 || out.lifeXp !== undefined) out.lifeXp = xp
+  const treat = [local.lastTreatDay, remote.lastTreatDay].filter(Boolean).sort().pop()
+  if (treat) out.lastTreatDay = treat
+  if (remote.homeDeviceId !== undefined) out.homeDeviceId = remote.homeDeviceId
+
   const scraps: ScrapEntry[] = unionById(local.scrapbook, remote.scrapbook)
   scraps.sort((x, y) => timeOf(y.at) - timeOf(x.at) || (x.id < y.id ? -1 : 1))
   out.scrapbook = scraps.slice(0, RULES.scrapbookMax)

@@ -37,4 +37,14 @@ export const RULES = {
   amberAtOrBelow: 15,
 
   scrapbookMax: 40,
+
+  /** Life XP (photo-care R5). */
+  lifeXpPerDayAlive: 10,
+  lifeXpPerCare: 1,
+  lifeXpCareCapPerDay: 30,
+  lifeXpPhotoTreat: 50,
+  healthXpPhotoTreat: 20,
+  /** Level thresholds: level 2 at 100, 3 at 300, 4 at 600, 5 at 1000, then +500. */
+  levelThresholds: [0, 100, 300, 600, 1000] as readonly number[],
+  levelStepAfter: 500,
 } as const

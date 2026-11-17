@@ -36,6 +36,18 @@ type ChildRow = {
   transfer_code: string | null
   transfer_expires_at: string | null
   created_at: string
+  home_device_id: string | null
+  health_xp: number | null
+  life_xp: number | string | null
+  last_treat_day: string | null
+}
+
+/** Health XP column is -100..100; Life XP never below 0. */
+function xpColumns(h: Haggling) {
+  return {
+    health_xp: Math.max(-100, Math.min(100, Math.round(h.healthXp ?? 50))),
+    life_xp: Math.max(0, Math.round((h.lifeXp ?? 0) * 100) / 100),
+  }
 }
 
 type ScrapRow = {
@@ -129,7 +141,8 @@ export async function syncChildToCloud(egg: EggRecord): Promise<string | null> {
     energy: h.energy,
     mess: h.mess,
     last_tick_at: h.lastTickAt,
-    // living_on, transfer_code, transfer_expires_at: server-only (mint/claim/return RPCs)
+    ...xpColumns(h),
+    // living_on, home_device_id, last_treat_day: server-only (RPCs / photo-treat)
   }
 
   let childId = h.cloudChildId
@@ -192,6 +205,7 @@ export async function pushCheckIn(egg: EggRecord, surface: 'mother' | 'phone'): 
       energy: h.energy,
       mess: h.mess,
       last_tick_at: h.lastTickAt,
+      ...xpColumns(h),
     })
     .eq('id', h.cloudChildId)
 }
@@ -208,7 +222,10 @@ function childToHaggling(child: ChildRow, scraps: ScrapEntry[]): Haggling {
     mood: child.mood,
     energy: child.energy,
     mess: child.mess,
-    healthXp: 50,
+    healthXp: child.health_xp ?? 50,
+    lifeXp: Number(child.life_xp ?? 0),
+    lastTreatDay: child.last_treat_day ?? undefined,
+    homeDeviceId: child.home_device_id ?? undefined,
     lastCleanAt: child.last_tick_at,
     lastTickAt: child.last_tick_at,
     livingOn: child.living_on,
@@ -383,4 +400,73 @@ export async function claimChildByTransferCode(
       ),
     },
   }
+}
+
+/** phone-home R4-R5: make this device the Haggling's home (owner only, server side). */
+export async function setHomeDevice(childId: string, deviceId: string): Promise<boolean> {
+  if (!supabase || !(await requireUserId())) return false
+  const { data, error } = await supabase.rpc('set_home_device', {
+    p_child_id: childId,
+    p_device_id: deviceId,
+  })
+  if (error) console.error('set_home_device', error.message)
+  return data === true
+}
+
+/** Which device is home right now (null when unknown/offline). */
+export async function fetchHomeDevice(childId: string): Promise<string | null | undefined> {
+  if (!supabase || !(await requireUserId())) return undefined
+  const { data, error } = await supabase
+    .from('children')
+    .select('home_device_id')
+    .eq('id', childId)
+    .maybeSingle()
+  if (error || !data) return undefined
+  return (data as { home_device_id: string | null }).home_device_id
+}
+
+export type TreatResponse =
+  | {
+      ok: true
+      treat: string
+      placeholder: boolean
+      child: {
+        hunger: number
+        mood: number
+        energy: number
+        mess: number
+        health_xp: number
+        life_xp: number
+        last_treat_day: string
+        last_tick_at: string
+      }
+      scrap?: { id: string; at: string; text: string }
+    }
+  | { ok: false; error: string }
+
+/** photo-care R1-R2: send the shrunk photo; the server decides the reward. */
+export async function sendPhotoTreat(
+  childId: string,
+  deviceId: string,
+  timezone: string,
+  photo: Blob,
+): Promise<TreatResponse> {
+  if (!supabase || !(await requireUserId())) return { ok: false, error: 'Sign in first.' }
+  const form = new FormData()
+  form.append('childId', childId)
+  form.append('deviceId', deviceId)
+  form.append('timezone', timezone)
+  form.append('photo', photo, 'treat.jpg')
+  const { data, error } = await supabase.functions.invoke('photo-treat', { body: form })
+  if (error) {
+    const ctx = (error as { context?: Response }).context
+    try {
+      const body = (await ctx?.json()) as { error?: string } | undefined
+      if (body?.error) return { ok: false, error: body.error }
+    } catch {
+      // fall through
+    }
+    return { ok: false, error: 'Could not reach the mother. Try again in a moment.' }
+  }
+  return data as TreatResponse
 }

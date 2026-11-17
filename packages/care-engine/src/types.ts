@@ -60,6 +60,15 @@ export type Haggling = {
   livingOn: LivingSurface
   transferCode?: string
   sentToPhoneAt?: string
+  /** Overall experience (D&D style). Grows with age, care and treats. Never decreases. */
+  lifeXp?: number
+  /** Local date (YYYY-MM-DD) and count for the daily cap on care XP. */
+  careXpDay?: string
+  careXpToday?: number
+  /** Local date of the last Photo Treat (one per day). */
+  lastTreatDay?: string
+  /** Device id of the home device (phone-home). Server decides; display only. */
+  homeDeviceId?: string
   /** Weather slot ids already applied (weather-mood). Merged as a set union. */
   weatherApplied?: string[]
   /** Legacy single feed hour, migrated on tick. */

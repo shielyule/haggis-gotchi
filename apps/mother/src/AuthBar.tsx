@@ -5,8 +5,8 @@ type Props = {
   onAuthChange: (email: string | null) => void
   /** Prefill from claim form */
   presetEmail?: string
-  /** hatch = egg ready panel; retrieve = get brood back by email */
-  intent?: 'hatch' | 'retrieve'
+  /** hatch = egg ready panel; retrieve = get brood back; start = phone sign-in (phone-home R3) */
+  intent?: 'hatch' | 'retrieve' | 'start'
   /** Auto-send OTP once when egg becomes ready */
   autoSend?: boolean
 }
@@ -101,7 +101,9 @@ export function AuthBar({
     setStatus(
       intent === 'retrieve'
         ? 'Code sent. Enter it below to retrieve your Haggling(s).'
-        : 'Your egg is ready — use this nest link + the 6-digit code. Type the code below.',
+        : intent === 'start'
+          ? 'Code sent. Check your email and type the 6 digits below.'
+          : 'Code sent. Type the 6 digits below to hatch.',
     )
     return true
   }
@@ -162,7 +164,7 @@ export function AuthBar({
       <div className="auth-bar auth-bar-in auth-bar-brood">
         <p className="care-sub">
           Linked as <strong>{sessionEmail}</strong>
-          {intent === 'retrieve' ? ' — brood syncing.' : ' — ready to hatch & care.'}
+          {intent === 'retrieve' ? ': brood syncing.' : ': ready to hatch & care.'}
         </p>
         <button type="button" className="btn btn-ghost" onClick={() => void signOut()}>
           Sign out
@@ -174,12 +176,18 @@ export function AuthBar({
   return (
     <div className="auth-bar auth-bar-brood">
       <p className="signup-kicker">
-        {intent === 'retrieve' ? 'Retrieve my Haggling' : 'Egg ready — prove it’s you'}
+        {intent === 'retrieve'
+          ? 'Retrieve my Haggling'
+          : intent === 'start'
+            ? 'Your email'
+            : 'Egg ready: prove it’s you'}
       </p>
       <p className="care-sub">
         {intent === 'retrieve'
-          ? 'Enter the email you used when claiming. We’ll send a 6-digit code — no password.'
-          : `We’ll email a 6-digit code to ${presetEmail || 'your claim email'}. Same address unlocks phone care later.`}
+          ? 'Enter the email you used when claiming. We’ll send a 6-digit code, no password.'
+          : intent === 'start'
+            ? 'No password. One 6-digit code, once on this phone.'
+            : `We’ll email a 6-digit code to ${presetEmail || 'your claim email'}.`}
       </p>
 
       <form className="auth-stack" onSubmit={(e) => void sendCode(e)}>

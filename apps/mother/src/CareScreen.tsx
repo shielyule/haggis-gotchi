@@ -1,8 +1,14 @@
-import QRCode from 'qrcode'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { carePortraitFor, temperamentForChaos } from './data/temperaments'
+import { lifeLevel } from './lib/engine'
 import { careAlertFor, healthLabel } from './lib/health'
-import { ensureNotifyPermission } from './lib/notifications'
+import { getDeviceId } from './lib/device'
+import {
+  disableReminders,
+  enableReminders,
+  reminderState,
+  type ReminderState,
+} from './lib/push'
 import {
   formatClockHour,
   moodLabel,
@@ -10,19 +16,13 @@ import {
   type CareAction,
   type EggRecord,
 } from './lib/storage'
-import { sendClaimSms } from './lib/sendClaimSms'
 import {
   careActionSynced,
-  mintPhoneTransferSynced,
+  moveHereSynced,
   nameHagglingSynced,
-  refreshLivingOn,
-  returnToNestSynced,
+  photoTreatSynced,
+  refreshHomeDevice,
 } from './lib/syncActions'
-
-/** Paid SMS (Twilio) is parked: shown only if explicitly enabled (nest-and-ready R4.4). */
-const SMS_ENABLED = import.meta.env.VITE_SMS_ENABLED === 'true'
-const PHONE_ORIGIN = (import.meta.env.VITE_PHONE_ORIGIN as string | undefined) ?? 'https://phone.haggisgotchi.com'
-const PHONE_IS_LOCAL = /localhost|127\.0\.0\.1/.test(PHONE_ORIGIN)
 import { WatchMemories } from './WatchMemories'
 
 type Props = {
@@ -63,32 +63,41 @@ function nearHour(hour: number, target: number) {
   return Math.abs(hour - target) <= 1 || Math.abs(hour - target) >= 23
 }
 
+/** Shrink on the device before upload (photo-care R1.3): long side <= 1280 px, JPEG. */
+async function shrinkPhoto(file: File): Promise<Blob> {
+  const bitmap = await createImageBitmap(file)
+  const scale = Math.min(1, 1280 / Math.max(bitmap.width, bitmap.height))
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale))
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale))
+  canvas.getContext('2d')?.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+  bitmap.close?.()
+  return new Promise((resolve, reject) =>
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('encode failed'))), 'image/jpeg', 0.85),
+  )
+}
+
 export function CareScreen({ egg, onChange, onBack }: Props) {
   const [now, setNow] = useState(() => Date.now())
-  const [transfer, setTransfer] = useState<{
-    code: string
-    link: string
-    expiresAt: string
-    qr: string
-  } | null>(null)
-  const [transferBusy, setTransferBusy] = useState(false)
-  const [transferError, setTransferError] = useState('')
-  const [justMoved, setJustMoved] = useState(false)
-  const [copied, setCopied] = useState<'link' | 'code' | null>(null)
   const [shareNote, setShareNote] = useState('')
-  const [smsTo, setSmsTo] = useState('')
-  const [smsBusy, setSmsBusy] = useState(false)
-  const [smsNote, setSmsNote] = useState('')
+  const [moveBusy, setMoveBusy] = useState(false)
+  const [moveError, setMoveError] = useState('')
+  const [reminders, setReminders] = useState<ReminderState>('off')
+  const [reminderNote, setReminderNote] = useState('')
+  const [treatBusy, setTreatBusy] = useState(false)
+  const [treatNote, setTreatNote] = useState<{ text: string; good: boolean } | null>(null)
+  const fileInput = useRef<HTMLInputElement>(null)
   const h = egg.haggling
   const temp = temperamentForChaos(egg.answers.chaos)
-  const onPhone = h?.livingOn === 'phone'
+  // phone-home R4: only the home device cares; others watch.
+  const isHome = !h?.homeDeviceId || h.homeDeviceId === getDeviceId()
 
   useEffect(() => {
-    void ensureNotifyPermission()
+    void reminderState().then(setReminders)
   }, [])
 
   useEffect(() => {
-    if (onPhone) return
+    if (!isHome) return
     tickHaggling(egg.id)
     onChange()
     const t = window.setInterval(() => {
@@ -97,21 +106,18 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       onChange()
     }, 30_000)
     return () => window.clearInterval(t)
-  }, [egg.id, onPhone])
+  }, [egg.id, isHome])
 
+  // phone-home R5.2: notice within a minute if the Haggling moved to another device.
   useEffect(() => {
-    if (!transfer || onPhone) return
-    const t = window.setInterval(() => {
-      void refreshLivingOn(egg.id).then((next) => {
-        if (next?.haggling?.livingOn === 'phone') {
-          setTransfer(null)
-          setJustMoved(true)
-          onChange()
-        }
+    const check = () =>
+      void refreshHomeDevice(egg.id).then((r) => {
+        if (r !== null) onChange()
       })
-    }, 5000)
+    check()
+    const t = window.setInterval(check, 60_000)
     return () => window.clearInterval(t)
-  }, [transfer, onPhone, egg.id])
+  }, [egg.id])
 
   if (!h) return null
 
@@ -119,102 +125,75 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const dinnerHour = h.dinnerHour ?? 18
   const alert = careAlertFor(h)
   const healthXp = typeof h.healthXp === 'number' ? h.healthXp : 50
+  const level = lifeLevel(h.lifeXp ?? 0)
+  const levelPct = Math.round(
+    ((level.xp - level.levelStart) / Math.max(1, level.nextAt - level.levelStart)) * 100,
+  )
 
   function act(action: CareAction) {
-    if (onPhone) return
-    void careActionSynced(egg.id, action, 'mother').then(() => onChange())
+    if (!isHome) return
+    void careActionSynced(egg.id, action, 'phone').then(() => onChange())
   }
 
-  function flashCopied(kind: 'link' | 'code') {
-    setCopied(kind)
-    window.setTimeout(() => setCopied(null), 2000)
-  }
-
-  function sendToPhone() {
-    setTransferError('')
-    setJustMoved(false)
-    setTransferBusy(true)
-    void mintPhoneTransferSynced(egg.id).then(async (minted) => {
-      setTransferBusy(false)
-      if (!minted.ok) {
-        setTransferError(minted.error)
-        return
-      }
-      // The link carries ONLY the short code. The phone must still sign in as you.
-      const link = `${PHONE_ORIGIN}/#/c/${minted.code}`
-      // Drawn here in the browser: the link is never sent to a QR website.
-      const qr = await QRCode.toDataURL(link, { margin: 1, width: 220 })
-      setTransfer({ code: minted.code, link, expiresAt: minted.expiresAt, qr })
+  function moveHere() {
+    setMoveError('')
+    setMoveBusy(true)
+    void moveHereSynced(egg.id).then((ok) => {
+      setMoveBusy(false)
+      if (!ok) setMoveError('Could not move them. Check you are signed in and online, then try again.')
       onChange()
     })
   }
 
-  function bringBack() {
-    setTransferError('')
-    void returnToNestSynced(egg.id).then((ok) => {
-      if (!ok) {
-        setTransferError('Could not bring them back. Sign in on this nest and try again.')
-        return
-      }
-      setJustMoved(false)
-      onChange()
-    })
-  }
-
-  async function copyTransfer(kind: 'link' | 'code') {
-    if (!transfer) return
-    const text = kind === 'link' ? transfer.link : transfer.code
-    await navigator.clipboard?.writeText(text)
-    flashCopied(kind)
-  }
-
-  async function shareTransfer() {
-    if (!transfer) return
-    const title = `Collect ${h?.name ?? 'your Haggling'}`
-    const text = `Collect ${h?.name ?? 'your Haggling'} on your phone. Sign in with your Haggis-gotchi email, then the code fills in by itself.`
-    try {
-      if (navigator.share) {
-        await navigator.share({ title, text, url: transfer.link })
-        setShareNote('Shared')
-      } else {
-        await navigator.clipboard?.writeText(`${text}\n${transfer.link}`)
-        setShareNote('Share text copied — paste into Messages / WhatsApp / email')
-      }
-    } catch {
-      setShareNote('Share cancelled')
-    }
-    window.setTimeout(() => setShareNote(''), 3000)
-  }
-
-  async function textClaimLink() {
-    if (!transfer || !h) return
-    setSmsNote('')
-    setSmsBusy(true)
-    const result = await sendClaimSms({
-      to: smsTo,
-      link: transfer.link,
-      name: h.name,
-      code: transfer.code,
-    })
-    setSmsBusy(false)
-    if (result.ok) {
-      setSmsNote(`Text sent to ${smsTo.trim()}`)
+  async function toggleReminders() {
+    setReminderNote('')
+    if (reminders === 'on') {
+      await disableReminders()
+      setReminders(await reminderState())
+      setReminderNote('Reminders off.')
       return
     }
-    setSmsNote(result.error)
+    const r = await enableReminders()
+    setReminders(await reminderState())
+    setReminderNote(r.ok ? `Reminders on. ${h?.name} will tell you at meal times and when a bar empties.` : (r.error ?? ''))
+  }
+
+  async function onPhoto(file: File | undefined) {
+    if (!file) return
+    setTreatNote(null)
+    setTreatBusy(true)
+    try {
+      const small = await shrinkPhoto(file)
+      const r = await photoTreatSynced(egg.id, small)
+      if (r.ok) {
+        setTreatNote({
+          good: true,
+          text: r.placeholder
+            ? `${r.line} (Recognition is not switched on yet, so any photo counts for now.)`
+            : r.line,
+        })
+      } else {
+        setTreatNote({ good: false, text: r.error })
+      }
+      onChange()
+    } catch {
+      setTreatNote({ good: false, text: 'Could not read that photo. Try another.' })
+    } finally {
+      setTreatBusy(false)
+      if (fileInput.current) fileInput.current.value = ''
+    }
   }
 
   async function shareOnSocial() {
     const name = h?.name ?? 'my Haggling'
-    const portrait = `${window.location.origin}${carePortraitFor(temp.id)}`
-    const text = `Meet ${name} — a ${temp.label} Haggling from Haggis-gotchi. Scottish folklore Tamagotchi energy.`
+    const text = `Meet ${name}, a ${temp.label} Haggling from Haggis-gotchi.`
     try {
       if (navigator.share) {
         await navigator.share({ title: name, text, url: window.location.origin })
-        setShareNote('Shared to your apps')
+        setShareNote('Shared')
       } else {
-        await navigator.clipboard?.writeText(`${text}\n${portrait}`)
-        setShareNote('Caption + image link copied — paste into Instagram / X / TikTok')
+        await navigator.clipboard?.writeText(`${text} ${window.location.origin}`)
+        setShareNote('Copied: paste it anywhere')
       }
     } catch {
       setShareNote('Share cancelled')
@@ -239,140 +218,43 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           <p className="care-sub">
             {temp.label} · {moodLabel(h.mood)} · {healthLabel(h)}
             {alert === 'amber' ? ' · amber warning' : ''}
-            {alert === 'red' ? ' · sick / penalty' : ''}
-            {onPhone ? ' · living on phone' : ' · with mother'}
-            {!onPhone && breakfastSoon ? ' · breakfast' : ''}
-            {!onPhone && dinnerSoon ? ' · dinner' : ''}
-            {!onPhone && bedSoon ? ' · bedtime' : ''}
+            {alert === 'red' ? ' · sick' : ''}
+            {!isHome ? ' · watching' : ''}
+            {isHome && breakfastSoon ? ' · breakfast' : ''}
+            {isHome && dinnerSoon ? ' · dinner' : ''}
+            {isHome && bedSoon ? ' · bedtime' : ''}
           </p>
         </div>
       </header>
 
-      <section className="care-transfer">
-        {onPhone ? (
-          <div className="transfer-card">
-            <p className="signup-kicker">Living on your phone</p>
-            <p className="care-sub">
-              {justMoved ? `${h.name} has arrived on your phone. ` : ''}
-              Care happens on the phone now, so this nest is read-only. Mother still
-              keeps the brood record.
-            </p>
-            <button type="button" className="btn btn-ghost" onClick={bringBack}>
-              Bring {h.name} back to this nest
-            </button>
-          </div>
-        ) : null}
-
-        {!onPhone && !transfer ? (
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={sendToPhone}
-            disabled={transferBusy}
-          >
-            {transferBusy ? 'Making a code…' : 'Send to phone'}
-          </button>
-        ) : null}
-
-        {transferError ? <p className="form-error">{transferError}</p> : null}
-
-        {!onPhone && transfer ? (
-          <div className="transfer-card">
-            <p className="signup-kicker">Send {h.name} to your phone</p>
-            <ol className="transfer-steps">
-              <li>Point your phone camera at the square code below and tap the link.</li>
-              <li>
-                On the phone, sign in with the <strong>same email</strong>. You get a
-                6-digit number by email: that number is only for signing in.
-              </li>
-              <li>{h.name} moves across by itself. This page then goes read-only.</li>
-            </ol>
-            <img
-              className="transfer-qr"
-              alt={`QR code to collect ${h.name}`}
-              width={220}
-              height={220}
-              src={transfer.qr}
-            />
-            {PHONE_IS_LOCAL ? (
-              <p className="form-error">
-                Test build: this QR points at {PHONE_ORIGIN}, which a phone cannot
-                open. Use the live site to test on a real phone.
-              </p>
-            ) : null}
-            <p className="care-sub">
-              No camera? Open {PHONE_ORIGIN.replace(/^https?:\/\//, '')} on the phone
-              and type this claim code (letters and numbers, not the email number):
-            </p>
-            <p className="transfer-code">{transfer.code}</p>
-            <p className="care-sub">
-              Works once, only for you, until{' '}
-              {new Date(transfer.expiresAt).toLocaleDateString(undefined, {
-                day: 'numeric',
-                month: 'short',
-              })}
-              . Waiting for your phone…
-            </p>
-            {SMS_ENABLED ? (
-              <form
-                className="transfer-sms"
-                onSubmit={(ev) => {
-                  ev.preventDefault()
-                  void textClaimLink()
-                }}
-              >
-                <label>
-                  <span>Send link as a text</span>
-                  <input
-                    type="tel"
-                    name="smsTo"
-                    autoComplete="tel"
-                    inputMode="tel"
-                    placeholder="07… or +44…"
-                    value={smsTo}
-                    onChange={(e) => setSmsTo(e.target.value)}
-                    required
-                  />
-                </label>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={smsBusy || !smsTo.trim()}
-                >
-                  {smsBusy ? 'Sending…' : 'Text the claim link'}
-                </button>
-                {smsNote ? <p className="care-sub">{smsNote}</p> : null}
-              </form>
-            ) : null}
-            <div className="transfer-actions">
-              <button type="button" className="btn btn-ghost" onClick={() => void copyTransfer('link')}>
-                {copied === 'link' ? 'Link copied' : 'Copy link'}
-              </button>
-              <button type="button" className="btn btn-ghost" onClick={() => void copyTransfer('code')}>
-                {copied === 'code' ? 'Code copied' : 'Copy code'}
-              </button>
-              <button type="button" className="btn btn-ghost" onClick={() => void shareTransfer()}>
-                Share to phone
-              </button>
-            </div>
-          </div>
-        ) : null}
-
-        <button
-          type="button"
-          className="btn btn-ghost"
-          onClick={() => void shareOnSocial()}
-        >
-          Share {h.name} on social
-        </button>
-        {shareNote ? <p className="care-sub">{shareNote}</p> : null}
+      <section className="care-level" aria-label="Life XP">
+        <div className="meter-top">
+          <span>Level {level.level}</span>
+          <span>
+            {level.xp} / {level.nextAt} Life XP
+          </span>
+        </div>
+        <div className="meter-track" aria-hidden="true">
+          <div className="meter-fill" style={{ width: `${levelPct}%` }} />
+        </div>
       </section>
 
+      {!isHome ? (
+        <section className="transfer-card">
+          <p className="signup-kicker">Watching</p>
+          <p className="care-sub">
+            {h.name} lives on another device, so this screen is read-only. Using a new
+            phone? Move {h.name} here. They move, never copy.
+          </p>
+          <button type="button" className="btn btn-primary" onClick={moveHere} disabled={moveBusy}>
+            {moveBusy ? 'Moving…' : `Move ${h.name} here`}
+          </button>
+          {moveError ? <p className="form-error">{moveError}</p> : null}
+        </section>
+      ) : null}
+
       <div className="care-stage">
-        <img
-          src={carePortraitFor(temp.id)}
-          alt={`${h.name}, a ${temp.label} Haggling`}
-        />
+        <img src={carePortraitFor(temp.id)} alt={`${h.name}, a ${temp.label} Haggling`} />
       </div>
 
       <div className="care-meters">
@@ -384,8 +266,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       </div>
       {healthXp < 0 ? (
         <p className="care-sub care-sick-note">
-          Health XP is {healthXp} (below zero) — {h.name} is sick until care
-          recovers them.
+          Health XP is {healthXp} (below zero). {h.name} is sick until care recovers them.
         </p>
       ) : null}
 
@@ -397,7 +278,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
         Bed <strong>{formatClockHour(h.bedHour)}</strong>
       </p>
 
-      {!onPhone ? (
+      {isHome ? (
         <div className="care-actions">
           {ACTIONS.map((a) => (
             <button
@@ -411,13 +292,56 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
               <small>{a.hint}</small>
             </button>
           ))}
+          <button
+            type="button"
+            className="care-action care-action-treat"
+            onClick={() => fileInput.current?.click()}
+            disabled={treatBusy}
+          >
+            <span>{treatBusy ? 'Looking…' : 'Photo Treat'}</span>
+            <small>Snap something Scottish: every bar fills, once a day</small>
+          </button>
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            hidden
+            onChange={(e) => void onPhoto(e.target.files?.[0])}
+          />
         </div>
       ) : null}
+      {treatNote ? (
+        <p className={treatNote.good ? 'care-sub treat-note' : 'form-error'}>{treatNote.text}</p>
+      ) : null}
 
-      <WatchMemories
-        temperamentId={temp.id}
-        extras={h.memoryFilms ?? []}
-      />
+      {isHome ? (
+        <section className="care-reminders">
+          {reminders === 'unsupported' ? (
+            <p className="care-sub">
+              Reminders need the app on your home screen. Add Haggis-gotchi to your home
+              screen, open it from the icon, then come back here.
+            </p>
+          ) : reminders === 'blocked' ? (
+            <p className="care-sub">
+              Notifications are blocked. Phone Settings, Apps, Haggis-gotchi (or Chrome),
+              Notifications: allow, then reopen.
+            </p>
+          ) : (
+            <button type="button" className="btn btn-ghost" onClick={() => void toggleReminders()}>
+              {reminders === 'on' ? 'Turn reminders off' : 'Turn on reminders'}
+            </button>
+          )}
+          {reminderNote ? <p className="care-sub">{reminderNote}</p> : null}
+        </section>
+      ) : null}
+
+      <button type="button" className="btn btn-ghost" onClick={() => void shareOnSocial()}>
+        Share {h.name} on social
+      </button>
+      {shareNote ? <p className="care-sub">{shareNote}</p> : null}
+
+      <WatchMemories temperamentId={temp.id} extras={h.memoryFilms ?? []} />
 
       <section className="care-scrap">
         <h3>Scrapbook</h3>

@@ -22,6 +22,7 @@ const BATCH = 50
 
 type EggRow = {
   id: string
+  carer_id: string | null
   email: string | null
   answers: { displayName?: string; email?: string; slug?: string } | null
 }
@@ -65,7 +66,7 @@ Deno.serve(async (req) => {
 
     const { data: eggs, error } = await admin
       .from('eggs')
-      .select('id, email, answers')
+      .select('id, carer_id, email, answers')
       .is('ready_code_sent_at', null)
       .in('status', ['waiting', 'ready'])
       .lte('ready_at', new Date().toISOString())
@@ -94,6 +95,19 @@ Deno.serve(async (req) => {
       if (claimErr || !claimed) {
         results.push({ id: egg.id, outcome: 'skipped-not-claimed' })
         continue
+      }
+
+      // 1b. Carer has phone reminders on: care-reminders sends a notification instead
+      //     (phone-home R3.4: one message, not two).
+      if (egg.carer_id) {
+        const { count: subs } = await admin
+          .from('push_subscriptions')
+          .select('id', { count: 'exact', head: true })
+          .eq('carer_id', egg.carer_id)
+        if ((subs ?? 0) > 0) {
+          results.push({ id: egg.id, outcome: 'push-instead' })
+          continue
+        }
       }
 
       // 2. Refuse bad or abused addresses. The row stays marked, so it is not retried.

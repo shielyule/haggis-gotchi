@@ -13,10 +13,15 @@ export {
 } from './health.ts'
 export {
   applyCare,
+  applyPhotoTreat,
   clamp,
+  dayKey,
+  lifeLevel,
   ensureMeals,
   nearHour,
   tick,
   type EngineContext,
+  type LifeLevel,
+  type TreatResult,
 } from './tick.ts'
 export { mergeHaggling, timeOf } from './merge.ts'

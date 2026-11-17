@@ -1,7 +1,9 @@
+import QRCode from 'qrcode'
 import { useCallback, useEffect, useState } from 'react'
 import { AuthBar } from './AuthBar'
 import { NestApp } from './NestApp'
-import { SignupForm } from './SignupForm'
+import { PhoneApp } from './PhoneApp'
+import { isDesktopLayout } from './lib/device'
 import { careAlertFor } from './lib/health'
 import { pullBroodFromCloud } from './lib/cloud'
 import {
@@ -15,19 +17,38 @@ import {
 import { openNestInNewTab, readNestSlugFromPath, slugifyName } from './lib/slug'
 import './App.css'
 
-type MotherView = 'home' | 'signup'
-
+/**
+ * phone-home R1: one site, two faces. Phones get the Haggling; desktops get the mother.
+ * Layout only, never security.
+ */
 export default function App() {
+  if (!isDesktopLayout()) return <PhoneApp />
   const nestSlug = readNestSlugFromPath()
   if (nestSlug) return <NestApp slug={nestSlug} />
   return <MotherApp />
 }
 
+/** QR to the site itself: scanning it on a phone opens the phone flow. */
+function PhoneQr() {
+  const [src, setSrc] = useState('')
+  useEffect(() => {
+    void QRCode.toDataURL(window.location.origin + '/', { margin: 1, width: 200 }).then(setSrc)
+  }, [])
+  if (!src) return null
+  return (
+    <div className="phone-qr">
+      <img src={src} width={200} height={200} alt="QR code: open Haggis-gotchi on your phone" />
+      <p>
+        <strong>Your Haggling lives on your phone.</strong> Point your phone camera here
+        to claim an egg.
+      </p>
+    </div>
+  )
+}
+
 /** `/` only — mother + brood. Hagglings open at /{slug} in another tab. */
 function MotherApp() {
-  const [view, setView] = useState<MotherView>('home')
   const [eggs, setEggs] = useState<EggRecord[]>(() => loadStore().eggs)
-  const [demoCompress, setDemoCompress] = useState(true)
   const [carerEmail, setCarerEmail] = useState<string | null>(null)
   const [showRetrieve, setShowRetrieve] = useState(false)
 
@@ -75,80 +96,41 @@ function MotherApp() {
         />
         <div className="hero-veil" aria-hidden="true" />
 
-        {view === 'home' ? (
-          <div className="hero-copy">
-            <p className="brand">Haggis-gotchi</p>
-            <h1 className="headline">The cloud mother keeps the brood.</h1>
-            <p className="lede">
-              Meet the mother. Claim an egg — your Haggling lives on its own page
-              (and on your phone), never on this home. The scrapbook remembers
-              everything.
-            </p>
-            <div className="cta-row">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => {
-                  setView('signup')
-                  window.scrollTo({ top: 0, behavior: 'smooth' })
-                }}
-              >
-                Claim an egg
-              </button>
-              <button
-                type="button"
-                className="btn btn-ghost"
-                onClick={() =>
-                  document
-                    .getElementById('brood')
-                    ?.scrollIntoView({ behavior: 'smooth' })
-                }
-              >
-                See the brood
-              </button>
-            </div>
-            <label className="demo-toggle">
-              <input
-                type="checkbox"
-                checked={demoCompress}
-                onChange={(e) => setDemoCompress(e.target.checked)}
-              />
-              Demo wait (~90s instead of 30 min)
-            </label>
+        <div className="hero-copy">
+          <p className="brand">Haggis-gotchi</p>
+          <h1 className="headline">The cloud mother keeps the brood.</h1>
+          <p className="lede">
+            Meet the mother. Each Haggling is born on its carer&rsquo;s phone and lives
+            there. Here you can watch the brood, the scrapbook and the graveyard.
+          </p>
+          <PhoneQr />
+          <div className="cta-row">
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() =>
+                document.getElementById('brood')?.scrollIntoView({ behavior: 'smooth' })
+              }
+            >
+              See the brood
+            </button>
           </div>
-        ) : null}
-
-        {view === 'signup' ? (
-          <div className="hero-panel" id="claim">
-            <p className="brand brand-compact">Haggis-gotchi</p>
-            <SignupForm
-              demoCompress={demoCompress}
-              onCancel={() => setView('home')}
-              onClaimed={(id) => {
-                setEggs(loadStore().eggs)
-                const egg = loadStore().eggs.find((e) => e.id === id)
-                setView('home')
-                if (egg) openNest(egg)
-                window.scrollTo({ top: 0, behavior: 'smooth' })
-              }}
-            />
-          </div>
-        ) : null}
+        </div>
       </section>
 
       <section className="brood" id="brood">
         <h2>Brood</h2>
         <p className="brood-lede">
           {broodEggs.length === 0
-            ? 'Empty for now. Claim an egg — hatch and care open in a new tab at /your-name.'
-            : `${broodEggs.length} with the mother (tap opens the nest in a new tab — never care on this page).`}
+            ? 'Empty for now. Claim an egg on your phone (scan the code above).'
+            : `${broodEggs.length} with the mother. Tap one to watch it in a new tab.`}
         </p>
 
         {broodEggs.length === 0 ? (
           <div className="brood-empty">
             <strong>No eggs with the mother</strong>
-            Claim one to start. After it lives on your phone it leaves this list —
-            use Retrieve below to get it back.
+            Claim one on your phone to start. Sign in below (Retrieve) to watch your
+            Haggling from this computer.
           </div>
         ) : (
           <ul className="egg-list">

@@ -28,3 +28,6 @@ spec fixes which gap. Tick a row only when the spec's task is done **and** verif
 | 21 | Three migration files share version `20261116`; remote migration history is empty (applied by SQL editor), so `supabase db push` would misbehave | `supabase migration list --remote` | `sync-conflict` T7 | open: do not use `db push` until fixed |
 | 22 | phone.haggisgotchi.com and haggis-gotchi-phone.pages.dev serve the Mother app, so the QR link never reached the phone app | live check 16 Nov (bundle + title) | Cloudflare phone project settings (owner) | open: GO-LIVE Part 1b |
 | 23 | Photo care (Irn-Bru, tartan, sheep...) not built; Scottish care language in product.md promises it | product.md MVP list | `photo-care` | spec drafted 16 Nov, awaiting decisions |
+| 24 | Hand-off to the phone needed 3 codes and 2 sites (owner test 17 Nov) | docs/PIVOT-2026-11-17-phone-first.md | `phone-home` | built 17 Nov, phone test pending |
+| 25 | Health XP reset to 50 on every cloud pull (gap 5) | `cloud.ts` | `photo-care` T2 (health_xp column) | fixed in code 17 Nov |
+| 26 | phone.haggisgotchi.com: retire; claims from it are refused by CORS | Cloudflare | owner (redirect to haggisgotchi.com) | open |

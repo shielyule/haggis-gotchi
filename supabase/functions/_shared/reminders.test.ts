@@ -1,0 +1,50 @@
+// Spec: .kiro/specs/care-reminders T3
+import assert from 'node:assert/strict'
+import { test } from 'node:test'
+import { dueReminders, localClock, type ChildRow } from './reminders.ts'
+
+const row = (over: Partial<ChildRow> = {}): ChildRow => ({
+  id: 'c1', name: 'Wee Yin', temperament_id: 'douce',
+  breakfast_hour: 8, dinner_hour: 18, bed_hour: 21,
+  hunger: 80, mood: 80, energy: 80, mess: 10, health_xp: 50,
+  last_tick_at: '2026-11-17T07:55:00Z', ...over,
+})
+
+test('localClock uses the carer timezone (London is UTC in November)', () => {
+  const t = Date.parse('2026-11-17T08:10:00Z')
+  assert.deepEqual(localClock('Europe/London', t), { hour: 8, date: '2026-11-17' })
+  assert.deepEqual(localClock('Asia/Tokyo', t), { hour: 17, date: '2026-11-17' })
+  assert.deepEqual(localClock('Not/AZone', t), { hour: 8, date: '2026-11-17' })
+})
+
+test('breakfast reminder at the breakfast hour, keyed per day', () => {
+  const r = dueReminders(row(), 'Europe/London', Date.parse('2026-11-17T08:10:00Z'))
+  assert.equal(r.length, 1)
+  assert.equal(r[0].key, 'meal:c1:breakfast:2026-11-17')
+  assert.match(r[0].body, /Porridge/)
+})
+
+test('no meal reminder outside the hour', () => {
+  assert.equal(dueReminders(row(), 'Europe/London', Date.parse('2026-11-17T10:10:00Z')).length, 0)
+})
+
+test('same moment in another timezone gives a different (correct) meal', () => {
+  const r = dueReminders(row(), 'Asia/Tokyo', Date.parse('2026-11-17T09:10:00Z')) // 18:10 Tokyo
+  assert.deepEqual(r.map((x) => x.key), ['meal:c1:dinner:2026-11-17'])
+})
+
+test('empty bars: projected with the care engine, keyed by last_tick_at', () => {
+  // 20 hours without care: hunger 80 - 9*20 < 0, mess 10 + 5*20 >= 100
+  const r = dueReminders(row(), 'Europe/London', Date.parse('2026-11-18T03:55:00Z'))
+  const keys = r.map((x) => x.key)
+  assert.ok(keys.includes('empty:c1:hunger:2026-11-17T07:55:00Z'))
+  assert.ok(keys.includes('empty:c1:mess:2026-11-17T07:55:00Z'))
+})
+
+test('a fresh care action re-arms (new last_tick_at gives a new key)', () => {
+  const a = dueReminders(row({ hunger: 0 }), 'Europe/London', Date.parse('2026-11-17T08:30:00Z'))
+  const b = dueReminders(row({ hunger: 0, last_tick_at: '2026-11-17T08:20:00Z' }), 'Europe/London', Date.parse('2026-11-17T08:30:00Z'))
+  const ka = a.find((x) => x.key.includes('hunger'))?.key
+  const kb = b.find((x) => x.key.includes('hunger'))?.key
+  assert.ok(ka && kb && ka !== kb)
+})
