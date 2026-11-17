@@ -62,6 +62,13 @@ function formatRemaining(ms: number) {
 
 type Props = { slug: string }
 
+function defaultViewFor(egg: EggRecord | null): NestView {
+  if (!egg) return 'empty'
+  if (egg.status === 'hatched' && egg.haggling) return 'care'
+  if (egg.status === 'hatched') return 'name'
+  return 'waiting'
+}
+
 /**
  * Personal nest: haggisgotchi.com/{slug}
  * Birth wait, hatch, name, and care — never rendered on `/`.
@@ -72,17 +79,16 @@ export function NestApp({ slug }: Props) {
   const [activeEggId, setActiveEggId] = useState<string | null>(
     () => mine[0]?.id ?? null,
   )
-  const [view, setView] = useState<NestView>(() => {
-    const egg = mine[0]
-    if (!egg) return 'empty'
-    if (egg.status === 'hatched' && egg.haggling) return 'care'
-    if (egg.status === 'hatched') return 'name'
-    return 'waiting'
-  })
+  // null = follow the egg's state. Buttons set an explicit view.
+  const [viewChoice, setView] = useState<NestView | null>(null)
   const [now, setNow] = useState(() => Date.now())
   const [carerEmail, setCarerEmail] = useState<string | null>(null)
+  const [cloudChecked, setCloudChecked] = useState(false)
 
   const active = eggs.find((e) => e.id === activeEggId) ?? mine[0] ?? null
+  // Derived every render, so an egg that arrives from the cloud after sign-in
+  // (link opened on a second device) shows up instead of a blank page.
+  const view: NestView = viewChoice ?? defaultViewFor(active)
 
   const onAuthChange = useCallback((email: string | null) => {
     setCarerEmail(email)
@@ -91,6 +97,7 @@ export function NestApp({ slug }: Props) {
   useEffect(() => {
     if (!carerEmail) return
     void pullBroodFromCloud().then((cloudEggs) => {
+      setCloudChecked(true)
       if (!cloudEggs || cloudEggs.length === 0) return
       replaceLocalBrood(cloudEggs)
       setEggs(cloudEggs)
@@ -139,8 +146,11 @@ export function NestApp({ slug }: Props) {
         <p className="brand">Haggis-gotchi</p>
         <h1>/{slug}</h1>
         <p>
-          No Haggling for this nest on this device yet. Open the link from your
-          ready email after claiming on the mother, or sign in to retrieve.
+ {carerEmail
+            ? cloudChecked
+              ? `No egg for /${slug} under ${carerEmail}. Sign out and use the email you claimed with.`
+              : 'Looking for your Haggling in the cloud…'
+            : 'Opened this on a new phone or browser? Sign in with the email you claimed with, and your egg appears here.'}
         </p>
         <AuthBar onAuthChange={onAuthChange} intent="retrieve" />
         <p>
@@ -172,14 +182,13 @@ export function NestApp({ slug }: Props) {
           {eggReady ? (
             <>
               <p className="care-sub">
-                Enter the 6-digit code from your email (this page is your secure
-                nest — mother never shows the Haggling).
+                To hatch, press <strong>Send code</strong>. We email you a 6-digit
+                number; type it here. This proves the egg is yours.
               </p>
               <AuthBar
                 onAuthChange={onAuthChange}
                 presetEmail={active.answers.email}
                 intent="hatch"
-                autoSend={Boolean(active.answers.email)}
               />
               <button
                 type="button"
