@@ -2,15 +2,20 @@
  * Photo Treat: the server checks the photo and gives the reward. Once per day.
  * Spec: .kiro/specs/photo-care (R1-R3, R6)
  *
- * PLACEHOLDER MODE until Amazon Rekognition is connected (photo-care T5-T7):
- * any valid image counts as "a mystery treat". The photo is never stored.
+ * Recognition: Amazon Rekognition (photo-care T7). Treat rules come from real answers
+ * (_shared/photoMatch.ts). Without AWS secrets it falls back to placeholder mode
+ * (any photo = "a mystery treat"). The photo is never stored, by us or by AWS.
  *
  * Deploy: supabase functions deploy photo-treat --no-verify-jwt
  * (checks the user's token itself)
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { applyPhotoTreat, type Haggling } from '../../../packages/care-engine/src/index.ts'
+import { matchTreat, seenSummary, TREATS, type TreatId } from '../_shared/photoMatch.ts'
+import { detect, rekognitionConfigured } from '../_shared/rekognition.ts'
 import { localClock } from '../_shared/reminders.ts'
+
+const CHECKS_PER_DAY = 10 // cost cap per carer (about $0.002 a check)
 
 const MAX_BYTES = 1_500_000
 const ORIGINS = [
@@ -91,9 +96,44 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Recognition. Placeholder until AWS is connected: any valid image counts.
-    const treatName = 'a mystery treat'
-    const placeholder = true
+    // Recognition. Real when AWS is configured; placeholder otherwise.
+    let treatName = 'a mystery treat'
+    let treatId: TreatId | null = null
+    let seen: string[] = []
+    let confidence: number | null = null
+    const placeholder = rekognitionConfigured().length > 0
+    if (!placeholder) {
+      const since = new Date(Date.now() - 24 * 3600_000).toISOString()
+      const { count } = await admin
+        .from('claim_attempts')
+        .select('id', { count: 'exact', head: true })
+        .eq('kind', 'photo_check')
+        .eq('key', auth.user.id)
+        .gte('at', since)
+      if ((count ?? 0) >= CHECKS_PER_DAY) {
+        return json(200, { ok: false, error: `${row.name} has looked at enough photos for today. Try again tomorrow!` })
+      }
+      await admin.from('claim_attempts').insert({ kind: 'photo_check', key: auth.user.id })
+      let detected
+      try {
+        detected = await detect(bytes)
+      } catch (e) {
+        console.error('photo-treat: recognition failed', e instanceof Error ? e.message : e)
+        return json(200, { ok: false, error: `${row.name} could not see properly just now. Try again in a minute.` })
+      }
+      seen = seenSummary(detected)
+      const match = matchTreat(detected)
+      if (!match) {
+        return json(200, {
+          ok: false,
+          seen,
+          error: `${row.name} squints. ${seen.length ? `That looks like ${seen.join(', ').toLowerCase()}, ` : ''}but it is not a Scottish treat. Try Irn-Bru, bagpipes, a kilt or tartan, heather or shortbread.`,
+        })
+      }
+      treatId = match.id
+      treatName = match.name
+      confidence = match.confidence
+    }
 
     const h: Haggling = {
       eggId: row.egg_id,
@@ -146,6 +186,7 @@ Deno.serve(async (req) => {
       energy: t.energy,
       mess: t.mess,
       action: 'photo_treat',
+      treat_id: treatId,
     })
 
     const scrap = t.scrapbook[0]
@@ -154,7 +195,8 @@ Deno.serve(async (req) => {
         id: scrap.id, child_id: row.id, carer_id: auth.user.id, at: scrap.at, text: scrap.text,
       })
     }
-    return json(200, { ok: true, treat: treatName, placeholder, child: update, scrap })
+    const line = treatId ? TREATS[treatId].line.replace(/\{name\}/g, row.name) : scrap?.text
+    return json(200, { ok: true, treat: treatName, treatId, confidence, seen, line, placeholder, child: update, scrap })
   } catch (err) {
     console.error('photo-treat failed:', err instanceof Error ? err.message : err)
     return json(500, { ok: false, error: 'Something went wrong. Try again.' })

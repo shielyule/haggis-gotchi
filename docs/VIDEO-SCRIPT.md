@@ -12,7 +12,7 @@ Kiro adds to this file as features land. Times are targets.
 | A weather reaction on demand | Add `?weather=storm` to the address (also `rain`, `hot`, `snow`, `frost`, `windy`, `sunny`, `crisp`, `grey`, `humid`). Applies once per kind of weather per day |
 | Different temperaments reacting | See `docs/WEATHER-REACTIONS.md`; e.g. Douce + rain = big smile, Radge + hot = big sulk, Fair Wud + storm = delight |
 | A notification right now | Tell Kiro "test reminder" (sends one to your phone) |
-| Photo Treat | Any photo works until AWS recognition is switched on; then use a real Irn-Bru can |
+| Photo Treat | Real recognition: Irn-Bru can (point at the words), bagpipes, kilt/tartan, heather, shortbread. A Coke can is refused: film that too! Once a day per Haggling |
 | The playing film | Demo eggs unlock it 3 minutes after hatching: notification + "New film in Watch again" |
 | Mist / haar love | Demo menu: Mist and fog (+8 Mood for all), Haar (+10) |
 | Public scrapbook | Mother page on the Mac shows "Fred just fed Harry · 2 min ago" as you care on the phone |
@@ -63,5 +63,7 @@ Screen-record Kiro in `haggis-gotchi-app`:
 - Share to WhatsApp: the link preview card, then tap it to show the public card and "Get your own egg".
 - Demo egg's playing film notification after 3 minutes, then play it in Watch again.
 
-## To add when built
-- Real photo recognition of an Irn-Bru can (AWS Rekognition).
+### AWS shots
+- Photo Treat on a real Irn-Bru can: "Firecracker spotted the Irn-Bru and did a wee jig", every bar full, and the Mac feed says "... shared a can of Irn-Bru with Firecracker".
+- Then a Coke can: "squints... not a Scottish treat".
+- Kiro: the fixtures file of real Rekognition answers and the 15 photo tests.

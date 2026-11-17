@@ -106,14 +106,23 @@ export async function refreshHomeDevice(eggId: string): Promise<boolean | null> 
 export async function photoTreatSynced(
   eggId: string,
   photo: Blob,
-): Promise<{ ok: true; line: string; placeholder: boolean } | { ok: false; error: string }> {
+): Promise<
+  | { ok: true; line: string; placeholder: boolean; treat: string; confidence: number | null }
+  | { ok: false; error: string }
+> {
   const egg = loadStore().eggs.find((e) => e.id === eggId)
   const childId = egg?.haggling?.cloudChildId
   if (!childId) return { ok: false, error: 'Sign in first, so the mother knows this Haggling.' }
   const res = await sendPhotoTreat(childId, getDeviceId(), deviceTimezone(), photo)
   if (!res.ok) return res
   applyTreatLocal(eggId, res.child, res.scrap)
-  return { ok: true, line: res.scrap?.text ?? 'Photo Treat!', placeholder: res.placeholder }
+  return {
+    ok: true,
+    line: res.line ?? res.scrap?.text ?? 'Photo Treat!',
+    placeholder: res.placeholder,
+    treat: res.treat,
+    confidence: res.confidence ?? null,
+  }
 }
 
 export async function careActionSynced(

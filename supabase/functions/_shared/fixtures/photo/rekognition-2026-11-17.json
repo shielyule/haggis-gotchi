@@ -1,0 +1,3170 @@
+{
+ "irn-bru-can": {
+  "labels": [
+   {
+    "name": "Alcohol",
+    "confidence": 99.7,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 99.7,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 99.7,
+    "parents": []
+   },
+   {
+    "name": "Can",
+    "confidence": 98,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Tin",
+    "confidence": 98,
+    "parents": []
+   },
+   {
+    "name": "Glass",
+    "confidence": 76.7,
+    "parents": []
+   },
+   {
+    "name": "Soda",
+    "confidence": 58.4,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Lager",
+    "confidence": 57.9,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Juice",
+    "confidence": 56.1,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Cocktail",
+    "confidence": 55.7,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Liquor",
+    "confidence": 54.9,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Cup",
+    "confidence": 54.7,
+    "parents": []
+   },
+   {
+    "name": "Beer Glass",
+    "confidence": 54.2,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage",
+     "Glass",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Coke",
+    "confidence": 53.7,
+    "parents": [
+     "Beverage",
+     "Soda"
+    ]
+   },
+   {
+    "name": "Sake",
+    "confidence": 53.7,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Aluminium",
+    "confidence": 51.2,
+    "parents": []
+   },
+   {
+    "name": "Canned Goods",
+    "confidence": 51.2,
+    "parents": [
+     "Aluminium",
+     "Can",
+     "Food",
+     "Tin"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 51.2,
+    "parents": []
+   },
+   {
+    "name": "Tea",
+    "confidence": 50.8,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Lemonade",
+    "confidence": 50.7,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Produce",
+    "confidence": 50.5,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Whisky",
+    "confidence": 50.3,
+    "parents": [
+     "Alcohol",
+     "Beverage",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Seasoning",
+    "confidence": 50.2,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Syrup",
+    "confidence": 50.2,
+    "parents": [
+     "Food",
+     "Seasoning"
+    ]
+   },
+   {
+    "name": "Fruit",
+    "confidence": 50.1,
+    "parents": [
+     "Food",
+     "Plant",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Plant",
+    "confidence": 50.1,
+    "parents": []
+   }
+  ],
+  "words": [
+   {
+    "text": "MU",
+    "confidence": 12.9
+   },
+   {
+    "text": "MULTIPACK",
+    "confidence": 99.8
+   },
+   {
+    "text": "CAN",
+    "confidence": 99.8
+   },
+   {
+    "text": "NOT",
+    "confidence": 63.1
+   },
+   {
+    "text": "NOT",
+    "confidence": 98.3
+   },
+   {
+    "text": "FOR",
+    "confidence": 98.7
+   },
+   {
+    "text": "RESALE",
+    "confidence": 99.1
+   },
+   {
+    "text": "AS",
+    "confidence": 98.7
+   },
+   {
+    "text": "A",
+    "confidence": 61.7
+   },
+   {
+    "text": "SINGLE",
+    "confidence": 98.9
+   },
+   {
+    "text": "UNIT",
+    "confidence": 99.2
+   },
+   {
+    "text": "BRU'D",
+    "confidence": 99
+   },
+   {
+    "text": "IN",
+    "confidence": 98.4
+   },
+   {
+    "text": "SCOTLAND",
+    "confidence": 99.2
+   },
+   {
+    "text": "TO",
+    "confidence": 99.1
+   },
+   {
+    "text": "A",
+    "confidence": 86
+   },
+   {
+    "text": "SPARKLING",
+    "confidence": 97
+   },
+   {
+    "text": "SECRET",
+    "confidence": 94.9
+   },
+   {
+    "text": "LOW",
+    "confidence": 97.4
+   },
+   {
+    "text": "CALORIE",
+    "confidence": 97.9
+   },
+   {
+    "text": "RECIPE",
+    "confidence": 99.1
+   },
+   {
+    "text": "FLAVOURED",
+    "confidence": 97.8
+   },
+   {
+    "text": "SINCE",
+    "confidence": 99.4
+   },
+   {
+    "text": "SOFT",
+    "confidence": 98.4
+   },
+   {
+    "text": "DRINK",
+    "confidence": 98.6
+   },
+   {
+    "text": "1901",
+    "confidence": 99.5
+   },
+   {
+    "text": "INGREDIENTS:",
+    "confidence": 93.3
+   },
+   {
+    "text": "WITH",
+    "confidence": 90.1
+   },
+   {
+    "text": "Acid",
+    "confidence": 16.2
+   },
+   {
+    "text": "Preservative",
+    "confidence": 91.5
+   },
+   {
+    "text": "Pascas",
+    "confidence": 14.3
+   },
+   {
+    "text": "SWEETENERS",
+    "confidence": 95.9
+   },
+   {
+    "text": "estee",
+    "confidence": 15.7
+   },
+   {
+    "text": "Store be cool",
+    "confidence": 12.1
+   },
+   {
+    "text": "Flavourings",
+    "confidence": 94.7
+   },
+   {
+    "text": "if",
+    "confidence": 21
+   },
+   {
+    "text": "BMW",
+    "confidence": 17.8
+   },
+   {
+    "text": "48.",
+    "confidence": 59.2
+   },
+   {
+    "text": "ins-in",
+    "confidence": 12
+   },
+   {
+    "text": "BEFORE",
+    "confidence": 79
+   },
+   {
+    "text": "[Acesall",
+    "confidence": 26
+   },
+   {
+    "text": "activity",
+    "confidence": 96.4
+   },
+   {
+    "text": "Carbonated",
+    "confidence": 89.4
+   },
+   {
+    "text": "4HP",
+    "confidence": 59.4
+   },
+   {
+    "text": "May",
+    "confidence": 95.6
+   },
+   {
+    "text": "-",
+    "confidence": 30.2
+   },
+   {
+    "text": ".co.uk",
+    "confidence": 34.7
+   },
+   {
+    "text": "END:",
+    "confidence": 80.6
+   },
+   {
+    "text": "(Including",
+    "confidence": 91.2
+   },
+   {
+    "text": "dry",
+    "confidence": 95.6
+   },
+   {
+    "text": "have",
+    "confidence": 97
+   },
+   {
+    "text": "am",
+    "confidence": 73.7
+   },
+   {
+    "text": "and",
+    "confidence": 97
+   },
+   {
+    "text": "Colours",
+    "confidence": 94.5
+   },
+   {
+    "text": "01",
+    "confidence": 62.2
+   },
+   {
+    "text": "Phenylalaniat",
+    "confidence": 12.5
+   },
+   {
+    "text": "place.",
+    "confidence": 83.9
+   },
+   {
+    "text": "SEE",
+    "confidence": 78.7
+   },
+   {
+    "text": "attention",
+    "confidence": 96
+   },
+   {
+    "text": "an",
+    "confidence": 73.8
+   },
+   {
+    "text": "CORSE",
+    "confidence": 75.4
+   },
+   {
+    "text": "YelloH",
+    "confidence": 72
+   },
+   {
+    "text": "Water,",
+    "confidence": 96
+   },
+   {
+    "text": "BASE",
+    "confidence": 65.8
+   },
+   {
+    "text": "adverst",
+    "confidence": 95
+   },
+   {
+    "text": "SERVE",
+    "confidence": 97.1
+   },
+   {
+    "text": "Quinine],",
+    "confidence": 63.7
+   },
+   {
+    "text": "Barco",
+    "confidence": 67.6
+   },
+   {
+    "text": "Caffeine,",
+    "confidence": 96.6
+   },
+   {
+    "text": "De",
+    "confidence": 7.3
+   },
+   {
+    "text": "in ca",
+    "confidence": 10.9
+   },
+   {
+    "text": "artame],",
+    "confidence": 82.9
+   },
+   {
+    "text": "Acid",
+    "confidence": 97.4
+   },
+   {
+    "text": "set",
+    "confidence": 96.9
+   },
+   {
+    "text": "F &",
+    "confidence": 81.7
+   },
+   {
+    "text": "(Citric",
+    "confidence": 84
+   },
+   {
+    "text": "Yellow",
+    "confidence": 97.2
+   },
+   {
+    "text": "hildren.",
+    "confidence": 97.6
+   },
+   {
+    "text": "JOL",
+    "confidence": 90.8
+   },
+   {
+    "text": "Each",
+    "confidence": 96.9
+   },
+   {
+    "text": "330ml",
+    "confidence": 96.9
+   },
+   {
+    "text": "@",
+    "confidence": 93.6
+   },
+   {
+    "text": "agbarr.co.uk",
+    "confidence": 97.4
+   },
+   {
+    "text": "can",
+    "confidence": 95.9
+   },
+   {
+    "text": "contains",
+    "confidence": 92.4
+   },
+   {
+    "text": "Energy",
+    "confidence": 97.2
+   },
+   {
+    "text": "<1%",
+    "confidence": 92.8
+   },
+   {
+    "text": "9kJ",
+    "confidence": 66.9
+   },
+   {
+    "text": "2kcal",
+    "confidence": 96.8
+   },
+   {
+    "text": "0%",
+    "confidence": 95
+   },
+   {
+    "text": "ITT",
+    "confidence": 87
+   },
+   {
+    "text": "Freepost",
+    "confidence": 98.1
+   },
+   {
+    "text": "Fat",
+    "confidence": 96.4
+   },
+   {
+    "text": "SERY-RSAK.",
+    "confidence": 41.7
+   },
+   {
+    "text": "0g",
+    "confidence": 83.3
+   },
+   {
+    "text": "W,",
+    "confidence": 86
+   },
+   {
+    "text": "ID,",
+    "confidence": 62.9
+   },
+   {
+    "text": "UK",
+    "confidence": 63.5
+   },
+   {
+    "text": "Saturates",
+    "confidence": 97.2
+   },
+   {
+    "text": "0%",
+    "confidence": 96.4
+   }
+  ]
+ },
+ "irn-bru-bottles": {
+  "labels": [
+   {
+    "name": "Appliance",
+    "confidence": 98,
+    "parents": [
+     "Device",
+     "Electrical Device"
+    ]
+   },
+   {
+    "name": "Device",
+    "confidence": 98,
+    "parents": []
+   },
+   {
+    "name": "Electrical Device",
+    "confidence": 98,
+    "parents": []
+   },
+   {
+    "name": "Refrigerator",
+    "confidence": 98,
+    "parents": [
+     "Appliance",
+     "Device",
+     "Electrical Device"
+    ]
+   },
+   {
+    "name": "Bottle",
+    "confidence": 94.9,
+    "parents": []
+   },
+   {
+    "name": "Machine",
+    "confidence": 82.1,
+    "parents": []
+   },
+   {
+    "name": "Cup",
+    "confidence": 66.7,
+    "parents": []
+   },
+   {
+    "name": "Beverage",
+    "confidence": 65.1,
+    "parents": []
+   },
+   {
+    "name": "Vending Machine",
+    "confidence": 62.2,
+    "parents": [
+     "Machine"
+    ]
+   },
+   {
+    "name": "Soda",
+    "confidence": 56.5,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Pop Bottle",
+    "confidence": 55.8,
+    "parents": [
+     "Beverage",
+     "Bottle",
+     "Soda"
+    ]
+   },
+   {
+    "name": "Water Bottle",
+    "confidence": 55.7,
+    "parents": [
+     "Bottle"
+    ]
+   },
+   {
+    "name": "Shelf",
+    "confidence": 54.1,
+    "parents": []
+   },
+   {
+    "name": "Alcohol",
+    "confidence": 53.7,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 53.7,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Mineral Water",
+    "confidence": 53.1,
+    "parents": [
+     "Beverage",
+     "Bottle",
+     "Water Bottle"
+    ]
+   },
+   {
+    "name": "Cooler",
+    "confidence": 52.2,
+    "parents": [
+     "Appliance",
+     "Device",
+     "Electrical Device"
+    ]
+   },
+   {
+    "name": "Coke",
+    "confidence": 51,
+    "parents": [
+     "Beverage",
+     "Soda"
+    ]
+   },
+   {
+    "name": "Juice",
+    "confidence": 50.6,
+    "parents": [
+     "Beverage"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "DI",
+    "confidence": 78.9
+   },
+   {
+    "text": "A8",
+    "confidence": 99.5
+   },
+   {
+    "text": "A1",
+    "confidence": 98.6
+   },
+   {
+    "text": "A6",
+    "confidence": 98.6
+   },
+   {
+    "text": "A7",
+    "confidence": 98.1
+   },
+   {
+    "text": "A9",
+    "confidence": 98.2
+   },
+   {
+    "text": "A2",
+    "confidence": 99.2
+   },
+   {
+    "text": "A3",
+    "confidence": 95.2
+   },
+   {
+    "text": "A4",
+    "confidence": 98.8
+   },
+   {
+    "text": "A5",
+    "confidence": 98.6
+   },
+   {
+    "text": "IR",
+    "confidence": 81.8
+   },
+   {
+    "text": "BNU",
+    "confidence": 42.9
+   },
+   {
+    "text": "JUST",
+    "confidence": 8.4
+   },
+   {
+    "text": "NUC",
+    "confidence": 25.7
+   },
+   {
+    "text": "ESTA",
+    "confidence": 16.9
+   },
+   {
+    "text": "KOMA",
+    "confidence": 11.5
+   },
+   {
+    "text": "-",
+    "confidence": 27.6
+   },
+   {
+    "text": "-",
+    "confidence": 20.9
+   },
+   {
+    "text": "-",
+    "confidence": 36.3
+   },
+   {
+    "text": "120",
+    "confidence": 10.3
+   },
+   {
+    "text": "m",
+    "confidence": 55.5
+   },
+   {
+    "text": "nou",
+    "confidence": 30.1
+   },
+   {
+    "text": "IBN",
+    "confidence": 66.8
+   },
+   {
+    "text": "BRU",
+    "confidence": 98.9
+   },
+   {
+    "text": "IRNIBRU",
+    "confidence": 42.9
+   },
+   {
+    "text": "COOOO",
+    "confidence": 18.1
+   },
+   {
+    "text": "IRN BRU",
+    "confidence": 80.6
+   },
+   {
+    "text": "IRN",
+    "confidence": 99.3
+   },
+   {
+    "text": "BRU",
+    "confidence": 99.5
+   },
+   {
+    "text": "SCAN D",
+    "confidence": 12.1
+   },
+   {
+    "text": "B9",
+    "confidence": 97.5
+   },
+   {
+    "text": "B6",
+    "confidence": 97
+   },
+   {
+    "text": "B5",
+    "confidence": 98.7
+   },
+   {
+    "text": "B7",
+    "confidence": 98.3
+   },
+   {
+    "text": "B8",
+    "confidence": 96.2
+   },
+   {
+    "text": "B4",
+    "confidence": 98.8
+   },
+   {
+    "text": "B2",
+    "confidence": 97.6
+   },
+   {
+    "text": "B3",
+    "confidence": 95.4
+   },
+   {
+    "text": "B1",
+    "confidence": 96.2
+   },
+   {
+    "text": "\u041f\u041f",
+    "confidence": 30.5
+   },
+   {
+    "text": "-",
+    "confidence": 46.7
+   },
+   {
+    "text": "BKU",
+    "confidence": 58.9
+   },
+   {
+    "text": "-",
+    "confidence": 38.3
+   },
+   {
+    "text": "-",
+    "confidence": 75.3
+   },
+   {
+    "text": "e",
+    "confidence": 36.9
+   },
+   {
+    "text": "EXTRA",
+    "confidence": 18.7
+   },
+   {
+    "text": "IRN",
+    "confidence": 82.9
+   },
+   {
+    "text": "BRU",
+    "confidence": 98.4
+   },
+   {
+    "text": "FREE",
+    "confidence": 96.6
+   },
+   {
+    "text": "-",
+    "confidence": 61.4
+   },
+   {
+    "text": "MOR",
+    "confidence": 50.9
+   },
+   {
+    "text": "UNIVERSITY",
+    "confidence": 14.2
+   },
+   {
+    "text": "BRU",
+    "confidence": 96.5
+   },
+   {
+    "text": "SUGAR",
+    "confidence": 98.5
+   },
+   {
+    "text": "FREE",
+    "confidence": 97.8
+   },
+   {
+    "text": "TRN:BRU",
+    "confidence": 36.1
+   },
+   {
+    "text": "04440",
+    "confidence": 21.8
+   },
+   {
+    "text": "CAN",
+    "confidence": 40.9
+   },
+   {
+    "text": "NERDE",
+    "confidence": 16.1
+   },
+   {
+    "text": "100%",
+    "confidence": 98.2
+   },
+   {
+    "text": "IRILARU",
+    "confidence": 34.2
+   }
+  ]
+ },
+ "heather": {
+  "labels": [
+   {
+    "name": "Flower",
+    "confidence": 100,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Plant",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Vegetation",
+    "confidence": 99.8,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Lupin",
+    "confidence": 96.9,
+    "parents": [
+     "Flower",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Purple",
+    "confidence": 94.9,
+    "parents": []
+   },
+   {
+    "name": "Geranium",
+    "confidence": 57.7,
+    "parents": [
+     "Flower",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Astragalus",
+    "confidence": 56.6,
+    "parents": [
+     "Flower",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Petal",
+    "confidence": 56.4,
+    "parents": [
+     "Flower",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Acanthaceae",
+    "confidence": 55.7,
+    "parents": [
+     "Flower",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Herbs",
+    "confidence": 55.6,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Herbal",
+    "confidence": 54.8,
+    "parents": [
+     "Herbs",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Amaranthaceae",
+    "confidence": 53.6,
+    "parents": [
+     "Grass",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Grass",
+    "confidence": 53.6,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Foxglove",
+    "confidence": 53.2,
+    "parents": [
+     "Flower",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Lavender",
+    "confidence": 53.1,
+    "parents": [
+     "Flower",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Daisy",
+    "confidence": 52.5,
+    "parents": [
+     "Flower",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Lilac",
+    "confidence": 52.5,
+    "parents": [
+     "Flower",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Animal",
+    "confidence": 51.7,
+    "parents": []
+   },
+   {
+    "name": "Bee",
+    "confidence": 51.7,
+    "parents": [
+     "Animal",
+     "Insect",
+     "Invertebrate"
+    ]
+   },
+   {
+    "name": "Insect",
+    "confidence": 51.7,
+    "parents": [
+     "Animal",
+     "Invertebrate"
+    ]
+   },
+   {
+    "name": "Invertebrate",
+    "confidence": 51.7,
+    "parents": [
+     "Animal"
+    ]
+   },
+   {
+    "name": "Cherry Blossom",
+    "confidence": 51.4,
+    "parents": [
+     "Flower",
+     "Plant"
+    ]
+   },
+   {
+    "name": "Bush",
+    "confidence": 50.5,
+    "parents": [
+     "Plant",
+     "Vegetation"
+    ]
+   },
+   {
+    "name": "Fern",
+    "confidence": 50.4,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Arbour",
+    "confidence": 50.3,
+    "parents": [
+     "Garden",
+     "Nature",
+     "Outdoors"
+    ]
+   },
+   {
+    "name": "Garden",
+    "confidence": 50.3,
+    "parents": [
+     "Nature",
+     "Outdoors"
+    ]
+   },
+   {
+    "name": "Nature",
+    "confidence": 50.3,
+    "parents": [
+     "Outdoors"
+    ]
+   },
+   {
+    "name": "Outdoors",
+    "confidence": 50.3,
+    "parents": []
+   },
+   {
+    "name": "Honey Bee",
+    "confidence": 50.1,
+    "parents": [
+     "Animal",
+     "Bee",
+     "Insect",
+     "Invertebrate"
+    ]
+   }
+  ],
+  "words": []
+ },
+ "bagpipe": {
+  "labels": [
+   {
+    "name": "Bagpipe",
+    "confidence": 99.4,
+    "parents": [
+     "Musical Instrument"
+    ]
+   },
+   {
+    "name": "Musical Instrument",
+    "confidence": 99.4,
+    "parents": []
+   },
+   {
+    "name": "Accessories",
+    "confidence": 65.5,
+    "parents": []
+   },
+   {
+    "name": "Jewelry",
+    "confidence": 65.5,
+    "parents": [
+     "Accessories"
+    ]
+   },
+   {
+    "name": "Necklace",
+    "confidence": 65.5,
+    "parents": [
+     "Accessories",
+     "Jewelry"
+    ]
+   },
+   {
+    "name": "Tartan",
+    "confidence": 50.1,
+    "parents": []
+   }
+  ],
+  "words": []
+ },
+ "unicorn-statue": {
+  "labels": [
+   {
+    "name": "Monument",
+    "confidence": 100,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "City",
+    "confidence": 98,
+    "parents": []
+   },
+   {
+    "name": "Person",
+    "confidence": 90.6,
+    "parents": []
+   },
+   {
+    "name": "Clock Tower",
+    "confidence": 87.5,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Tower"
+    ]
+   },
+   {
+    "name": "Monastery",
+    "confidence": 76.8,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "Urban",
+    "confidence": 76,
+    "parents": []
+   },
+   {
+    "name": "Art",
+    "confidence": 70.4,
+    "parents": []
+   },
+   {
+    "name": "Bird",
+    "confidence": 70,
+    "parents": [
+     "Animal"
+    ]
+   },
+   {
+    "name": "Sculpture",
+    "confidence": 63.4,
+    "parents": [
+     "Art"
+    ]
+   },
+   {
+    "name": "Statue",
+    "confidence": 63.4,
+    "parents": [
+     "Art",
+     "Sculpture"
+    ]
+   },
+   {
+    "name": "Housing",
+    "confidence": 60.2,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "Obelisk",
+    "confidence": 57.7,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Monument",
+     "Pillar"
+    ]
+   },
+   {
+    "name": "Pillar",
+    "confidence": 57.7,
+    "parents": [
+     "Architecture"
+    ]
+   },
+   {
+    "name": "Neighborhood",
+    "confidence": 56.5,
+    "parents": []
+   },
+   {
+    "name": "House",
+    "confidence": 55.8,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Housing"
+    ]
+   },
+   {
+    "name": "Water",
+    "confidence": 55.7,
+    "parents": []
+   },
+   {
+    "name": "Road",
+    "confidence": 54.5,
+    "parents": []
+   },
+   {
+    "name": "Street",
+    "confidence": 54.5,
+    "parents": [
+     "City",
+     "Road",
+     "Urban"
+    ]
+   },
+   {
+    "name": "Metropolis",
+    "confidence": 54.4,
+    "parents": [
+     "City",
+     "Urban"
+    ]
+   },
+   {
+    "name": "Downtown",
+    "confidence": 53.5,
+    "parents": [
+     "City",
+     "Urban"
+    ]
+   },
+   {
+    "name": "Arch",
+    "confidence": 53.4,
+    "parents": [
+     "Architecture"
+    ]
+   },
+   {
+    "name": "Fountain",
+    "confidence": 53,
+    "parents": [
+     "Architecture",
+     "Water"
+    ]
+   },
+   {
+    "name": "Cross",
+    "confidence": 52.9,
+    "parents": [
+     "Symbol"
+    ]
+   },
+   {
+    "name": "Spire",
+    "confidence": 52.8,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Tower"
+    ]
+   },
+   {
+    "name": "Path",
+    "confidence": 52.4,
+    "parents": []
+   },
+   {
+    "name": "Office Building",
+    "confidence": 52.4,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "Roof",
+    "confidence": 52.3,
+    "parents": [
+     "Architecture",
+     "Building",
+     "House",
+     "Housing"
+    ]
+   },
+   {
+    "name": "Brick",
+    "confidence": 52.2,
+    "parents": []
+   },
+   {
+    "name": "Museum",
+    "confidence": 52.1,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Indoors"
+    ]
+   },
+   {
+    "name": "Condo",
+    "confidence": 51.8,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Housing"
+    ]
+   },
+   {
+    "name": "Bronze",
+    "confidence": 51.7,
+    "parents": []
+   },
+   {
+    "name": "Wall",
+    "confidence": 51,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "Bell Tower",
+    "confidence": 50.8,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Tower"
+    ]
+   },
+   {
+    "name": "Walkway",
+    "confidence": 50.8,
+    "parents": [
+     "Path"
+    ]
+   },
+   {
+    "name": "Tree",
+    "confidence": 50.7,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Outdoors",
+    "confidence": 50.6,
+    "parents": []
+   },
+   {
+    "name": "Campus",
+    "confidence": 50.4,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "Plaque",
+    "confidence": 50.1,
+    "parents": []
+   },
+   {
+    "name": "Factory",
+    "confidence": 50.1,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "Slate",
+    "confidence": 50,
+    "parents": []
+   }
+  ],
+  "words": [
+   {
+    "text": "Eliga",
+    "confidence": 13.4
+   },
+   {
+    "text": "dHospice",
+    "confidence": 93.8
+   }
+  ]
+ },
+ "whisky-bottle": {
+  "labels": [
+   {
+    "name": "Cup",
+    "confidence": 75.6,
+    "parents": []
+   },
+   {
+    "name": "Smoke Pipe",
+    "confidence": 75.4,
+    "parents": []
+   },
+   {
+    "name": "Cylinder",
+    "confidence": 57.8,
+    "parents": []
+   },
+   {
+    "name": "Bronze",
+    "confidence": 54.7,
+    "parents": []
+   },
+   {
+    "name": "Bottle",
+    "confidence": 54.7,
+    "parents": []
+   },
+   {
+    "name": "Shaker",
+    "confidence": 54.7,
+    "parents": [
+     "Bottle"
+    ]
+   },
+   {
+    "name": "Bracket",
+    "confidence": 54,
+    "parents": []
+   },
+   {
+    "name": "Silver",
+    "confidence": 53.8,
+    "parents": []
+   },
+   {
+    "name": "Jug",
+    "confidence": 53.3,
+    "parents": []
+   },
+   {
+    "name": "Device",
+    "confidence": 53.3,
+    "parents": []
+   },
+   {
+    "name": "Steel",
+    "confidence": 52.6,
+    "parents": []
+   },
+   {
+    "name": "Aluminium",
+    "confidence": 52.1,
+    "parents": []
+   },
+   {
+    "name": "Adapter",
+    "confidence": 51.9,
+    "parents": [
+     "Electronics"
+    ]
+   },
+   {
+    "name": "Electronics",
+    "confidence": 51.9,
+    "parents": []
+   },
+   {
+    "name": "Clamp",
+    "confidence": 51.4,
+    "parents": [
+     "Device",
+     "Tool"
+    ]
+   },
+   {
+    "name": "Tool",
+    "confidence": 51.4,
+    "parents": [
+     "Device"
+    ]
+   },
+   {
+    "name": "Candle",
+    "confidence": 51.2,
+    "parents": []
+   },
+   {
+    "name": "Drive Shaft",
+    "confidence": 50.9,
+    "parents": [
+     "Machine"
+    ]
+   },
+   {
+    "name": "Machine",
+    "confidence": 50.9,
+    "parents": []
+   },
+   {
+    "name": "Alloy Wheel",
+    "confidence": 50.8,
+    "parents": [
+     "Car",
+     "Car Wheel",
+     "Machine",
+     "Spoke",
+     "Tire",
+     "Transportation",
+     "Vehicle",
+     "Wheel"
+    ]
+   },
+   {
+    "name": "Car",
+    "confidence": 50.8,
+    "parents": [
+     "Transportation",
+     "Vehicle"
+    ]
+   },
+   {
+    "name": "Car Wheel",
+    "confidence": 50.8,
+    "parents": [
+     "Car",
+     "Machine",
+     "Tire",
+     "Transportation",
+     "Vehicle",
+     "Wheel"
+    ]
+   },
+   {
+    "name": "Spoke",
+    "confidence": 50.8,
+    "parents": [
+     "Machine"
+    ]
+   },
+   {
+    "name": "Tire",
+    "confidence": 50.8,
+    "parents": []
+   },
+   {
+    "name": "Transportation",
+    "confidence": 50.8,
+    "parents": []
+   },
+   {
+    "name": "Vehicle",
+    "confidence": 50.8,
+    "parents": [
+     "Transportation"
+    ]
+   },
+   {
+    "name": "Wheel",
+    "confidence": 50.8,
+    "parents": [
+     "Machine"
+    ]
+   },
+   {
+    "name": "Plug",
+    "confidence": 50.4,
+    "parents": [
+     "Adapter",
+     "Electronics"
+    ]
+   },
+   {
+    "name": "Water Jug",
+    "confidence": 50.3,
+    "parents": [
+     "Jug"
+    ]
+   },
+   {
+    "name": "Lighter",
+    "confidence": 50.2,
+    "parents": []
+   },
+   {
+    "name": "Hole",
+    "confidence": 50.2,
+    "parents": []
+   }
+  ],
+  "words": []
+ },
+ "shortbread": {
+  "labels": [
+   {
+    "name": "Bread",
+    "confidence": 100,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Cracker",
+    "confidence": 100,
+    "parents": [
+     "Bread",
+     "Food"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Plate",
+    "confidence": 95.1,
+    "parents": []
+   },
+   {
+    "name": "Snack",
+    "confidence": 53.7,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Food Presentation",
+    "confidence": 52.9,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Sweets",
+    "confidence": 52.8,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Dish",
+    "confidence": 52.5,
+    "parents": [
+     "Food",
+     "Meal"
+    ]
+   },
+   {
+    "name": "Meal",
+    "confidence": 52.5,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Cornbread",
+    "confidence": 52.3,
+    "parents": [
+     "Bread",
+     "Food"
+    ]
+   },
+   {
+    "name": "Seasoning",
+    "confidence": 50.3,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Sesame",
+    "confidence": 50.3,
+    "parents": [
+     "Food",
+     "Seasoning"
+    ]
+   },
+   {
+    "name": "Custard",
+    "confidence": 50.2,
+    "parents": [
+     "Food"
+    ]
+   }
+  ],
+  "words": []
+ },
+ "control-coke-can": {
+  "labels": [
+   {
+    "name": "Can",
+    "confidence": 98.8,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Tin",
+    "confidence": 98.8,
+    "parents": []
+   },
+   {
+    "name": "Beverage",
+    "confidence": 98.8,
+    "parents": []
+   },
+   {
+    "name": "Coke",
+    "confidence": 98.8,
+    "parents": [
+     "Beverage",
+     "Soda"
+    ]
+   },
+   {
+    "name": "Soda",
+    "confidence": 98.8,
+    "parents": [
+     "Beverage"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "105",
+    "confidence": 99.1
+   },
+   {
+    "text": "1200",
+    "confidence": 12.2
+   },
+   {
+    "text": "GDA*",
+    "confidence": 92
+   },
+   {
+    "text": "adidas",
+    "confidence": 17.1
+   },
+   {
+    "text": "a",
+    "confidence": 35.1
+   },
+   {
+    "text": "Y",
+    "confidence": 53.6
+   },
+   {
+    "text": "AROMI",
+    "confidence": 98.1
+   },
+   {
+    "text": "NATURALI.",
+    "confidence": 95.2
+   },
+   {
+    "text": "ono",
+    "confidence": 9.7
+   },
+   {
+    "text": "kcal",
+    "confidence": 98.2
+   },
+   {
+    "text": "SENZA",
+    "confidence": 99.2
+   },
+   {
+    "text": "1886.",
+    "confidence": 99.3
+   },
+   {
+    "text": "AGGIUNTA",
+    "confidence": 98.1
+   },
+   {
+    "text": "DI",
+    "confidence": 100
+   },
+   {
+    "text": "CONSERVANTI.",
+    "confidence": 96.5
+   },
+   {
+    "text": ".",
+    "confidence": 60.9
+   },
+   {
+    "text": "5%",
+    "confidence": 93.5
+   },
+   {
+    "text": "DAL",
+    "confidence": 99.4
+   }
+  ]
+ },
+ "control-cat": {
+  "labels": [
+   {
+    "name": "Abyssinian",
+    "confidence": 99.3,
+    "parents": [
+     "Animal",
+     "Cat",
+     "Mammal",
+     "Pet"
+    ]
+   },
+   {
+    "name": "Animal",
+    "confidence": 99.3,
+    "parents": []
+   },
+   {
+    "name": "Cat",
+    "confidence": 99.3,
+    "parents": [
+     "Animal",
+     "Mammal",
+     "Pet"
+    ]
+   },
+   {
+    "name": "Mammal",
+    "confidence": 99.3,
+    "parents": [
+     "Animal"
+    ]
+   },
+   {
+    "name": "Pet",
+    "confidence": 99.3,
+    "parents": [
+     "Animal"
+    ]
+   },
+   {
+    "name": "Manx",
+    "confidence": 96.5,
+    "parents": [
+     "Animal",
+     "Cat",
+     "Mammal",
+     "Pet"
+    ]
+   },
+   {
+    "name": "Kitten",
+    "confidence": 55.5,
+    "parents": [
+     "Animal",
+     "Cat",
+     "Mammal",
+     "Pet"
+    ]
+   },
+   {
+    "name": "Egyptian Cat",
+    "confidence": 53,
+    "parents": [
+     "Animal",
+     "Cat",
+     "Mammal",
+     "Pet"
+    ]
+   },
+   {
+    "name": "Angora",
+    "confidence": 50.1,
+    "parents": [
+     "Animal",
+     "Cat",
+     "Mammal",
+     "Pet"
+    ]
+   }
+  ],
+  "words": []
+ },
+ "control-castle": {
+  "labels": [
+   {
+    "name": "Architecture",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Building",
+    "confidence": 100,
+    "parents": [
+     "Architecture"
+    ]
+   },
+   {
+    "name": "Castle",
+    "confidence": 100,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "Fortress",
+    "confidence": 100,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Castle"
+    ]
+   },
+   {
+    "name": "Flag",
+    "confidence": 98.3,
+    "parents": []
+   },
+   {
+    "name": "Person",
+    "confidence": 72,
+    "parents": []
+   },
+   {
+    "name": "Animal",
+    "confidence": 54.6,
+    "parents": []
+   },
+   {
+    "name": "Bird",
+    "confidence": 54.6,
+    "parents": [
+     "Animal"
+    ]
+   },
+   {
+    "name": "Fort",
+    "confidence": 52,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Castle",
+     "Fortress"
+    ]
+   },
+   {
+    "name": "Monastery",
+    "confidence": 50.9,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   }
+  ],
+  "words": []
+ },
+ "control-tartan-skirt": {
+  "labels": [
+   {
+    "name": "Clothing",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Skirt",
+    "confidence": 100,
+    "parents": [
+     "Clothing"
+    ]
+   },
+   {
+    "name": "Miniskirt",
+    "confidence": 97.8,
+    "parents": [
+     "Clothing",
+     "Skirt"
+    ]
+   },
+   {
+    "name": "Person",
+    "confidence": 95.7,
+    "parents": []
+   },
+   {
+    "name": "Tartan",
+    "confidence": 94.9,
+    "parents": []
+   },
+   {
+    "name": "Kilt",
+    "confidence": 79.3,
+    "parents": [
+     "Clothing",
+     "Skirt",
+     "Tartan"
+    ]
+   },
+   {
+    "name": "Accessories",
+    "confidence": 61.6,
+    "parents": []
+   },
+   {
+    "name": "Bag",
+    "confidence": 61.6,
+    "parents": []
+   },
+   {
+    "name": "Handbag",
+    "confidence": 61.6,
+    "parents": [
+     "Accessories",
+     "Bag"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "ANPISA",
+    "confidence": 35.8
+   },
+   {
+    "text": "2",
+    "confidence": 96.6
+   }
+  ]
+ },
+ "irn-bru-girder": {
+  "labels": [
+   {
+    "name": "Alcohol",
+    "confidence": 100,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 100,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Bottle",
+    "confidence": 99.6,
+    "parents": []
+   },
+   {
+    "name": "Beer Bottle",
+    "confidence": 98.4,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage",
+     "Bottle",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Liquor",
+    "confidence": 98.4,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Shelter",
+    "confidence": 57.8,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Outdoors"
+    ]
+   },
+   {
+    "name": "Tin",
+    "confidence": 57.7,
+    "parents": []
+   },
+   {
+    "name": "Lager",
+    "confidence": 57.7,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Wood",
+    "confidence": 57.6,
+    "parents": []
+   },
+   {
+    "name": "Housing",
+    "confidence": 57,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "House",
+    "confidence": 55.9,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Housing"
+    ]
+   },
+   {
+    "name": "Porch",
+    "confidence": 55.9,
+    "parents": [
+     "Architecture",
+     "Building",
+     "House",
+     "Housing"
+    ]
+   },
+   {
+    "name": "Window",
+    "confidence": 55.7,
+    "parents": []
+   },
+   {
+    "name": "Bucket",
+    "confidence": 55,
+    "parents": []
+   },
+   {
+    "name": "Can",
+    "confidence": 54.7,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Glass",
+    "confidence": 54.7,
+    "parents": []
+   },
+   {
+    "name": "Potted Plant",
+    "confidence": 54.4,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Plywood",
+    "confidence": 54.3,
+    "parents": [
+     "Wood"
+    ]
+   },
+   {
+    "name": "Pop Bottle",
+    "confidence": 54.1,
+    "parents": [
+     "Beverage",
+     "Bottle",
+     "Soda"
+    ]
+   },
+   {
+    "name": "Soda",
+    "confidence": 54.1,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Soil",
+    "confidence": 53.9,
+    "parents": []
+   },
+   {
+    "name": "City",
+    "confidence": 53.7,
+    "parents": []
+   },
+   {
+    "name": "Tub",
+    "confidence": 53.2,
+    "parents": []
+   },
+   {
+    "name": "Door",
+    "confidence": 53.1,
+    "parents": []
+   },
+   {
+    "name": "Rust",
+    "confidence": 52.6,
+    "parents": [
+     "Corrosion"
+    ]
+   },
+   {
+    "name": "Machine",
+    "confidence": 52.5,
+    "parents": []
+   },
+   {
+    "name": "Hardwood",
+    "confidence": 52.4,
+    "parents": [
+     "Wood"
+    ]
+   },
+   {
+    "name": "Cup",
+    "confidence": 52.3,
+    "parents": []
+   },
+   {
+    "name": "Beer Glass",
+    "confidence": 51.8,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage",
+     "Glass",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Road",
+    "confidence": 51.7,
+    "parents": []
+   },
+   {
+    "name": "Street",
+    "confidence": 51.7,
+    "parents": [
+     "City",
+     "Road",
+     "Urban"
+    ]
+   },
+   {
+    "name": "Table",
+    "confidence": 51.5,
+    "parents": [
+     "Furniture"
+    ]
+   },
+   {
+    "name": "Trash Can",
+    "confidence": 51.5,
+    "parents": [
+     "Can",
+     "Tin"
+    ]
+   },
+   {
+    "name": "Cleaning",
+    "confidence": 51,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Trash",
+    "confidence": 50.9,
+    "parents": [
+     "Garbage"
+    ]
+   },
+   {
+    "name": "Patio",
+    "confidence": 50.7,
+    "parents": [
+     "Architecture",
+     "Building",
+     "House",
+     "Housing"
+    ]
+   },
+   {
+    "name": "Cooler",
+    "confidence": 50.4,
+    "parents": [
+     "Appliance",
+     "Device",
+     "Electrical Device"
+    ]
+   },
+   {
+    "name": "Walkway",
+    "confidence": 50.3,
+    "parents": [
+     "Path"
+    ]
+   },
+   {
+    "name": "Floor",
+    "confidence": 50.2,
+    "parents": []
+   }
+  ],
+  "words": [
+   {
+    "text": "IRNIBRU",
+    "confidence": 79.8
+   }
+  ]
+ },
+ "piper": {
+  "labels": [
+   {
+    "name": "Bagpipe",
+    "confidence": 99,
+    "parents": [
+     "Musical Instrument"
+    ]
+   },
+   {
+    "name": "Musical Instrument",
+    "confidence": 99,
+    "parents": []
+   },
+   {
+    "name": "Electrical Device",
+    "confidence": 98.5,
+    "parents": []
+   },
+   {
+    "name": "Microphone",
+    "confidence": 98.5,
+    "parents": [
+     "Electrical Device"
+    ]
+   },
+   {
+    "name": "Adult",
+    "confidence": 86.2,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Female",
+    "confidence": 86.2,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Person",
+    "confidence": 86.2,
+    "parents": []
+   },
+   {
+    "name": "Woman",
+    "confidence": 86.2,
+    "parents": [
+     "Adult",
+     "Female",
+     "Person"
+    ]
+   },
+   {
+    "name": "Smoke Pipe",
+    "confidence": 82.4,
+    "parents": []
+   },
+   {
+    "name": "Machine",
+    "confidence": 77.2,
+    "parents": []
+   },
+   {
+    "name": "Screw",
+    "confidence": 77.2,
+    "parents": [
+     "Machine"
+    ]
+   },
+   {
+    "name": "Device",
+    "confidence": 65.9,
+    "parents": []
+   },
+   {
+    "name": "Screwdriver",
+    "confidence": 65.9,
+    "parents": [
+     "Device",
+     "Tool"
+    ]
+   },
+   {
+    "name": "Tool",
+    "confidence": 65.9,
+    "parents": [
+     "Device"
+    ]
+   },
+   {
+    "name": "Leisure Activities",
+    "confidence": 51.7,
+    "parents": []
+   },
+   {
+    "name": "Music",
+    "confidence": 51.7,
+    "parents": []
+   },
+   {
+    "name": "Musician",
+    "confidence": 51.7,
+    "parents": [
+     "Leisure Activities",
+     "Music",
+     "Musical Instrument",
+     "Performer",
+     "Person"
+    ]
+   },
+   {
+    "name": "Performer",
+    "confidence": 51.7,
+    "parents": [
+     "Person"
+    ]
+   }
+  ],
+  "words": []
+ },
+ "kilt-person": {
+  "labels": [
+   {
+    "name": "Tree",
+    "confidence": 99.1,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Female",
+    "confidence": 98.8,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Girl",
+    "confidence": 98.8,
+    "parents": [
+     "Female",
+     "Person"
+    ]
+   },
+   {
+    "name": "Person",
+    "confidence": 98.8,
+    "parents": []
+   },
+   {
+    "name": "Teen",
+    "confidence": 98.8,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Adult",
+    "confidence": 97.9,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Male",
+    "confidence": 97.9,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Man",
+    "confidence": 97.9,
+    "parents": [
+     "Adult",
+     "Male",
+     "Person"
+    ]
+   },
+   {
+    "name": "Shoe",
+    "confidence": 97,
+    "parents": [
+     "Clothing",
+     "Footwear"
+    ]
+   },
+   {
+    "name": "Boy",
+    "confidence": 95.2,
+    "parents": [
+     "Male",
+     "Person"
+    ]
+   },
+   {
+    "name": "Child",
+    "confidence": 95.2,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Woman",
+    "confidence": 95.2,
+    "parents": [
+     "Adult",
+     "Female",
+     "Person"
+    ]
+   },
+   {
+    "name": "Vegetation",
+    "confidence": 94.7,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Glove",
+    "confidence": 92.8,
+    "parents": [
+     "Clothing"
+    ]
+   },
+   {
+    "name": "Skirt",
+    "confidence": 89.9,
+    "parents": [
+     "Clothing"
+    ]
+   },
+   {
+    "name": "Land",
+    "confidence": 86.1,
+    "parents": [
+     "Nature",
+     "Outdoors"
+    ]
+   },
+   {
+    "name": "Outdoors",
+    "confidence": 86.1,
+    "parents": []
+   },
+   {
+    "name": "Woodland",
+    "confidence": 86.1,
+    "parents": [
+     "Land",
+     "Nature",
+     "Outdoors",
+     "Plant",
+     "Tree",
+     "Vegetation"
+    ]
+   },
+   {
+    "name": "Face",
+    "confidence": 83.3,
+    "parents": [
+     "Head",
+     "Person"
+    ]
+   },
+   {
+    "name": "Head",
+    "confidence": 83.3,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Hat",
+    "confidence": 79.7,
+    "parents": [
+     "Clothing"
+    ]
+   },
+   {
+    "name": "Crowd",
+    "confidence": 64.1,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Bridge",
+    "confidence": 63.3,
+    "parents": []
+   },
+   {
+    "name": "Necklace",
+    "confidence": 62.5,
+    "parents": [
+     "Accessories",
+     "Jewelry"
+    ]
+   },
+   {
+    "name": "Grove",
+    "confidence": 57,
+    "parents": [
+     "Land",
+     "Nature",
+     "Outdoors",
+     "Plant",
+     "Tree",
+     "Vegetation",
+     "Woodland"
+    ]
+   },
+   {
+    "name": "People",
+    "confidence": 57,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Adventure",
+    "confidence": 56.9,
+    "parents": [
+     "Leisure Activities"
+    ]
+   },
+   {
+    "name": "Tartan",
+    "confidence": 56.3,
+    "parents": []
+   },
+   {
+    "name": "Audience",
+    "confidence": 56.1,
+    "parents": [
+     "Crowd",
+     "Person"
+    ]
+   },
+   {
+    "name": "Rope",
+    "confidence": 55.9,
+    "parents": []
+   },
+   {
+    "name": "Rope Bridge",
+    "confidence": 55.7,
+    "parents": [
+     "Bridge",
+     "Suspension Bridge"
+    ]
+   },
+   {
+    "name": "Suspension Bridge",
+    "confidence": 55.7,
+    "parents": [
+     "Bridge"
+    ]
+   },
+   {
+    "name": "Jungle",
+    "confidence": 53.9,
+    "parents": [
+     "Nature",
+     "Outdoors",
+     "Plant",
+     "Vegetation"
+    ]
+   },
+   {
+    "name": "Tree Trunk",
+    "confidence": 53.4,
+    "parents": [
+     "Plant",
+     "Tree"
+    ]
+   },
+   {
+    "name": "Plate",
+    "confidence": 53.2,
+    "parents": []
+   },
+   {
+    "name": "Baseball Cap",
+    "confidence": 53.1,
+    "parents": [
+     "Cap",
+     "Clothing",
+     "Hat"
+    ]
+   },
+   {
+    "name": "Pants",
+    "confidence": 53,
+    "parents": [
+     "Clothing"
+    ]
+   },
+   {
+    "name": "Photography",
+    "confidence": 53,
+    "parents": []
+   },
+   {
+    "name": "Portrait",
+    "confidence": 53,
+    "parents": [
+     "Face",
+     "Head",
+     "Person",
+     "Photography"
+    ]
+   },
+   {
+    "name": "Juggling",
+    "confidence": 52.1,
+    "parents": [
+     "Person"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "WAYT",
+    "confidence": 98.8
+   },
+   {
+    "text": "GALLER",
+    "confidence": 97.6
+   },
+   {
+    "text": "IN",
+    "confidence": 51.8
+   },
+   {
+    "text": "\u00a1\u00a1ENUE",
+    "confidence": 12.2
+   },
+   {
+    "text": "YORK",
+    "confidence": 94.4
+   },
+   {
+    "text": "87",
+    "confidence": 93.7
+   },
+   {
+    "text": "RKET",
+    "confidence": 57.4
+   }
+  ]
+ },
+ "shortbread-2": {
+  "labels": [
+   {
+    "name": "Blade",
+    "confidence": 97.8,
+    "parents": [
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Knife",
+    "confidence": 97.8,
+    "parents": [
+     "Blade",
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Weapon",
+    "confidence": 97.8,
+    "parents": []
+   },
+   {
+    "name": "Cooktop",
+    "confidence": 97,
+    "parents": [
+     "Indoors",
+     "Kitchen"
+    ]
+   },
+   {
+    "name": "Indoors",
+    "confidence": 97,
+    "parents": []
+   },
+   {
+    "name": "Kitchen",
+    "confidence": 97,
+    "parents": [
+     "Indoors"
+    ]
+   },
+   {
+    "name": "Bread",
+    "confidence": 91.8,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 91.8,
+    "parents": []
+   },
+   {
+    "name": "Appliance",
+    "confidence": 81.6,
+    "parents": [
+     "Device",
+     "Electrical Device"
+    ]
+   },
+   {
+    "name": "Baking",
+    "confidence": 81.6,
+    "parents": [
+     "Appliance",
+     "Cooking",
+     "Device",
+     "Electrical Device",
+     "Oven"
+    ]
+   },
+   {
+    "name": "Cooking",
+    "confidence": 81.6,
+    "parents": []
+   },
+   {
+    "name": "Device",
+    "confidence": 81.6,
+    "parents": []
+   },
+   {
+    "name": "Electrical Device",
+    "confidence": 81.6,
+    "parents": []
+   },
+   {
+    "name": "Oven",
+    "confidence": 81.6,
+    "parents": [
+     "Appliance",
+     "Device",
+     "Electrical Device"
+    ]
+   },
+   {
+    "name": "Cutlery",
+    "confidence": 76.1,
+    "parents": []
+   },
+   {
+    "name": "Cake",
+    "confidence": 57.4,
+    "parents": [
+     "Dessert",
+     "Food"
+    ]
+   },
+   {
+    "name": "Dessert",
+    "confidence": 57.4,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Fork",
+    "confidence": 57,
+    "parents": [
+     "Cutlery"
+    ]
+   },
+   {
+    "name": "Cracker",
+    "confidence": 56.6,
+    "parents": [
+     "Bread",
+     "Food"
+    ]
+   },
+   {
+    "name": "Spoon",
+    "confidence": 54.9,
+    "parents": [
+     "Cutlery"
+    ]
+   },
+   {
+    "name": "Pastry",
+    "confidence": 54.6,
+    "parents": [
+     "Dessert",
+     "Food"
+    ]
+   },
+   {
+    "name": "Meat",
+    "confidence": 54,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Meat Loaf",
+    "confidence": 54,
+    "parents": [
+     "Food",
+     "Meat"
+    ]
+   },
+   {
+    "name": "Pie",
+    "confidence": 53.2,
+    "parents": [
+     "Cake",
+     "Dessert",
+     "Food"
+    ]
+   },
+   {
+    "name": "Cornbread",
+    "confidence": 52.3,
+    "parents": [
+     "Bread",
+     "Food"
+    ]
+   },
+   {
+    "name": "Cooking Batter",
+    "confidence": 51.7,
+    "parents": [
+     "Cooking"
+    ]
+   },
+   {
+    "name": "Food Presentation",
+    "confidence": 51.5,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Tiramisu",
+    "confidence": 51.4,
+    "parents": [
+     "Dessert",
+     "Food"
+    ]
+   },
+   {
+    "name": "Apple Pie",
+    "confidence": 51.3,
+    "parents": [
+     "Cake",
+     "Dessert",
+     "Food",
+     "Pie"
+    ]
+   },
+   {
+    "name": "Bacon",
+    "confidence": 51.2,
+    "parents": [
+     "Food",
+     "Meat",
+     "Pork"
+    ]
+   },
+   {
+    "name": "Pork",
+    "confidence": 51.2,
+    "parents": [
+     "Food",
+     "Meat"
+    ]
+   },
+   {
+    "name": "Lasagna",
+    "confidence": 51,
+    "parents": [
+     "Food",
+     "Pasta"
+    ]
+   },
+   {
+    "name": "Pasta",
+    "confidence": 51,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Meal",
+    "confidence": 50.4,
+    "parents": [
+     "Food"
+    ]
+   }
+  ],
+  "words": []
+ }
+}

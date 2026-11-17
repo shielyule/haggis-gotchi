@@ -12,6 +12,10 @@ test('owner examples', () => {
     feedSentence({ ...e('photo_treat'), carer_name: 'Billy', haggling_name: 'Tigger' }),
     'Billy just shared a Photo Treat with Tigger',
   )
+  assert.equal(
+    feedSentence({ ...e('photo_treat'), carer_name: 'Billy', haggling_name: 'Tigger', treat_id: 'irn-bru' }),
+    'Billy just shared a can of Irn-Bru with Tigger',
+  )
   assert.equal(feedSentence(e('walk')), 'Fred just took Harry for a walk')
   assert.equal(feedSentence(e('clean')), 'Fred just cleaned up after Harry')
 })

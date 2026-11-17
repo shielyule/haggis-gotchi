@@ -270,7 +270,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           good: true,
           text: r.placeholder
             ? `${r.line} (Recognition is not switched on yet, so any photo counts for now.)`
-            : r.line,
+            : `${r.line} Every bar is full! (Saw ${r.treat}${r.confidence ? `, ${r.confidence}% sure` : ''})`,
         })
       } else {
         setTreatNote({ good: false, text: r.error })
@@ -467,7 +467,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
             disabled={treatBusy}
           >
             <span>{treatBusy ? 'Looking…' : 'Photo Treat'}</span>
-            <small>Snap something Scottish: every bar fills, once a day</small>
+            <small>Snap Irn-Bru, bagpipes, a kilt, heather or shortbread: once a day</small>
           </button>
           <input
             ref={fileInput}

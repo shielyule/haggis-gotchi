@@ -446,6 +446,10 @@ export type TreatResponse =
   | {
       ok: true
       treat: string
+      treatId?: string | null
+      confidence?: number | null
+      seen?: string[]
+      line?: string
       placeholder: boolean
       child: {
         hunger: number
@@ -530,7 +534,7 @@ export async function fetchShareInfo(childId: string): Promise<{ publicId: strin
   return row?.public_id ? { publicId: row.public_id, on: row.share_enabled } : null
 }
 
-export type FeedRow = { carer_name: string; haggling_name: string; action: string; at: string }
+export type FeedRow = { carer_name: string; haggling_name: string; action: string; treat_id?: string | null; at: string }
 
 /** public-feed: last 10 brood events. Public (no sign-in); names and actions only. */
 export async function fetchPublicFeed(): Promise<FeedRow[] | null> {
