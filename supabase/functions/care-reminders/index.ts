@@ -34,6 +34,31 @@ Deno.serve(async (req) => {
     const admin = createClient(supabaseUrl!, serviceKey!)
     const now = Date.now()
 
+    // Test mode (owner testing): {"testEmail": "..."} sends one test notification
+    // to that carer's devices. Still needs the cron secret, so it is not public.
+    const body = (await req.json().catch(() => ({}))) as { testEmail?: unknown }
+    if (typeof body.testEmail === 'string' && body.testEmail.includes('@')) {
+      const { data: users } = await admin.auth.admin.listUsers({ perPage: 1000 })
+      const user = users?.users.find((u) => u.email?.toLowerCase() === (body.testEmail as string).toLowerCase())
+      if (!user) return json(200, { test: true, sent: 0, note: 'no such carer' })
+      const { data: mine } = await admin
+        .from('push_subscriptions')
+        .select('id, carer_id, endpoint, p256dh, auth, timezone')
+        .eq('carer_id', user.id)
+      let sent = 0
+      for (const s of (mine ?? []) as SubRow[]) {
+        const outcome = await sendPush(s, {
+          title: 'Test from Haggis-gotchi',
+          body: 'If you can read this, reminders work. Your Haggling says hullo.',
+          url: '/',
+          tag: 'test',
+        })
+        if (outcome === 'sent') sent++
+        if (outcome === 'gone') await admin.from('push_subscriptions').delete().eq('id', s.id)
+      }
+      return json(200, { test: true, devices: mine?.length ?? 0, sent })
+    }
+
     const { data: subsData, error: subErr } = await admin
       .from('push_subscriptions')
       .select('id, carer_id, endpoint, p256dh, auth, timezone')
