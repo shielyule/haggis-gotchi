@@ -23,7 +23,19 @@ import {
   photoTreatSynced,
   refreshHomeDevice,
 } from './lib/syncActions'
+import {
+  chooseHomePlace,
+  chooseLocation,
+  syncWeather,
+  weatherChoice,
+  type WeatherChip,
+} from './lib/weather'
 import { WatchMemories } from './WatchMemories'
+
+const WEATHER_ICON: Record<string, string> = {
+  sunny: '☀️', crisp: '🌤️', frost: '❄️', hot: '🥵', grey: '☁️',
+  rain: '🌧️', storm: '⛈️', snow: '🌨️', windy: '🌬️', humid: '💧',
+}
 
 type Props = {
   egg: EggRecord
@@ -87,6 +99,10 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const [treatBusy, setTreatBusy] = useState(false)
   const [treatNote, setTreatNote] = useState<{ text: string; good: boolean } | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
+  const [choice, setChoice] = useState(() => weatherChoice())
+  const [chip, setChip] = useState<WeatherChip | null>(null)
+  const [swing, setSwing] = useState<string | null>(null)
+  const [weatherNote, setWeatherNote] = useState('')
   const h = egg.haggling
   const temp = temperamentForChaos(egg.answers.chaos)
   // phone-home R4: only the home device cares; others watch.
@@ -108,6 +124,20 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
     }, 30_000)
     return () => window.clearInterval(t)
   }, [egg.id, isHome])
+
+  // weather-mood: apply new weather when opened and every 15 minutes (home device only).
+  useEffect(() => {
+    if (!isHome || !choice) return
+    const run = () =>
+      void syncWeather(egg.id).then((r) => {
+        setChip(r.chip)
+        if (r.swingLine) setSwing(r.swingLine)
+        onChange()
+      })
+    run()
+    const t = window.setInterval(run, 15 * 60 * 1000)
+    return () => window.clearInterval(t)
+  }, [egg.id, isHome, choice])
 
   // phone-home R5.2: notice within a minute if the Haggling moved to another device.
   useEffect(() => {
@@ -134,6 +164,17 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   function act(action: CareAction) {
     if (!isHome) return
     void careActionSynced(egg.id, action, 'phone').then(() => onChange())
+  }
+
+  async function pickWeather(kind: 'location' | 'home') {
+    setWeatherNote('')
+    if (kind === 'location') {
+      const r = await chooseLocation()
+      if (r.error) setWeatherNote(r.error)
+    } else {
+      await chooseHomePlace()
+    }
+    setChoice(weatherChoice())
   }
 
   function moveHere() {
@@ -239,6 +280,47 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           <div className="meter-fill" style={{ width: `${levelPct}%` }} />
         </div>
       </section>
+
+      {isHome && swing ? (
+        <p className="weather-swing" role="status">
+          {swing}
+        </p>
+      ) : null}
+
+      {isHome && !choice ? (
+        <section className="transfer-card weather-consent">
+          <p className="signup-kicker">Weather</p>
+          <p className="care-sub">
+            Let {h.name} feel your weather? Haggis love rain and storms and sulk in the
+            heat. We use only your rough area (about 11 km) to look up the weather,
+            nothing else, and you can change it any time.
+          </p>
+          <div className="cta-row">
+            <button type="button" className="btn btn-primary" onClick={() => void pickWeather('location')}>
+              Use my location
+            </button>
+            <button type="button" className="btn btn-ghost" onClick={() => void pickWeather('home')}>
+              Use my home place
+            </button>
+          </div>
+        </section>
+      ) : null}
+      {weatherNote ? <p className="care-sub">{weatherNote}</p> : null}
+
+      {isHome && chip ? (
+        <p className="weather-chip">
+          <span aria-hidden="true">{WEATHER_ICON[chip.bucket] ?? '🌦️'}</span> {chip.label}
+          {chip.tempC !== null ? ` · ${Math.round(chip.tempC)}°C` : ''} · {chip.place}
+          {h.weatherLine && !swing ? <span className="weather-feel">{h.weatherLine}</span> : null}
+          <button
+            type="button"
+            className="weather-change"
+            onClick={() => void pickWeather(choice === 'location' ? 'home' : 'location')}
+          >
+            {choice === 'location' ? 'Use home place instead' : 'Use my location'}
+          </button>
+        </p>
+      ) : null}
 
       {!isHome ? (
         <section className="transfer-card">

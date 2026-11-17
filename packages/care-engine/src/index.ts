@@ -25,3 +25,19 @@ export {
   type TreatResult,
 } from './tick.ts'
 export { mergeHaggling, timeOf } from './merge.ts'
+export {
+  applyWeather,
+  classifyWeather,
+  HOME_PLACES,
+  homePlace,
+  slotId,
+  TEMPERAMENT_WEATHER,
+  WEATHER_BASE,
+  WEATHER_BUCKETS,
+  WEATHER_LABEL,
+  weatherDelta,
+  weatherLine,
+  type WeatherApplied,
+  type WeatherBucket,
+  type WeatherReading,
+} from './weather.ts'

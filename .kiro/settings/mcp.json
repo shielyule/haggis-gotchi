@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "haggis-weather": {
+      "command": "node",
+      "args": ["tools/weather-mcp/index.ts"],
+      "disabled": false,
+      "autoApprove": ["classify_weather", "weather_effect"]
+    }
+  }
+}

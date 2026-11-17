@@ -40,6 +40,7 @@ type ChildRow = {
   health_xp: number | null
   life_xp: number | string | null
   last_treat_day: string | null
+  weather_applied: string[] | null
 }
 
 /** Health XP column is -100..100; Life XP never below 0. */
@@ -47,6 +48,8 @@ function xpColumns(h: Haggling) {
   return {
     health_xp: Math.max(-100, Math.min(100, Math.round(h.healthXp ?? 50))),
     life_xp: Math.max(0, Math.round((h.lifeXp ?? 0) * 100) / 100),
+    // weather-mood: applied slots (server keeps a union, never removes)
+    weather_applied: h.weatherApplied ?? [],
   }
 }
 
@@ -226,6 +229,7 @@ function childToHaggling(child: ChildRow, scraps: ScrapEntry[]): Haggling {
     lifeXp: Number(child.life_xp ?? 0),
     lastTreatDay: child.last_treat_day ?? undefined,
     homeDeviceId: child.home_device_id ?? undefined,
+    weatherApplied: child.weather_applied ?? [],
     lastCleanAt: child.last_tick_at,
     lastTickAt: child.last_tick_at,
     livingOn: child.living_on,
@@ -469,4 +473,30 @@ export async function sendPhotoTreat(
     return { ok: false, error: 'Could not reach the mother. Try again in a moment.' }
   }
   return data as TreatResponse
+}
+
+export type ReadingRow = { slot_id: string; bucket: string; temp_c: number | null; place: string; at: string }
+
+/** weather-mood: the newest readings the weather-tick job recorded for this carer. */
+export async function fetchRecentReadings(): Promise<ReadingRow[] | null> {
+  if (!supabase || !(await requireUserId())) return null
+  const { data, error } = await supabase
+    .from('weather_readings')
+    .select('slot_id, bucket, temp_c, place, at')
+    .order('at', { ascending: false })
+    .limit(3)
+  if (error) return null
+  return (data ?? []) as ReadingRow[]
+}
+
+/** weather-mood R1: save consent + coarse location (null = home place). Server rounds too. */
+export async function saveWeatherLocation(lat: number | null, lon: number | null, timezone: string) {
+  if (!supabase || !(await requireUserId())) return false
+  const { data, error } = await supabase.rpc('set_weather_location', {
+    p_lat: lat,
+    p_lon: lon,
+    p_timezone: timezone,
+  })
+  if (error) console.error('set_weather_location', error.message)
+  return data === true
 }

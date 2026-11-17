@@ -382,3 +382,10 @@ export function applyTreatLocal(
     }
   })
 }
+
+/** Replace the Haggling with an engine result (weather-mood). */
+export function replaceHaggling(eggId: string, next: Haggling): EggRecord | null {
+  return updateEgg(eggId, (e) => {
+    if (e.haggling) e.haggling = next
+  })
+}

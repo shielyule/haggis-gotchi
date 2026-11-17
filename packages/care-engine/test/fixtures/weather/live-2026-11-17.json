@@ -1,0 +1,114 @@
+[
+  {
+    "place": "Glasgow",
+    "reading": {
+      "code": 61,
+      "tempC": 5.5,
+      "windKmh": 14.8,
+      "gustKmh": 33.5,
+      "humidity": 89,
+      "precipitationMm": 0.5
+    },
+    "bucket": "rain",
+    "label": "Rain",
+    "capturedAt": "2026-11-17T15:24:48.037Z"
+  },
+  {
+    "place": "Aviemore",
+    "reading": {
+      "code": 3,
+      "tempC": 5.2,
+      "windKmh": 13,
+      "gustKmh": 31.3,
+      "humidity": 78,
+      "precipitationMm": 0
+    },
+    "bucket": "grey",
+    "label": "Dreich (grey)",
+    "capturedAt": "2026-11-17T15:24:48.029Z"
+  },
+  {
+    "place": "Oban",
+    "reading": {
+      "code": 3,
+      "tempC": 6.2,
+      "windKmh": 22.3,
+      "gustKmh": 49.7,
+      "humidity": 77,
+      "precipitationMm": 0
+    },
+    "bucket": "grey",
+    "label": "Dreich (grey)",
+    "capturedAt": "2026-11-17T15:24:48.039Z"
+  },
+  {
+    "place": "Perth",
+    "reading": {
+      "code": 53,
+      "tempC": 6.1,
+      "windKmh": 17.6,
+      "gustKmh": 37.4,
+      "humidity": 90,
+      "precipitationMm": 0.2
+    },
+    "bucket": "rain",
+    "label": "Rain",
+    "capturedAt": "2026-11-17T15:24:48.040Z"
+  },
+  {
+    "place": "Lerwick",
+    "reading": {
+      "code": 3,
+      "tempC": 6.9,
+      "windKmh": 35.3,
+      "gustKmh": 48.2,
+      "humidity": 72,
+      "precipitationMm": 0
+    },
+    "bucket": "grey",
+    "label": "Dreich (grey)",
+    "capturedAt": "2026-11-17T15:24:48.039Z"
+  },
+  {
+    "place": "Seville",
+    "reading": {
+      "code": 3,
+      "tempC": 19.2,
+      "windKmh": 13.8,
+      "gustKmh": 32.8,
+      "humidity": 83,
+      "precipitationMm": 0
+    },
+    "bucket": "grey",
+    "label": "Dreich (grey)",
+    "capturedAt": "2026-11-17T15:24:48.040Z"
+  },
+  {
+    "place": "Reykjavik",
+    "reading": {
+      "code": 3,
+      "tempC": 0.5,
+      "windKmh": 18,
+      "gustKmh": 32,
+      "humidity": 63,
+      "precipitationMm": 0
+    },
+    "bucket": "grey",
+    "label": "Dreich (grey)",
+    "capturedAt": "2026-11-17T15:24:48.040Z"
+  },
+  {
+    "place": "Singapore",
+    "reading": {
+      "code": 45,
+      "tempC": 24.5,
+      "windKmh": 4,
+      "gustKmh": 10.4,
+      "humidity": 99,
+      "precipitationMm": 0
+    },
+    "bucket": "hot",
+    "label": "Hot",
+    "capturedAt": "2026-11-17T15:24:48.040Z"
+  }
+]

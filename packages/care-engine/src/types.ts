@@ -71,6 +71,12 @@ export type Haggling = {
   homeDeviceId?: string
   /** Weather slot ids already applied (weather-mood). Merged as a set union. */
   weatherApplied?: string[]
+  /** Latest weather shown in the chip (weather-mood R6). */
+  weatherBucket?: string
+  weatherSlot?: string
+  weatherLine?: string
+  weatherTempC?: number
+  weatherPlace?: string
   /** Legacy single feed hour, migrated on tick. */
   feedHour?: number
 }
