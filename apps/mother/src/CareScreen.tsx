@@ -32,6 +32,7 @@ import {
   weatherChoice,
   type WeatherChip,
 } from './lib/weather'
+import { fetchShareInfo, setShareEnabled } from './lib/cloud'
 import { WatchMemories } from './WatchMemories'
 
 const WEATHER_ICON: Record<string, string> = {
@@ -111,6 +112,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const [demoNote, setDemoNote] = useState('')
   const taps = useRef<number[]>([])
   const [filmNote, setFilmNote] = useState('')
+  const [share, setShare] = useState<{ publicId: string; on: boolean } | null>(null)
   const h = egg.haggling
   const temp = temperamentForChaos(egg.answers.chaos)
   // phone-home R4: only the home device cares; others watch.
@@ -168,6 +170,13 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
     localStorage.setItem(key, '1')
     setFilmNote(`New film in Watch again: ${h.name} playing!`)
   }, [filmReady, egg.id])
+
+  // share-card: the public id comes from the server.
+  useEffect(() => {
+    const childId = h?.cloudChildId
+    if (!childId) return
+    void fetchShareInfo(childId).then(setShare)
+  }, [h?.cloudChildId])
 
   // Demo eggs unlock after 3 minutes: keep the clock moving while the screen is open.
   useEffect(() => {
@@ -271,19 +280,28 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
 
   async function shareOnSocial() {
     const name = h?.name ?? 'my Haggling'
+    // share-card R6: share the public card, not the home page.
+    const url = share?.on ? `${window.location.origin}/h/${share.publicId}` : window.location.origin
     const text = `Meet ${name}, a ${temp.label} Haggling from Haggis-gotchi.`
     try {
       if (navigator.share) {
-        await navigator.share({ title: name, text, url: window.location.origin })
+        await navigator.share({ title: name, text, url })
         setShareNote('Shared')
       } else {
-        await navigator.clipboard?.writeText(`${text} ${window.location.origin}`)
-        setShareNote('Copied: paste it anywhere')
+        await navigator.clipboard?.writeText(`${text} ${url}`)
+        setShareNote('Link copied: paste it anywhere')
       }
     } catch {
       setShareNote('Share cancelled')
     }
     window.setTimeout(() => setShareNote(''), 3500)
+  }
+
+  async function toggleShare() {
+    const childId = h?.cloudChildId
+    if (!childId || !share) return
+    const next = !share.on
+    if (await setShareEnabled(childId, next)) setShare({ ...share, on: next })
   }
 
   const hour = new Date(now).getHours()
@@ -483,6 +501,18 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       <button type="button" className="btn btn-ghost" onClick={() => void shareOnSocial()}>
         Share {h.name} on social
       </button>
+      {share ? (
+        <label className="demo-toggle share-toggle">
+          <input type="checkbox" checked={share.on} onChange={() => void toggleShare()} />
+          Public card for {h.name} ({share.on ? 'on' : 'off'})
+          {share.on ? (
+            <a href={`/h/${share.publicId}`} target="_blank" rel="noopener noreferrer">
+              {' '}
+              see it
+            </a>
+          ) : null}
+        </label>
+      ) : null}
       {shareNote ? <p className="care-sub">{shareNote}</p> : null}
 
       {filmNote ? <p className="weather-swing">{filmNote}</p> : null}

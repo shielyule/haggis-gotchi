@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Repo-level tooling only. Apps have their own package.json.",
   "scripts": {
-    "test": "node --test \"supabase/functions/_shared/*.test.ts\" \"packages/care-engine/test/*.test.ts\"",
+    "test": "node --test \"supabase/functions/_shared/*.test.ts\" \"packages/care-engine/test/*.test.ts\" \"apps/mother/functions/_lib/*.test.ts\"",
     "docs:weather": "node tools/gen-weather-doc.ts"
   }
 }

@@ -69,6 +69,9 @@ export type Haggling = {
   lastTreatDay?: string
   /** When it was named/hatched (children.created_at). Drives growth films. */
   hatchedAt?: string
+  /** share-card: public id for /h/<id>, and whether the card is on. */
+  publicId?: string
+  shareEnabled?: boolean
   /** Device id of the home device (phone-home). Server decides; display only. */
   homeDeviceId?: string
   /** Weather slot ids already applied (weather-mood). Merged as a set union. */

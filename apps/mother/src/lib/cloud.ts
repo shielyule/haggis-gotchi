@@ -41,6 +41,8 @@ type ChildRow = {
   life_xp: number | string | null
   last_treat_day: string | null
   weather_applied: string[] | null
+  public_id: string | null
+  share_enabled: boolean | null
 }
 
 /** Health XP column is -100..100; Life XP never below 0. */
@@ -230,6 +232,8 @@ function childToHaggling(child: ChildRow, scraps: ScrapEntry[]): Haggling {
     lastTreatDay: child.last_treat_day ?? undefined,
     homeDeviceId: child.home_device_id ?? undefined,
     hatchedAt: child.created_at,
+    publicId: child.public_id ?? undefined,
+    shareEnabled: child.share_enabled ?? true,
     weatherApplied: child.weather_applied ?? [],
     lastCleanAt: child.last_tick_at,
     lastTickAt: child.last_tick_at,
@@ -500,4 +504,20 @@ export async function saveWeatherLocation(lat: number | null, lon: number | null
   })
   if (error) console.error('set_weather_location', error.message)
   return data === true
+}
+
+/** share-card R7: switch the public card on or off (owner; RLS). */
+export async function setShareEnabled(childId: string, on: boolean): Promise<boolean> {
+  if (!supabase || !(await requireUserId())) return false
+  const { error } = await supabase.from('children').update({ share_enabled: on }).eq('id', childId)
+  if (error) console.error('setShareEnabled', error.message)
+  return !error
+}
+
+/** share-card: fetch the public id (made by the server at hatch). */
+export async function fetchShareInfo(childId: string): Promise<{ publicId: string; on: boolean } | null> {
+  if (!supabase || !(await requireUserId())) return null
+  const { data } = await supabase.from('children').select('public_id, share_enabled').eq('id', childId).maybeSingle()
+  const row = data as { public_id: string | null; share_enabled: boolean } | null
+  return row?.public_id ? { publicId: row.public_id, on: row.share_enabled } : null
 }

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { AuthBar } from './AuthBar'
 import { NestApp } from './NestApp'
 import { PhoneApp } from './PhoneApp'
+import { PublicCard, readCardIdFromPath } from './PublicCard'
 import { isDesktopLayout } from './lib/device'
 import { careAlertFor } from './lib/health'
 import { pullBroodFromCloud } from './lib/cloud'
@@ -22,6 +23,9 @@ import './App.css'
  * Layout only, never security.
  */
 export default function App() {
+  // share-card: public Haggling card, any device, no sign-in.
+  const cardId = readCardIdFromPath()
+  if (cardId) return <PublicCard id={cardId} />
   // /mother always shows the mother, on any device (Mother buttons link here).
   if (window.location.pathname.replace(/\/+$/, '') === '/mother') return <MotherApp />
   if (!isDesktopLayout()) return <PhoneApp />
