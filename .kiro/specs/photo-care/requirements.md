@@ -1,65 +1,50 @@
-# Kiro - Requirements: photo-care
+# Kiro - Requirements: photo-care (Photo Treat + Life XP)
 
-Status: DRAFT for owner approval (16 Nov 2026). Open decisions are marked **DECIDE**.
+Status: APPROVED by owner 17 Nov 2026 to build now; recognition (Amazon Rekognition)
+connects afterwards. Supersedes the 16 Nov draft.
 
 ## Overview
-The carer photographs real Scottish things (a can of Irn-Bru, tartan, sheep...).
-The app recognises what is in the photo, says what it saw in the Haggling's voice,
-and gives a small reward. Recognition runs on the server through Amazon
-Rekognition. Photos are not kept.
+A **Photo Treat** button opens the phone camera. Photograph something very Scottish
+and the Haggling gets a full refill (Hunger, Mood, Energy to 100, Mess to 0) and a
+big XP boost, once a day. Until recognition is connected, any photo counts
+("placeholder mode") so the flow can be tested and filmed.
+
+**Life XP** is overall experience, like Dungeons & Dragons: it grows slowly as the
+Haggling ages and with each bit of care, and jumps with treats. It never goes
+down. Health XP stays the separate "how well is it" meter.
 
 ## Requirements (EARS)
 
-### R1 Taking a photo
-1. WHILE a Haggling lives on a surface (phone or nest), THE SYSTEM SHALL offer a "Show {name} something" button.
-2. WHEN pressed, THE SYSTEM SHALL open the camera (or file picker on desktop), and SHALL NOT upload anything until the carer confirms the photo.
-3. THE SYSTEM SHALL shrink the photo on the device to at most 1280 px on the long side and under 1 MB before upload.
-4. IF the carer is not signed in, THEN THE SYSTEM SHALL ask them to sign in first.
+### R1 Photo Treat button
+1. WHILE on the home device, THE SYSTEM SHALL show a "Photo Treat" button with the care actions.
+2. WHEN pressed, THE SYSTEM SHALL open the rear camera (`capture="environment"`), or a file picker where there is no camera.
+3. THE SYSTEM SHALL shrink the photo on the device (long side <= 1280 px, JPEG) before upload.
 
-### R2 Recognition
-1. WHEN a photo is sent, THE SYSTEM SHALL check it on the server with Amazon Rekognition: read text (for brand names on cans and packets) and find objects (for tartan, sheep and so on).
-2. THE SYSTEM SHALL match results against a fixed **care item list** (R3), never against free-form labels.
-3. A match SHALL count only at or above a confidence threshold. **DECIDE:** threshold. Proposal: 80% for objects; for text, the words must be read at 90% or more.
-4. IF nothing matches, THEN THE SYSTEM SHALL say so kindly ("{name} squints. Not sure what that is.") and give nothing.
-5. IF the recognition service fails, THEN THE SYSTEM SHALL say "try again later", give nothing, and care SHALL still work.
+### R2 Reward (server decides)
+1. WHEN a treat is accepted, THE SYSTEM SHALL set Hunger, Mood, Energy to 100 and Mess to 0, add 20 Health XP (max 100) and 50 Life XP.
+2. THE SYSTEM SHALL accept at most one Photo Treat per Haggling per day (carer's timezone).
+3. THE reward SHALL be applied on the server and returned to the device; the device SHALL NOT decide it.
+4. WHEN refused (already had today's treat, not recognised, too big), THE SYSTEM SHALL say why in the Haggling's voice and change nothing.
 
-### R3 Care item list
-**DECIDE:** which items count. Proposal for the hackathon (all fit `scottish-folklore.md`):
+### R3 Recognition
+1. WHERE AWS recognition is configured, THE SYSTEM SHALL accept the photo only if it shows a treat on the list (R4) above the confidence threshold (proposal: 80% objects, 90% text).
+2. WHERE it is not configured, THE SYSTEM SHALL accept any valid image and call it "a mystery treat" (placeholder mode), and the result card SHALL say recognition is not switched on yet.
+3. Photos SHALL NOT be stored, by us or by the recognition service.
 
-| Item | Detected by | Reward (proposal) | Line (example) |
-| --- | --- | --- | --- |
-| Irn-Bru | text "IRN BRU" / "IRN-BRU" | Health XP +5, mood +10 | "{name} spotted the orange can and did a wee jig." |
-| Tartan | object (plaid/tartan pattern) | mood +8 | "{name} nuzzled the tartan. Pure clan pride." |
-| Sheep or lamb | object | mood +8, energy +4 | "{name} baa'd back. Badly." |
-| Neeps and tatties | object (turnip/potato) | hunger +15 | "Neeps! {name} is practically Burns Night." |
-| Fish and chips | object | hunger +15, mood +5 | "{name} stole a chip. Unrepentant." |
-| Rain | object/scene (rain, umbrella, wet street) | mood +6 | "Rain! {name} pressed their nose to the glass." |
-| Hills / mountains | object/scene | energy +6 | "{name} wants to climb that. Today." |
-| Thistle | object (flower; thistle if detected) | mood +5 | "A thistle. {name} gave it a respectful nod." |
+### R4 Treat list (owner, to finalise when AWS is connected; 3-5 to keep)
+Irn-Bru (can text), heather, bagpipes, kilt, unicorn (Scotland's national animal: toys, flags, carvings), whisky, shortbread.
+Open point: whisky with a baby creature. Proposal: the Haggling sniffs it and wrinkles its nose ("That's for the carer"), still a treat.
 
-Rewards SHALL be clamped by the care engine like any other care action.
+### R5 Life XP
+1. THE SYSTEM SHALL add Life XP with age: 10 per day alive, accrued as time passes.
+2. THE SYSTEM SHALL add 1 Life XP per care action, at most 30 per day from care.
+3. Photo Treat adds 50 (R2.1).
+4. Life XP SHALL never decrease.
+5. Level SHALL follow D&D-style thresholds: level 2 at 100, 3 at 300, 4 at 600, 5 at 1000, then +500 per level.
+6. THE care screen SHALL show "Level N" and Life XP with progress to the next level.
 
-### R4 Fair play
-1. Each care item SHALL reward at most once per Haggling per day (UK day, carer's timezone).
-2. THE SYSTEM SHALL limit photo checks to 10 per carer per day (cost cap) and say so when reached.
-3. THE reward SHALL be decided and written by the server, not by the browser.
-4. A photo that matches several items SHALL reward the single best match only.
-
-### R5 Memory
-1. WHEN an item rewards, THE SYSTEM SHALL write one scrapbook line naming the item (no photo stored).
-2. THE SYSTEM SHALL show "{name} saw: Irn-Bru (94%)" so the carer knows what was recognised.
-
-### R6 Privacy
-1. THE SYSTEM SHALL NOT store photos, on our side or at AWS (Rekognition image analysis does not keep the image when called with image bytes; confirm in T1).
-2. THE SYSTEM SHALL tell the carer, before the first photo, that the photo is checked by Amazon and then discarded.
-3. IF Rekognition finds a face, THEN THE SYSTEM SHALL ignore everything else in that photo and say "{name} only looks at things, not people. Try again without anyone in shot."
+### R6 Memory
+WHEN a treat is accepted, THE SYSTEM SHALL write one scrapbook line naming the treat.
 
 ## Security considerations
-- AWS credentials live only in Supabase Edge Function secrets. They belong to an IAM user (or role) allowed **only** `rekognition:DetectText` and `rekognition:DetectLabels`.
-- Upload size capped (1 MB after resize; server rejects over 1.5 MB). Only JPEG/PNG/WebP accepted, checked by file signature, not the name.
-- Rate limit per carer (R4.2) protects the AWS bill. An AWS budget alarm is set at a low amount (T1).
-- The browser never sees AWS keys and never decides rewards.
-- New third party (Amazon) named in the CSP is not needed: the browser only talks to Supabase.
-
-## Non-goals
-Training a custom model (Rekognition Custom Labels bills hourly while running), storing a photo album, recognising people, scanning barcodes, any purchase or brand partnership.
+Server checks the user token, ownership, the daily limit and the file type (by signature) and size (max 1.5 MB after resize). AWS keys only in Supabase secrets, IAM user limited to two Rekognition actions. No photo stored. Rate: one treat per day per Haggling, plus 10 checks per carer per day once recognition is on (cost cap).
