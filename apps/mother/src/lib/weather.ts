@@ -99,14 +99,17 @@ async function deviceReading(homePlaceAnswer: string): Promise<WeatherChip | nul
     if (!res.ok) return null
     const cur = ((await res.json()) as { current?: Record<string, number> }).current
     if (!cur || typeof cur.weather_code !== 'number') return null
-    const bucket = classifyWeather({
+    const bucket = classifyWeather(
+      {
       code: cur.weather_code,
       tempC: cur.temperature_2m,
       windKmh: cur.wind_speed_10m,
       gustKmh: cur.wind_gusts_10m,
       humidity: cur.relative_humidity_2m,
-      precipitationMm: cur.precipitation,
-    })
+        precipitationMm: cur.precipitation,
+      },
+      { coastal: homePlaceAnswer === 'seaside' },
+    )
     const chip: WeatherChip = { bucket, label: WEATHER_LABEL[bucket], tempC: round1(cur.temperature_2m), place }
     localStorage.setItem(CACHE_KEY, JSON.stringify({ ...chip, at: now }))
     return chip
@@ -128,15 +131,7 @@ export async function syncWeather(eggId: string): Promise<WeatherSync> {
 
   // Demo control for filming: ?weather=storm (applies once per bucket per day).
   const demo = new URLSearchParams(window.location.search).get('weather') as WeatherBucket | null
-  if (demo && WEATHER_BUCKETS.includes(demo)) {
-    const r = applyWeather(h, demo, `demo-${dayKey(Date.now())}-${demo}`, temperament, nowIso, { tempC: 0, place: 'demo' })
-    if (r.applied) {
-      h = r.haggling
-      replaceHaggling(eggId, h)
-      void pushCheckIn({ ...egg, haggling: h }, 'phone')
-    }
-    return { chip: { bucket: demo, label: WEATHER_LABEL[demo], tempC: null, place: 'demo weather', demo: true }, swingLine: r.line }
-  }
+  if (demo && WEATHER_BUCKETS.includes(demo)) return applyDemoWeather(eggId, demo)
 
   const readings = (await fetchRecentReadings()) ?? []
   const pending = readings
@@ -186,4 +181,25 @@ export async function syncWeather(eggId: string): Promise<WeatherSync> {
     void pushCheckIn({ ...egg, haggling: h }, 'phone')
   }
   return { chip, swingLine }
+}
+
+/**
+ * Demo weather for filming (hidden demo menu or ?weather=storm).
+ * Same rules as real weather; once per kind of weather per day.
+ */
+export function applyDemoWeather(eggId: string, bucket: WeatherBucket): WeatherSync & { applied: boolean } {
+  const egg = loadStore().eggs.find((e) => e.id === eggId)
+  const h = egg?.haggling
+  const chip: WeatherChip = { bucket, label: WEATHER_LABEL[bucket], tempC: null, place: 'demo weather', demo: true }
+  if (!egg || !h) return { chip, swingLine: null, applied: false }
+  const temperament = temperamentForChaos(egg.answers.chaos).id
+  const r = applyWeather(h, bucket, `demo-${dayKey(Date.now())}-${bucket}`, temperament, new Date().toISOString(), {
+    tempC: 0,
+    place: 'demo',
+  })
+  if (r.applied) {
+    replaceHaggling(eggId, r.haggling)
+    void pushCheckIn({ ...egg, haggling: r.haggling }, 'phone')
+  }
+  return { chip, swingLine: r.line, applied: r.applied }
 }

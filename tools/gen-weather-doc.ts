@@ -35,7 +35,7 @@ this table all use the same numbers.
 - **Morning swing banner:** the weather flipped overnight, or Mood moved a lot.
 
 ## Every Haggling (base)
-All Haggis love rain and storms and wilt in the heat.
+All Haggis love rain, mist, fog and **haar** (sea fog: weather from the seaside home place), and all of them wilt in the heat, some more than others.
 
 | Weather | Mood | Energy | Hunger |
 | --- | --- | --- | --- |

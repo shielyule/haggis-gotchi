@@ -23,7 +23,7 @@ const BATCH = 50
 const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
 
-type Target = { carer: string; slot: string; lat: number; lon: number; place: string }
+type Target = { carer: string; slot: string; lat: number; lon: number; place: string; coastal: boolean }
 
 async function fetchBatch(points: { lat: number; lon: number }[]): Promise<WeatherReading[]> {
   const url =
@@ -89,12 +89,13 @@ Deno.serve(async (req) => {
       const { hour, date } = localClock(tz, now)
       if (!force && !SLOT_HOURS.includes(hour)) continue
       const slot = slotId(date, hour)
+      const homeAnswer = (eggs?.find((e) => e.carer_id === c.id)?.answers as { place?: string } | undefined)?.place
+      const coastal = homeAnswer === 'seaside'
       if (c.weather_consent && c.weather_lat !== null && c.weather_lon !== null) {
-        targets.push({ carer: c.id, slot, lat: Number(c.weather_lat), lon: Number(c.weather_lon), place: 'your area' })
+        targets.push({ carer: c.id, slot, lat: Number(c.weather_lat), lon: Number(c.weather_lon), place: 'your area', coastal })
       } else {
-        const place = (eggs?.find((e) => e.carer_id === c.id)?.answers as { place?: string } | undefined)?.place
-        const home = homePlace(place)
-        targets.push({ carer: c.id, slot, lat: home.lat, lon: home.lon, place: home.label.slice(0, 40) })
+        const home = homePlace(homeAnswer)
+        targets.push({ carer: c.id, slot, lat: home.lat, lon: home.lon, place: home.label.slice(0, 40), coastal })
       }
     }
     if (targets.length === 0) return json(200, { carers: carerIds.length, recorded: 0, note: 'no carer at a slot hour' })
@@ -116,7 +117,7 @@ Deno.serve(async (req) => {
         return {
           carer_id: t.carer,
           slot_id: t.slot,
-          bucket: classifyWeather(r),
+          bucket: classifyWeather(r, { coastal: t.coastal }),
           temp_c: Math.round(r.tempC * 10) / 10,
           wind_kmh: Math.round(r.windKmh * 10) / 10,
           code: r.code,

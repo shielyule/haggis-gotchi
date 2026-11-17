@@ -107,8 +107,9 @@
       "humidity": 99,
       "precipitationMm": 0
     },
-    "bucket": "hot",
-    "label": "Hot",
-    "capturedAt": "2026-11-17T15:24:48.040Z"
+    "bucket": "fog",
+    "label": "Mist and fog",
+    "capturedAt": "2026-11-17T15:24:48.040Z",
+    "reclassified": "2026-11-17 fog rule (owner)"
   }
 ]

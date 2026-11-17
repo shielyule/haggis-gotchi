@@ -12,7 +12,7 @@ this table all use the same numbers.
 - **Morning swing banner:** the weather flipped overnight, or Mood moved a lot.
 
 ## Every Haggling (base)
-All Haggis love rain and storms and wilt in the heat.
+All Haggis love rain, mist, fog and **haar** (sea fog: weather from the seaside home place), and all of them wilt in the heat, some more than others.
 
 | Weather | Mood | Energy | Hunger |
 | --- | --- | --- | --- |
@@ -26,6 +26,8 @@ All Haggis love rain and storms and wilt in the heat.
 | Snow | +2 | +2 | -4 |
 | Blowy | +1 | +2 | 0 |
 | Close and muggy | -3 | -3 | 0 |
+| Mist and fog | +8 | +2 | 0 |
+| Haar (sea fog) | +10 | +3 | 0 |
 
 ## By temperament
 
@@ -56,6 +58,8 @@ Fair Wud also gets **+4 Mood when the weather changes** and **-4 when "nice" wea
 | Snow | +2 / +2 / -4 | +2 / +2 / -4 | +2 / +2 / -4 | +2 / +2 / -4 | +2 / +2 / -4 | +8 / +5 / -4 😍 |
 | Blowy | +1 / +2 | +7 / +5 | +7 / +5 | +1 / +2 | +7 / +5 | +7 / +5 |
 | Close and muggy | -3 / -3 | -9 / -6 😠 | -3 / -3 | -3 / -3 | -9 / -6 😠 | -3 / -3 |
+| Mist and fog | +8 / +2 😍 | +8 / +2 😍 | +8 / +2 😍 | +8 / +2 😍 | +8 / +2 😍 | +8 / +2 😍 |
+| Haar (sea fog) | +10 / +3 😍 | +10 / +3 😍 | +10 / +3 😍 | +10 / +3 😍 | +10 / +3 😍 | +10 / +3 😍 |
 
 ## What the scrapbook says (example name "Wee Yin")
 
@@ -71,6 +75,8 @@ Fair Wud also gets **+4 Mood when the weather changes** and **-4 when "nice" wea
 | Snow | Snow! Wee Yin ate some. Then wanted porridge. |
 | Blowy | Blowing a hoolie. Wee Yin leaned into the wind like a wee sail. |
 | Close and muggy | Close and muggy. Wee Yin lay flat on the cool floor. |
+| Mist and fog | Mist down to the doorstep. Wee Yin vanished into it, giggling. |
+| Haar (sea fog) | The haar rolled in off the sea. Wee Yin breathed it in like a homecoming. |
 
 Special lines for some temperaments:
 

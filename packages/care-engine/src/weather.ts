@@ -8,10 +8,14 @@ import type { Haggling } from './types.ts'
 export type WeatherBucket =
   | 'sunny' | 'crisp' | 'frost' | 'hot' | 'grey'
   | 'rain' | 'storm' | 'snow' | 'windy' | 'humid'
+  | 'fog' | 'haar'
 
 export const WEATHER_BUCKETS: readonly WeatherBucket[] = [
-  'sunny', 'crisp', 'frost', 'hot', 'grey', 'rain', 'storm', 'snow', 'windy', 'humid',
+  'sunny', 'crisp', 'frost', 'hot', 'grey', 'rain', 'storm', 'snow', 'windy', 'humid', 'fog', 'haar',
 ]
+
+/** Context for classification. coastal = home place is the seaside (owner, 17 Nov). */
+export type WeatherContext = { coastal?: boolean }
 
 /** Open-Meteo "current" values. precipitationMm is the 15-minute total. */
 export type WeatherReading = {
@@ -26,11 +30,13 @@ export type WeatherReading = {
 const clear = (c: number) => c === 0 || c === 1
 
 /** R3: first matching rule wins. Boundaries pinned by tests. */
-export function classifyWeather(r: WeatherReading): WeatherBucket {
+export function classifyWeather(r: WeatherReading, ctx: WeatherContext = {}): WeatherBucket {
   const mmPerHour = r.precipitationMm * 4
   if ((r.code >= 95 && r.code <= 99) || mmPerHour >= 7.6 || r.gustKmh >= 60) return 'storm'
   if ((r.code >= 71 && r.code <= 77) || r.code === 85 || r.code === 86) return 'snow'
   if ((r.code >= 51 && r.code <= 67) || (r.code >= 80 && r.code <= 82)) return 'rain'
+  // Mist and fog (WMO 45, 48). Sea fog on the coast is haar, a Haggis favourite.
+  if (r.code === 45 || r.code === 48) return ctx.coastal ? 'haar' : 'fog'
   if (r.windKmh >= 40) return 'windy'
   if (r.tempC >= 24) return 'hot'
   if (r.humidity >= 85 && r.tempC >= 18) return 'humid'
@@ -45,6 +51,8 @@ type Delta = { mood: number; energy: number; hunger: number }
 /** Base effect on every Haggling: this beast loves rain and storms, hates heat. */
 export const WEATHER_BASE: Record<WeatherBucket, Delta> = {
   rain: { mood: 4, energy: 0, hunger: 0 },
+  fog: { mood: 8, energy: 2, hunger: 0 },
+  haar: { mood: 10, energy: 3, hunger: 0 },
   storm: { mood: 6, energy: 2, hunger: 0 },
   snow: { mood: 2, energy: 2, hunger: -4 },
   frost: { mood: 2, energy: 1, hunger: -4 },
@@ -124,10 +132,13 @@ export function homePlace(place: string | undefined | null) {
 export const WEATHER_LABEL: Record<WeatherBucket, string> = {
   sunny: 'Sunny', crisp: 'Crisp and clear', frost: 'Frosty', hot: 'Hot',
   grey: 'Dreich (grey)', rain: 'Rain', storm: 'Storm', snow: 'Snow', windy: 'Blowy', humid: 'Close and muggy',
+  fog: 'Mist and fog', haar: 'Haar (sea fog)',
 }
 
 const LINES: Record<WeatherBucket, string> = {
   rain: '{name} sat at the window and listened to the rain. Fair chuffed.',
+  fog: 'Mist down to the doorstep. {name} vanished into it, giggling.',
+  haar: 'The haar rolled in off the sea. {name} breathed it in like a homecoming.',
   storm: '{name} watched the storm roll in, ears up, delighted.',
   snow: 'Snow! {name} ate some. Then wanted porridge.',
   frost: 'Frost on the glass. {name} drew in it with a claw.',

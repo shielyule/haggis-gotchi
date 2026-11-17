@@ -29,7 +29,7 @@ const TOOLS = [
     description: 'Live Open-Meteo reading for a place, plus the Haggis-gotchi weather bucket.',
     inputSchema: {
       type: 'object',
-      properties: { lat: { type: 'number' }, lon: { type: 'number' }, place: { type: 'string' } },
+      properties: { lat: { type: 'number' }, lon: { type: 'number' }, place: { type: 'string' }, coastal: { type: 'boolean' } },
       required: ['lat', 'lon'],
     },
   },
@@ -81,7 +81,7 @@ async function fetchReading(lat: number, lon: number): Promise<WeatherReading> {
 async function callTool(name: string, args: Record<string, unknown>): Promise<unknown> {
   if (name === 'get_current_weather') {
     const reading = await fetchReading(Number(args.lat), Number(args.lon))
-    const bucket = classifyWeather(reading)
+    const bucket = classifyWeather(reading, { coastal: args.coastal === true })
     return { place: args.place ?? null, reading, bucket, label: WEATHER_LABEL[bucket], capturedAt: new Date().toISOString() }
   }
   if (name === 'classify_weather') {

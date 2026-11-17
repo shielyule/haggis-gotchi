@@ -23,7 +23,9 @@ import {
   photoTreatSynced,
   refreshHomeDevice,
 } from './lib/syncActions'
+import { WEATHER_BUCKETS, WEATHER_LABEL } from './lib/engine'
 import {
+  applyDemoWeather,
   chooseHomePlace,
   chooseLocation,
   syncWeather,
@@ -35,6 +37,7 @@ import { WatchMemories } from './WatchMemories'
 const WEATHER_ICON: Record<string, string> = {
   sunny: '☀️', crisp: '🌤️', frost: '❄️', hot: '🥵', grey: '☁️',
   rain: '🌧️', storm: '⛈️', snow: '🌨️', windy: '🌬️', humid: '💧',
+  fog: '🌫️', haar: '🌊',
 }
 
 type Props = {
@@ -103,6 +106,10 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const [chip, setChip] = useState<WeatherChip | null>(null)
   const [swing, setSwing] = useState<string | null>(null)
   const [weatherNote, setWeatherNote] = useState('')
+  // Hidden demo menu for filming: tap the Haggling's name 5 times quickly.
+  const [demoOpen, setDemoOpen] = useState(false)
+  const [demoNote, setDemoNote] = useState('')
+  const taps = useRef<number[]>([])
   const h = egg.haggling
   const temp = temperamentForChaos(egg.answers.chaos)
   // phone-home R4: only the home device cares; others watch.
@@ -175,6 +182,23 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       await chooseHomePlace()
     }
     setChoice(weatherChoice())
+  }
+
+  function tapName() {
+    const now = Date.now()
+    taps.current = [...taps.current.filter((t) => now - t < 3000), now]
+    if (taps.current.length >= 5) {
+      taps.current = []
+      setDemoOpen((v) => !v)
+    }
+  }
+
+  function demoWeather(bucket: (typeof WEATHER_BUCKETS)[number]) {
+    const r = applyDemoWeather(egg.id, bucket)
+    setChip(r.chip)
+    setSwing(r.applied ? r.swingLine : null)
+    setDemoNote(r.applied ? `Demo: ${WEATHER_LABEL[bucket]}` : `${WEATHER_LABEL[bucket]} already shown today (once per day each)`)
+    onChange()
   }
 
   function moveHere() {
@@ -256,7 +280,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
         </button>
         <div>
           <p className="signup-kicker">Your Haggling</p>
-          <h2>{h.name}</h2>
+          <h2 onClick={tapName}>{h.name}</h2>
           <p className="care-sub">
             {temp.label} · {moodLabel(h.mood)} · {healthLabel(h)}
             {alert === 'amber' ? ' · amber warning' : ''}
@@ -280,6 +304,23 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           <div className="meter-fill" style={{ width: `${levelPct}%` }} />
         </div>
       </section>
+
+      {demoOpen ? (
+        <section className="demo-menu" aria-label="Demo menu">
+          <p className="signup-kicker">Demo menu (for filming)</p>
+          <div className="demo-weather">
+            {WEATHER_BUCKETS.map((b) => (
+              <button key={b} type="button" className="btn btn-ghost" onClick={() => demoWeather(b)}>
+                {WEATHER_ICON[b] ?? ''} {WEATHER_LABEL[b]}
+              </button>
+            ))}
+          </div>
+          {demoNote ? <p className="care-sub">{demoNote}</p> : null}
+          <button type="button" className="btn btn-ghost" onClick={() => setDemoOpen(false)}>
+            Close demo menu
+          </button>
+        </section>
+      ) : null}
 
       {isHome && swing ? (
         <p className="weather-swing" role="status">

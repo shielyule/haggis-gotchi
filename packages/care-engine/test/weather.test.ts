@@ -33,6 +33,18 @@ test('classification rules and boundaries', () => {
   assert.equal(classifyWeather(r({ code: 0, tempC: 3 })), 'frost')
   assert.equal(classifyWeather(r({ code: 1, tempC: 3.1 })), 'crisp')
   assert.equal(classifyWeather(r({ code: 0, tempC: 14.1 })), 'sunny')
+  assert.equal(classifyWeather(r({ code: 45 })), 'fog')
+  assert.equal(classifyWeather(r({ code: 48, tempC: 26 })), 'fog') // mist beats heat
+  assert.equal(classifyWeather(r({ code: 45 }), { coastal: true }), 'haar')
+  assert.equal(classifyWeather(r({ code: 3 }), { coastal: true }), 'grey')
+})
+
+test('owner rules 17 Nov: every Haggling likes rain, mist, fog and haar; none like heat', () => {
+  for (const t of Object.keys(TEMPERAMENT_WEATHER)) {
+    for (const b of ['rain', 'fog', 'haar'] as const) assert.ok(weatherDelta(b, t).mood > 0, `${t} ${b}`)
+    assert.ok(weatherDelta('haar', t).mood >= weatherDelta('fog', t).mood, t)
+    assert.ok(weatherDelta('hot', t).mood < 0, `${t} hot`)
+  }
 })
 
 test('live readings captured through the haggis-weather MCP classify the same today', () => {
@@ -42,7 +54,7 @@ test('live readings captured through the haggis-weather MCP classify the same to
   for (const f of fixtures) assert.equal(classifyWeather(f.reading), f.bucket, f.place)
 })
 
-test('every bucket x temperament stays inside the limits (60 cases)', () => {
+test('every bucket x temperament stays inside the limits (72 cases)', () => {
   for (const b of WEATHER_BUCKETS) {
     for (const t of Object.keys(TEMPERAMENT_WEATHER)) {
       const d = weatherDelta(b, t)
