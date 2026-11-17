@@ -2,9 +2,24 @@
   "mcpServers": {
     "haggis-weather": {
       "command": "node",
-      "args": ["tools/weather-mcp/index.ts"],
+      "args": [
+        "tools/weather-mcp/index.ts"
+      ],
       "disabled": false,
-      "autoApprove": ["classify_weather", "weather_effect"]
+      "autoApprove": [
+        "classify_weather",
+        "weather_effect"
+      ]
+    },
+    "aws-docs": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
     }
   }
 }
