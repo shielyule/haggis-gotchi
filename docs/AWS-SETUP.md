@@ -31,12 +31,12 @@ So a bug can never run up a bill without you knowing.
 
 ---
 
-## Part B - Switch region to London
+## Part B - Region: nothing to do
 
-1. Top right of the console, click the region name (for example "N. Virginia").
-2. Choose **Europe (London) eu-west-2**.
-
-**You should see:** "London" in the top right. (IAM is global, so Part C works in any region, but this avoids confusion later.)
+**Correction (17 Nov, owner feedback):** on IAM pages the top right says **Global**
+and the region cannot be changed. That is normal: IAM users and policies are not
+tied to a region. The region for Photo Treat is set in Part D by
+`AWS_REGION=eu-west-2` (London). Skip to Part C.
 
 ---
 

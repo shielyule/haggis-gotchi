@@ -1054,7 +1054,7 @@
   background: linear-gradient(90deg, var(--gold), var(--heather));
 }
 .care-action-treat {
-  grid-column: 1 / -1;
+  /* Sits in the right column under Cuddle and Treat (Feed, Walk, Clean on the left). */
   background: linear-gradient(135deg, var(--tartan-red), var(--heather));
   color: var(--cream);
 }

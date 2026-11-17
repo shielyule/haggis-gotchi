@@ -5,7 +5,7 @@ logged so they are not lost; nothing is built for them yet.
 
 Order agreed 17 Nov 2026: Android test -> `weather-mood` (today) -> queued items below.
 
-## Queued (next, each gets a spec)
+## Queued (next) - specs drafted 17 Nov: `public-feed` (A), `share-card` (E), `play-film` (H)
 
 ### A. Mother's public scrapbook feed
 On the desktop mother page, a "Scrapbook" feed everyone can see: the last 5 to 10
