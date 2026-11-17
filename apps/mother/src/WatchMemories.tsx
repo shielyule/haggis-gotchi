@@ -8,12 +8,14 @@ import {
 type Props = {
   temperamentId: string
   extras?: MemoryFilm[]
+  /** play-film: the 24-hour "playing" film is unlocked. */
+  playUnlocked?: boolean
 }
 
-export function WatchMemories({ temperamentId, extras = [] }: Props) {
+export function WatchMemories({ temperamentId, extras = [], playUnlocked = false }: Props) {
   const films = useMemo(
-    () => memoryFilmsFor(temperamentId, extras),
-    [temperamentId, extras],
+    () => memoryFilmsFor(temperamentId, extras, { playUnlocked }),
+    [temperamentId, extras, playUnlocked],
   )
   const [selectedId, setSelectedId] = useState(films[0]?.id ?? '')
   const [playingId, setPlayingId] = useState<string | null>(null)
@@ -28,7 +30,7 @@ export function WatchMemories({ temperamentId, extras = [] }: Props) {
     <section className="care-watch">
       <h3>Watch again</h3>
       <p className="care-sub">
-        Hatch films and later memories live here. Pick one and press play.
+        Hatch films and growing-up memories live here. Pick one and press play.
       </p>
       <div className="watch-row">
         <label className="watch-select">

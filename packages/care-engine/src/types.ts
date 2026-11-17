@@ -67,6 +67,8 @@ export type Haggling = {
   careXpToday?: number
   /** Local date of the last Photo Treat (one per day). */
   lastTreatDay?: string
+  /** When it was named/hatched (children.created_at). Drives growth films. */
+  hatchedAt?: string
   /** Device id of the home device (phone-home). Server decides; display only. */
   homeDeviceId?: string
   /** Weather slot ids already applied (weather-mood). Merged as a set union. */

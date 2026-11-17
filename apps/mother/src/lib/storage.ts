@@ -143,6 +143,7 @@ export function nameHaggling(
     const now = new Date().toISOString()
     egg.haggling = {
       eggId,
+      hatchedAt: now,
       name: name.trim() || 'Wee Yin',
       breakfastHour,
       dinnerHour,

@@ -4,6 +4,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { isAuthorizedCron, timingSafeEqual } from './auth.ts'
 import {
+  buildPlayFilmEmail,
   buildReadyEmail,
   cleanDisplayName,
   escapeHtml,
@@ -91,4 +92,16 @@ test('timingSafeEqual', () => {
   assert.equal(timingSafeEqual('abc', 'abc'), true)
   assert.equal(timingSafeEqual('abc', 'abd'), false)
   assert.equal(timingSafeEqual('abc', 'abcd'), false)
+})
+
+test('play-film email escapes names and links only to the site', () => {
+  const m = buildPlayFilmEmail({
+    carerName: '<b>Moira</b>',
+    hagglingName: '"><a href="https://evil.com">x</a>',
+    siteUrl: 'https://haggisgotchi.com/',
+  })
+  assert.ok(!m.html.includes('evil.com'))
+  assert.equal((m.html.match(/<a /g) ?? []).length, 1)
+  assert.ok(m.html.includes('href="https://haggisgotchi.com/"'))
+  assert.match(m.subject, /^Look what /)
 })

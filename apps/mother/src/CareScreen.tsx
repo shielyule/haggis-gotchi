@@ -23,7 +23,7 @@ import {
   photoTreatSynced,
   refreshHomeDevice,
 } from './lib/syncActions'
-import { WEATHER_BUCKETS, WEATHER_LABEL } from './lib/engine'
+import { isDemoEgg, isPlayFilmUnlocked, WEATHER_BUCKETS, WEATHER_LABEL } from './lib/engine'
 import {
   applyDemoWeather,
   chooseHomePlace,
@@ -110,6 +110,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const [demoOpen, setDemoOpen] = useState(false)
   const [demoNote, setDemoNote] = useState('')
   const taps = useRef<number[]>([])
+  const [filmNote, setFilmNote] = useState('')
   const h = egg.haggling
   const temp = temperamentForChaos(egg.answers.chaos)
   // phone-home R4: only the home device cares; others watch.
@@ -157,6 +158,23 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
     return () => window.clearInterval(t)
   }, [egg.id])
 
+  // play-film R3/T4: announce the playing film once, when it unlocks.
+  const filmReady =
+    Boolean(h) && isPlayFilmUnlocked(h?.hatchedAt, isDemoEgg(egg.createdAt, egg.readyAt), now)
+  useEffect(() => {
+    if (!filmReady || !h) return
+    const key = `haggis-gotchi:play-film-seen:${egg.id}`
+    if (localStorage.getItem(key)) return
+    localStorage.setItem(key, '1')
+    setFilmNote(`New film in Watch again: ${h.name} playing!`)
+  }, [filmReady, egg.id])
+
+  // Demo eggs unlock after 3 minutes: keep the clock moving while the screen is open.
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(Date.now()), 15_000)
+    return () => window.clearInterval(t)
+  }, [])
+
   if (!h) return null
 
   const breakfastHour = h.breakfastHour ?? h.feedHour ?? 8
@@ -164,6 +182,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const alert = careAlertFor(h)
   const healthXp = typeof h.healthXp === 'number' ? h.healthXp : 50
   const level = lifeLevel(h.lifeXp ?? 0)
+  const playUnlocked = isPlayFilmUnlocked(h.hatchedAt, isDemoEgg(egg.createdAt, egg.readyAt), now)
   const levelPct = Math.round(
     ((level.xp - level.levelStart) / Math.max(1, level.nextAt - level.levelStart)) * 100,
   )
@@ -466,7 +485,8 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       </button>
       {shareNote ? <p className="care-sub">{shareNote}</p> : null}
 
-      <WatchMemories temperamentId={temp.id} extras={h.memoryFilms ?? []} />
+      {filmNote ? <p className="weather-swing">{filmNote}</p> : null}
+      <WatchMemories temperamentId={temp.id} extras={h.memoryFilms ?? []} playUnlocked={playUnlocked} />
 
       <section className="care-scrap">
         <h3>Scrapbook</h3>

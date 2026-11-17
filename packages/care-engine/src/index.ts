@@ -41,3 +41,11 @@ export {
   type WeatherBucket,
   type WeatherReading,
 } from './weather.ts'
+export {
+  DEMO_WAIT_MAX_MS,
+  isDemoEgg,
+  isPlayFilmUnlocked,
+  PLAY_FILM_DELAY_MS,
+  PLAY_FILM_DEMO_DELAY_MS,
+  playFilmUnlockAt,
+} from './films.ts'

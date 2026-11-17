@@ -5,7 +5,10 @@
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { isAuthorizedCron } from '../_shared/auth.ts'
+import { isDemoEgg, isPlayFilmUnlocked } from '../../../packages/care-engine/src/index.ts'
+import { buildPlayFilmEmail, isPlausibleEmail } from '../_shared/email.ts'
 import { configurePush, sendPush, type PushSub } from '../_shared/push.ts'
+import { sendEmail } from '../_shared/sendEmail.ts'
 import { dueReminders, type ChildRow } from '../_shared/reminders.ts'
 
 type SubRow = PushSub & { id: string; carer_id: string; timezone: string }
@@ -64,7 +67,53 @@ Deno.serve(async (req) => {
       .select('id, carer_id, endpoint, p256dh, auth, timezone')
     if (subErr) throw subErr
     const subs = (subsData ?? []) as SubRow[]
-    if (subs.length === 0) return json(200, { carers: 0, sent: 0 })
+
+    // play-film (H): 24 h after hatching (3 min for demo eggs), once per Haggling.
+    // Notification if the carer has reminders on and it was delivered; otherwise email.
+    let filmPush = 0
+    let filmEmail = 0
+    {
+      const since = new Date(now - 7 * 24 * 3600_000).toISOString()
+      const { data: young } = await admin
+        .from('children')
+        .select('id, carer_id, name, created_at, egg_id')
+        .not('home_device_id', 'is', null)
+        .gte('created_at', since)
+      const eggIds = (young ?? []).map((k) => k.egg_id as string)
+      const { data: kidEggs } = eggIds.length
+        ? await admin.from('eggs').select('id, created_at, ready_at, email, answers').in('id', eggIds)
+        : { data: [] }
+      for (const k of young ?? []) {
+        const e = (kidEggs ?? []).find((x) => x.id === k.egg_id)
+        if (!e || !isPlayFilmUnlocked(k.created_at, isDemoEgg(e.created_at, e.ready_at), now)) continue
+        const key = `play-film:${k.id}`
+        const { error: dup } = await admin.from('reminder_log').insert({ key })
+        if (dup) continue // already done
+        let delivered = 0
+        for (const s of subs.filter((x) => x.carer_id === k.carer_id)) {
+          const o = await sendPush(s, {
+            title: `Look what ${k.name} has been up to!`,
+            body: 'A new film is waiting in Watch again.',
+            url: '/',
+            tag: 'play-film',
+          })
+          if (o === 'sent') delivered++
+          if (o === 'gone') await admin.from('push_subscriptions').delete().eq('id', s.id)
+        }
+        filmPush += delivered
+        const to = String(e.email ?? '').trim().toLowerCase()
+        if (delivered === 0 && isPlausibleEmail(to)) {
+          const mail = buildPlayFilmEmail({
+            carerName: (e.answers as { displayName?: string } | null)?.displayName,
+            hagglingName: k.name,
+            siteUrl: Deno.env.get('SITE_URL') ?? 'https://haggisgotchi.com',
+          })
+          if (await sendEmail(to, mail.subject, mail.html)) filmEmail++
+        }
+      }
+    }
+
+    if (subs.length === 0) return json(200, { carers: 0, sent: 0, filmPush, filmEmail })
 
     const byCarer = new Map<string, SubRow[]>()
     for (const s of subs) byCarer.set(s.carer_id, [...(byCarer.get(s.carer_id) ?? []), s])
@@ -115,7 +164,7 @@ Deno.serve(async (req) => {
         }
       }
     }
-    return json(200, { carers: carerIds.length, due: due.length, sent, gone })
+    return json(200, { carers: carerIds.length, due: due.length, sent, gone, filmPush, filmEmail })
   } catch (err) {
     console.error('care-reminders failed:', err instanceof Error ? err.message : err)
     return json(500, { error: 'Internal error' })

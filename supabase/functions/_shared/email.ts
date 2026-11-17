@@ -113,3 +113,29 @@ export function buildReadyEmail(input: {
   `
   return { subject, html, nestUrl, slug }
 }
+
+/** play-film R2: "Look what {name} has been up to" (escaped, no personal data in the link). */
+export function buildPlayFilmEmail(input: {
+  carerName: unknown
+  hagglingName: unknown
+  siteUrl: string
+}): { subject: string; html: string } {
+  const carer = escapeHtml(cleanDisplayName(input.carerName))
+  const name = cleanDisplayName(input.hagglingName)
+  const n = escapeHtml(name)
+  const url = escapeHtml(input.siteUrl.replace(/\/+$/, '') + '/')
+  return {
+    subject: `Look what ${name} has been up to!`,
+    html: `
+    <h2 style="font-family: Georgia, serif; color: #3f5a45;">Haggis-gotchi</h2>
+    <p style="font-family: system-ui, sans-serif;">Hello ${carer},</p>
+    <p style="font-family: system-ui, sans-serif;">
+      ${n} has been playing. There is a new film waiting for you in <strong>Watch again</strong>.
+    </p>
+    <p style="font-family: system-ui, sans-serif;"><a href="${url}"><strong>Open Haggis-gotchi</strong></a></p>
+    <p style="font-family: system-ui, sans-serif; color: #555; font-size: 14px;">
+      Turn on reminders in the app to get these as phone notifications instead.
+    </p>
+  `,
+  }
+}

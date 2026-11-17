@@ -229,6 +229,7 @@ function childToHaggling(child: ChildRow, scraps: ScrapEntry[]): Haggling {
     lifeXp: Number(child.life_xp ?? 0),
     lastTreatDay: child.last_treat_day ?? undefined,
     homeDeviceId: child.home_device_id ?? undefined,
+    hatchedAt: child.created_at,
     weatherApplied: child.weather_applied ?? [],
     lastCleanAt: child.last_tick_at,
     lastTickAt: child.last_tick_at,

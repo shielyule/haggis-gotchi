@@ -81,6 +81,16 @@ export const HATCH_FILMS: Record<string, string> = {
 
 export const HATCH_FILM_FALLBACK = '/art/haggling-hatching-1.mp4'
 
+/** "Playing" films, unlocked 24 h after hatching (play-film spec). */
+export const PLAY_FILMS: Record<string, string> = {
+  douce: '/art/haggling-play-douce.mp4',
+  skeigh: '/art/haggling-play-skeigh.mp4',
+  'ill-trickit': '/art/haggling-play-ill-trickit.mp4',
+  ree: '/art/haggling-play-ree.mp4',
+  radge: '/art/haggling-play-radge.mp4',
+  'fair-wud': '/art/haggling-play-fair-wud.mp4',
+}
+
 /** Care-screen portrait per temperament. Missing ones fall back to hero. */
 export const CARE_PORTRAITS: Record<string, string> = {
   douce: '/art/haggling-care-douce.jpeg',
@@ -112,6 +122,7 @@ export type MemoryFilm = {
 export function memoryFilmsFor(
   temperamentId: string,
   extras: MemoryFilm[] = [],
+  opts: { playUnlocked?: boolean } = {},
 ): MemoryFilm[] {
   const temp =
     TEMPERAMENTS.find((t) => t.id === temperamentId) ??
@@ -128,7 +139,11 @@ export function memoryFilmsFor(
     seen.add(film.id)
     more.push(film)
   }
-  return [hatch, ...more]
+  const play: MemoryFilm[] =
+    opts.playUnlocked && PLAY_FILMS[temperamentId]
+      ? [{ id: `play-${temperamentId}`, title: `Playing: ${temp.label}`, src: PLAY_FILMS[temperamentId] }]
+      : []
+  return [hatch, ...play, ...more]
 }
 
 export function temperamentForChaos(chaos: number): Temperament {
