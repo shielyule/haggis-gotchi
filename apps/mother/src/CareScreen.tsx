@@ -90,7 +90,8 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const h = egg.haggling
   const temp = temperamentForChaos(egg.answers.chaos)
   // phone-home R4: only the home device cares; others watch.
-  const isHome = !h?.homeDeviceId || h.homeDeviceId === getDeviceId()
+  const isHome = Boolean(h?.homeDeviceId) && h?.homeDeviceId === getDeviceId()
+  const noHomeYet = !h?.homeDeviceId
 
   useEffect(() => {
     void reminderState().then(setReminders)
@@ -243,11 +244,12 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
         <section className="transfer-card">
           <p className="signup-kicker">Watching</p>
           <p className="care-sub">
-            {h.name} lives on another device, so this screen is read-only. Using a new
-            phone? Move {h.name} here. They move, never copy.
+            {noHomeYet
+              ? `${h.name} has no home device yet. Make this phone their home to care for them here.`
+              : `${h.name} lives on another device, so this screen is read-only. Using a new phone? Move ${h.name} here. They move, never copy.`}
           </p>
           <button type="button" className="btn btn-primary" onClick={moveHere} disabled={moveBusy}>
-            {moveBusy ? 'Moving…' : `Move ${h.name} here`}
+            {moveBusy ? 'Moving…' : noHomeYet ? `Make this ${h.name}'s home` : `Move ${h.name} here`}
           </button>
           {moveError ? <p className="form-error">{moveError}</p> : null}
         </section>

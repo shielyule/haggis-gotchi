@@ -154,7 +154,7 @@ export function NestApp({ slug }: Props) {
         </p>
         <AuthBar onAuthChange={onAuthChange} intent="retrieve" />
         <p>
-          <a href="/">Back to the mother</a>
+          <a href="/mother">Back to the mother</a>
         </p>
       </main>
     )
@@ -165,7 +165,7 @@ export function NestApp({ slug }: Props) {
       <header className="nest-top">
         <p className="brand brand-compact">Haggis-gotchi</p>
         <p className="nest-path">/{eggSlug(active)}</p>
-        <a className="nest-mother-link" href="/">
+        <a className="nest-mother-link" href="/mother">
           Mother &amp; brood
         </a>
       </header>
@@ -246,7 +246,7 @@ export function NestApp({ slug }: Props) {
           egg={active}
           onChange={() => setEggs(loadStore().eggs)}
           onBack={() => {
-            window.location.href = '/'
+            window.location.href = '/mother'
           }}
         />
       ) : null}

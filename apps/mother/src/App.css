@@ -1071,3 +1071,8 @@
   display: grid;
   gap: 0.5rem;
 }
+
+/* F (17 Nov): breathing room between "Share on social" and "Watch again" */
+.care-watch {
+  margin-top: 1.5rem;
+}

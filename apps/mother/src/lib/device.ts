@@ -19,9 +19,12 @@ export function getDeviceId(): string {
   }
 }
 
-/** Big screen with a mouse: show the mother. Everything else gets the phone flow. */
+/**
+ * A computer (mouse or trackpad that can hover): show the mother at any window
+ * width. Phones and tablets (touch) get the phone flow.
+ */
 export function isDesktopLayout(): boolean {
-  return window.matchMedia('(min-width: 900px) and (pointer: fine)').matches
+  return window.matchMedia('(hover: hover) and (pointer: fine)').matches
 }
 
 /** Opened from the home-screen icon. */

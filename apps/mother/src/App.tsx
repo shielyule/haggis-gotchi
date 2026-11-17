@@ -22,6 +22,8 @@ import './App.css'
  * Layout only, never security.
  */
 export default function App() {
+  // /mother always shows the mother, on any device (Mother buttons link here).
+  if (window.location.pathname.replace(/\/+$/, '') === '/mother') return <MotherApp />
   if (!isDesktopLayout()) return <PhoneApp />
   const nestSlug = readNestSlugFromPath()
   if (nestSlug) return <NestApp slug={nestSlug} />

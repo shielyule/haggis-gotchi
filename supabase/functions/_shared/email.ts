@@ -17,6 +17,7 @@ export const RESERVED_SLUGS = new Set([
   'login',
   'auth',
   'www',
+  'mother',
 ])
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/

@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { replaceLocalBrood, savePhoneStore } from './lib/storage'
 import { supabase, supabaseConfigured } from './lib/supabase'
 
 type Props = {
@@ -155,8 +156,11 @@ export function AuthBar({
   async function signOut() {
     if (!supabase) return
     await supabase.auth.signOut()
-    setSentTo(null)
-    setStatus('Signed out')
+    // Shared computers: do not leave the brood on screen after signing out.
+    // Hagglings stay safe in the cloud; signing in again brings them back.
+    replaceLocalBrood([])
+    savePhoneStore({ child: null })
+    window.location.href = window.location.pathname.startsWith('/mother') ? '/mother' : '/'
   }
 
   if (sessionEmail) {
@@ -166,7 +170,12 @@ export function AuthBar({
           Linked as <strong>{sessionEmail}</strong>
           {intent === 'retrieve' ? ': brood syncing.' : ': ready to hatch & care.'}
         </p>
-        <button type="button" className="btn btn-ghost" onClick={() => void signOut()}>
+        <button
+          type="button"
+          className="btn btn-ghost"
+          onClick={() => void signOut()}
+          title="Removes your Haggling from this screen. It stays safe in the cloud."
+        >
           Sign out
         </button>
       </div>
