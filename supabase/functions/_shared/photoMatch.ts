@@ -28,6 +28,14 @@ const label = (d: Detected, names: string[], min: number) =>
 
 function irnBru(d: Detected): number {
   let best = 0
+  // The can's sideways logo is often unreadable upright (owner's can, 18 Nov: "BAN URN"),
+  // but its upright slogan "ORIGINAL AND BEST" was read at 98-100% in every orientation.
+  // Slogan + a drink container = Irn-Bru. No Fanta/Coke/other fixture has this slogan.
+  const word = (w: string) =>
+    Math.max(0, ...d.words.filter((x) => x.text.toUpperCase().replace(/[^A-Z]/g, '') === w && x.confidence >= 90).map((x) => x.confidence))
+  const container = label(d, ['Can', 'Tin', 'Bottle', 'Soda', 'Pop Bottle'], THRESHOLDS.label)
+  const slogan = Math.min(word('ORIGINAL'), word('BEST'))
+  if (container && slogan) best = Math.max(best, Math.min(slogan, container))
   for (const w of d.words) {
     const t = w.text.toUpperCase().replace(/[^A-Z]/g, '')
     // An exact "IRN" / "BRU" / "IRNBRU" word is strong evidence even when the logo font lowers confidence.

@@ -56,3 +56,13 @@ for (const [k, want] of Object.entries(cansExpected)) {
     assert.equal(matchTreat(cans[k])?.id ?? null, want)
   })
 }
+
+// 18 Nov: the owner's own Irn-Bru can, sent upright and turned both ways.
+const owner = JSON.parse(
+  readFileSync(new URL('./fixtures/photo/rekognition-2026-11-18-owner.json', import.meta.url), 'utf8'),
+) as Record<string, Detected>
+for (const k of ['owner-can-rot0', 'owner-can-rot90', 'owner-can-rot270']) {
+  test(`owner's Irn-Bru can (${k}) -> irn-bru`, () => {
+    assert.equal(matchTreat(owner[k])?.id, 'irn-bru')
+  })
+}

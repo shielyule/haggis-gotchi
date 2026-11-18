@@ -18,8 +18,14 @@ Deno.serve(async (req) => {
   const missing = rekognitionConfigured()
   if (missing.length) return json(500, { error: `missing ${missing.join(', ')}` })
   try {
-    const { imageUrl } = (await req.json()) as { imageUrl?: string }
-    const url = new URL(String(imageUrl))
+    const body = (await req.json()) as { imageUrl?: string; imageBase64?: string }
+    if (body.imageBase64) {
+      const raw = Uint8Array.from(atob(body.imageBase64), (c) => c.charCodeAt(0))
+      if (raw.length > 5_000_000) return json(413, { error: 'image over 5 MB' })
+      const detected = await detect(raw)
+      return json(200, { imageUrl: 'local', match: matchTreat(detected), detected })
+    }
+    const url = new URL(String(body.imageUrl))
     if (url.protocol !== 'https:' || !['upload.wikimedia.org', 'thumb.wikimedia.org'].includes(url.hostname)) {
       return json(400, { error: 'only https://upload.wikimedia.org images' })
     }

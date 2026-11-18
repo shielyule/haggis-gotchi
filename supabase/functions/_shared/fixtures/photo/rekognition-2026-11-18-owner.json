@@ -1,0 +1,531 @@
+{
+ "owner-can-rot0": {
+  "labels": [
+   {
+    "name": "Tin",
+    "confidence": 99.7,
+    "parents": []
+   },
+   {
+    "name": "Can",
+    "confidence": 98.5,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Alcohol",
+    "confidence": 96.3,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 96.3,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 96.3,
+    "parents": []
+   },
+   {
+    "name": "Person",
+    "confidence": 73.1,
+    "parents": []
+   },
+   {
+    "name": "Lager",
+    "confidence": 53.7,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Aluminium",
+    "confidence": 51.7,
+    "parents": []
+   },
+   {
+    "name": "Canned Goods",
+    "confidence": 51.7,
+    "parents": [
+     "Aluminium",
+     "Can",
+     "Food",
+     "Tin"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 51.7,
+    "parents": []
+   },
+   {
+    "name": "Soda",
+    "confidence": 51.6,
+    "parents": [
+     "Beverage"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "and",
+    "confidence": 10.7
+   },
+   {
+    "text": "100ml",
+    "confidence": 32.2
+   },
+   {
+    "text": "Esergy",
+    "confidence": 58.2
+   },
+   {
+    "text": "264kJ",
+    "confidence": 64.3
+   },
+   {
+    "text": "3%",
+    "confidence": 96
+   },
+   {
+    "text": "62kcal",
+    "confidence": 83.9
+   },
+   {
+    "text": "la",
+    "confidence": 53
+   },
+   {
+    "text": "0%",
+    "confidence": 97.1
+   },
+   {
+    "text": "&",
+    "confidence": 80.2
+   },
+   {
+    "text": "status",
+    "confidence": 13.4
+   },
+   {
+    "text": "0%",
+    "confidence": 96.5
+   },
+   {
+    "text": "0g",
+    "confidence": 95.5
+   },
+   {
+    "text": "Signs",
+    "confidence": 43
+   },
+   {
+    "text": "lis",
+    "confidence": 9
+   },
+   {
+    "text": "45g",
+    "confidence": 79.8
+   },
+   {
+    "text": "Sat",
+    "confidence": 77.5
+   },
+   {
+    "text": "203g",
+    "confidence": 60.5
+   },
+   {
+    "text": "1%",
+    "confidence": 62.6
+   },
+   {
+    "text": "BAN",
+    "confidence": 55.5
+   },
+   {
+    "text": "URN",
+    "confidence": 29.7
+   },
+   {
+    "text": "ORIGINAL",
+    "confidence": 98.3
+   },
+   {
+    "text": "AND",
+    "confidence": 99.5
+   },
+   {
+    "text": "BEST",
+    "confidence": 99.3
+   },
+   {
+    "text": "entrence",
+    "confidence": 12.2
+   },
+   {
+    "text": "intake.",
+    "confidence": 78.7
+   },
+   {
+    "text": "/",
+    "confidence": 9.4
+   },
+   {
+    "text": "100mL",
+    "confidence": 57.2
+   }
+  ]
+ },
+ "owner-can-rot90": {
+  "labels": [
+   {
+    "name": "Tin",
+    "confidence": 99.9,
+    "parents": []
+   },
+   {
+    "name": "Can",
+    "confidence": 98.8,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Alcohol",
+    "confidence": 93.7,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 93.7,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 93.7,
+    "parents": []
+   },
+   {
+    "name": "Lager",
+    "confidence": 53.6,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Aluminium",
+    "confidence": 52.6,
+    "parents": []
+   },
+   {
+    "name": "Canned Goods",
+    "confidence": 52.6,
+    "parents": [
+     "Aluminium",
+     "Can",
+     "Food",
+     "Tin"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 52.6,
+    "parents": []
+   },
+   {
+    "name": "Soda",
+    "confidence": 51.8,
+    "parents": [
+     "Beverage"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "I",
+    "confidence": 56.7
+   },
+   {
+    "text": "U",
+    "confidence": 37.6
+   },
+   {
+    "text": "I",
+    "confidence": 87.8
+   },
+   {
+    "text": "=",
+    "confidence": 39.7
+   },
+   {
+    "text": "-",
+    "confidence": 42.7
+   },
+   {
+    "text": "Serry",
+    "confidence": 16.8
+   },
+   {
+    "text": "ABS",
+    "confidence": 22.1
+   },
+   {
+    "text": "S",
+    "confidence": 13.2
+   },
+   {
+    "text": "by",
+    "confidence": 21.2
+   },
+   {
+    "text": "&",
+    "confidence": 67.9
+   },
+   {
+    "text": "B",
+    "confidence": 22.2
+   },
+   {
+    "text": "&",
+    "confidence": 65.4
+   },
+   {
+    "text": "INC.",
+    "confidence": 14.1
+   },
+   {
+    "text": "PO",
+    "confidence": 42.5
+   },
+   {
+    "text": "%\u0664",
+    "confidence": 93.8
+   },
+   {
+    "text": "700ml",
+    "confidence": 12.6
+   },
+   {
+    "text": "%0",
+    "confidence": 62.5
+   },
+   {
+    "text": "%0",
+    "confidence": 72.2
+   },
+   {
+    "text": "/",
+    "confidence": 37.7
+   },
+   {
+    "text": "BAU",
+    "confidence": 42.6
+   },
+   {
+    "text": "IRAN",
+    "confidence": 31.7
+   },
+   {
+    "text": "ORIGINAL",
+    "confidence": 98.3
+   },
+   {
+    "text": "AND",
+    "confidence": 98.7
+   },
+   {
+    "text": "BEST",
+    "confidence": 99.3
+   }
+  ]
+ },
+ "owner-can-rot270": {
+  "labels": [
+   {
+    "name": "Tin",
+    "confidence": 99.9,
+    "parents": []
+   },
+   {
+    "name": "Can",
+    "confidence": 99.3,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Alcohol",
+    "confidence": 95.2,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 95.2,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 95.2,
+    "parents": []
+   },
+   {
+    "name": "Tape",
+    "confidence": 80,
+    "parents": []
+   },
+   {
+    "name": "Lager",
+    "confidence": 54.2,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Aluminium",
+    "confidence": 52.8,
+    "parents": []
+   },
+   {
+    "name": "Canned Goods",
+    "confidence": 52.8,
+    "parents": [
+     "Aluminium",
+     "Can",
+     "Food",
+     "Tin"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 52.8,
+    "parents": []
+   }
+  ],
+  "words": [
+   {
+    "text": "BRU",
+    "confidence": 100
+   },
+   {
+    "text": "AND",
+    "confidence": 99.3
+   },
+   {
+    "text": "BEST",
+    "confidence": 98.7
+   },
+   {
+    "text": "ORIGINAL",
+    "confidence": 98.3
+   },
+   {
+    "text": "IRN",
+    "confidence": 100
+   },
+   {
+    "text": "\u00ae",
+    "confidence": 16.2
+   },
+   {
+    "text": "254kJ",
+    "confidence": 88.3
+   },
+   {
+    "text": "35",
+    "confidence": 33.3
+   },
+   {
+    "text": "ENZO",
+    "confidence": 22.9
+   },
+   {
+    "text": "OF",
+    "confidence": 35.4
+   },
+   {
+    "text": "&",
+    "confidence": 49.1
+   },
+   {
+    "text": "0%",
+    "confidence": 96.5
+   },
+   {
+    "text": "FREE",
+    "confidence": 13
+   },
+   {
+    "text": "g",
+    "confidence": 48.5
+   },
+   {
+    "text": "1.03g",
+    "confidence": 51.1
+   },
+   {
+    "text": "1%",
+    "confidence": 77.4
+   },
+   {
+    "text": "MINI",
+    "confidence": 12.8
+   },
+   {
+    "text": "n",
+    "confidence": 21.2
+   },
+   {
+    "text": "-",
+    "confidence": 23.8
+   },
+   {
+    "text": "la",
+    "confidence": 51.2
+   },
+   {
+    "text": "S",
+    "confidence": 24.5
+   },
+   {
+    "text": "370ml",
+    "confidence": 36.5
+   },
+   {
+    "text": "FC",
+    "confidence": 9.7
+   },
+   {
+    "text": "enterence",
+    "confidence": 13
+   },
+   {
+    "text": "intake.",
+    "confidence": 80.4
+   }
+  ]
+ }
+}

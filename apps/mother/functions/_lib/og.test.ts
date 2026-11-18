@@ -14,7 +14,7 @@ test('switched off or unknown: no name, generic image', () => {
   for (const card of [null, { name: null, temperament_id: null, share_enabled: false }]) {
     const t = ogTags(card, 'https://haggisgotchi.com', 'abcdef0123')
     assert.match(t, /og:title" content="Haggis-gotchi"/)
-    assert.match(t, /icon-512.png/)
+    assert.match(t, /mother-512.png/)
   }
 })
 

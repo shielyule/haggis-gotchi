@@ -950,7 +950,7 @@ function ogTags(card, origin, id) {
   const visible = card?.share_enabled && card.name && card.temperament_id && LABELS[card.temperament_id];
   const title2 = visible ? `${card.name} the ${LABELS[card.temperament_id]} Haggling` : "Haggis-gotchi";
   const desc = "A wee Scottish Haggling that lives on your phone. Get your own Haggis-gotchi egg.";
-  const image = visible ? `${site}/og/${card.temperament_id}.jpg` : `${site}/icons/icon-512.png`;
+  const image = visible ? `${site}/og/${card.temperament_id}.jpg` : `${site}/icons/mother-512.png`;
   const url = `${site}/h/${id}`;
   return [
     `<meta property="og:type" content="website" />`,

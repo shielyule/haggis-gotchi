@@ -138,7 +138,7 @@ Deno.serve(async (req) => {
           error:
             `${row.name} squints. ${seen.length ? `That looks like ${seen.join(', ').toLowerCase()}, ` : ''}but it is not a Scottish treat. ` +
             (read.length ? `(Could read: ${read.join(' ')}.) ` : '(Could not read any words.) ') +
-            'For Irn-Bru, get the IRN BRU letters big and sharp in the photo. Or try bagpipes, a kilt or tartan, heather or shortbread.',
+            'Irn-Bru writes sideways: turn your phone so IRN BRU reads left to right. Or try bagpipes, a kilt or tartan, heather or shortbread.',
         })
       }
       treatId = match.id

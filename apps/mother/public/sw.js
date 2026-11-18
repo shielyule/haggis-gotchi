@@ -13,8 +13,8 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title || 'Haggis-gotchi', {
       body: data.body || '',
-      icon: '/icons/icon-192.png',
-      badge: '/icons/icon-192.png',
+      icon: '/icons/mother-192.png',
+      badge: '/icons/mother-192.png',
       tag: data.tag || 'haggis-care',
       data: { url: data.url || '/' },
     }),
