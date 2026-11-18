@@ -5,7 +5,7 @@ import { NestApp } from './NestApp'
 import { PhoneApp } from './PhoneApp'
 import { PublicCard, readCardIdFromPath } from './PublicCard'
 import { fetchGraveyard, fetchPublicFeed, type FeedRow, type Stone } from './lib/cloud'
-import { carePortraitFor, TEMPERAMENTS } from './data/temperaments'
+import { carePortraitFor, ghostPortraitFor, TEMPERAMENTS } from './data/temperaments'
 import { isDesktopLayout } from './lib/device'
 import { feedSentence, timeAgo } from './lib/feed'
 import { careAlertFor } from './lib/health'
@@ -78,8 +78,8 @@ function Graveyard() {
       {stones.map((g) => (
         <li key={`${g.name}-${g.departed_at}`}>
           <img
-            className={g.ghost ? 'ghost-portrait' : 'stone-portrait'}
-            src={carePortraitFor(g.temperament_id)}
+            className={g.ghost ? '' : 'stone-portrait'}
+            src={g.ghost ? ghostPortraitFor(g.temperament_id) : carePortraitFor(g.temperament_id)}
             alt=""
             width={56}
             height={56}

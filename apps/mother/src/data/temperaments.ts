@@ -165,3 +165,17 @@ export const STAGE_PORTRAITS: Record<string, Record<string, string>> = {}
 export function stagePortraitFor(temperamentId: string, stage: string): string {
   return STAGE_PORTRAITS[stage]?.[temperamentId] ?? carePortraitFor(temperamentId)
 }
+
+/** Ghost portraits (owner's art, 18 Nov). Used for departed Hagglings that kept a ghost. */
+export const GHOST_PORTRAITS: Record<string, string> = {
+  douce: '/art/haggling-ghost-douce.jpeg',
+  skeigh: '/art/haggling-ghost-skeigh.jpeg',
+  'ill-trickit': '/art/haggling-ghost-ill-trickit.jpeg',
+  ree: '/art/haggling-ghost-ree.jpeg',
+  radge: '/art/haggling-ghost-radge.jpeg',
+  'fair-wud': '/art/haggling-ghost-fair-wud.jpeg',
+}
+
+export function ghostPortraitFor(temperamentId: string): string {
+  return GHOST_PORTRAITS[temperamentId] ?? carePortraitFor(temperamentId)
+}

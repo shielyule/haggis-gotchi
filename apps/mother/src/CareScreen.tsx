@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { stagePortraitFor, temperamentForChaos } from './data/temperaments'
+import { ghostPortraitFor, stagePortraitFor, temperamentForChaos } from './data/temperaments'
 import { lifeLevel } from './lib/engine'
 import { careAlertFor, healthLabel } from './lib/health'
 import { getDeviceId } from './lib/device'
@@ -207,9 +207,9 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
         <h2>{h.name}</h2>
         <div className="care-stage">
           <img
-            className="ghost-portrait"
-            src={stagePortraitFor(temp.id, life.stage)}
-            alt={`${h.name}, remembered`}
+            className={ghost ? '' : 'ghost-portrait'}
+            src={ghost ? ghostPortraitFor(temp.id) : stagePortraitFor(temp.id, life.stage)}
+            alt={ghost ? `The ghost of ${h.name}` : `${h.name}, remembered`}
           />
         </div>
         <p className="epitaph">{h.epitaph ?? 'The mother is carving the stone. Back in a few minutes…'}</p>

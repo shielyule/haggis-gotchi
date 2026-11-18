@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { carePortraitFor, hatchFilmFor, TEMPERAMENTS } from './data/temperaments'
+import { carePortraitFor, ghostPortraitFor, hatchFilmFor, TEMPERAMENTS } from './data/temperaments'
 import { lifeLevel } from './lib/engine'
 import { supabase } from './lib/supabase'
 
@@ -93,7 +93,11 @@ export function PublicCard({ id }: { id: string }) {
         <p className="signup-kicker">In memory of</p>
         <h1>{card.name}</h1>
         <div className="care-stage">
-          <img className="ghost-portrait" src={carePortraitFor(card.temperament_id)} alt={`${card.name}, remembered`} />
+          <img
+            className={card.ghost ? '' : 'ghost-portrait'}
+            src={card.ghost ? ghostPortraitFor(card.temperament_id) : carePortraitFor(card.temperament_id)}
+            alt={card.ghost ? `The ghost of ${card.name}` : `${card.name}, remembered`}
+          />
         </div>
         <p className="epitaph">{card.epitaph}</p>
         <p className="care-sub">
