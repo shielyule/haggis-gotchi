@@ -67,6 +67,7 @@ Deno.serve(async (req) => {
       .from('children')
       .select('carer_id, egg_id')
       .not('home_device_id', 'is', null)
+      .is('departed_at', null)
     if (kidErr) throw kidErr
     const carerIds = [...new Set((kids ?? []).map((k) => k.carer_id as string))]
     if (carerIds.length === 0) return json(200, { carers: 0, recorded: 0 })

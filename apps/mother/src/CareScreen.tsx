@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { carePortraitFor, temperamentForChaos } from './data/temperaments'
+import { stagePortraitFor, temperamentForChaos } from './data/temperaments'
 import { lifeLevel } from './lib/engine'
 import { careAlertFor, healthLabel } from './lib/health'
 import { getDeviceId } from './lib/device'
@@ -23,7 +23,7 @@ import {
   photoTreatSynced,
   refreshHomeDevice,
 } from './lib/syncActions'
-import { isDemoEgg, isPlayFilmUnlocked, WEATHER_BUCKETS, WEATHER_LABEL } from './lib/engine'
+import { isDemoEgg, isPlayFilmUnlocked, lifeStatus, WEATHER_BUCKETS, WEATHER_LABEL } from './lib/engine'
 import {
   applyDemoWeather,
   chooseHomePlace,
@@ -32,7 +32,8 @@ import {
   weatherChoice,
   type WeatherChip,
 } from './lib/weather'
-import { fetchShareInfo, fetchShowInFeed, saveShowInFeed, setShareEnabled } from './lib/cloud'
+import { fetchShareInfo, fetchShowInFeed, lifecycleAction, pullBroodFromCloud, saveShowInFeed, setShareEnabled } from './lib/cloud'
+import { replaceLocalBrood } from './lib/storage'
 import { WatchMemories } from './WatchMemories'
 
 const WEATHER_ICON: Record<string, string> = {
@@ -117,7 +118,9 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const h = egg.haggling
   const temp = temperamentForChaos(egg.answers.chaos)
   // phone-home R4: only the home device cares; others watch.
-  const isHome = Boolean(h?.homeDeviceId) && h?.homeDeviceId === getDeviceId()
+  const departedNow =
+    Boolean(h?.departedAt) || (h?.spanEndsAt ? Date.now() >= Date.parse(h.spanEndsAt) : false)
+  const isHome = Boolean(h?.homeDeviceId) && h?.homeDeviceId === getDeviceId() && !departedNow
   const noHomeYet = !h?.homeDeviceId
 
   useEffect(() => {
@@ -192,6 +195,64 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
 
   if (!h) return null
 
+  const life = lifeStatus(h.bornAt ?? h.hatchedAt, h.spanEndsAt, now, h.departedAt)
+  const isDemo = isDemoEgg(egg.createdAt, egg.readyAt)
+
+  // lifespan-graveyard R2/R5: the final page.
+  if (life.departed) {
+    const ghost = h.ghostOptIn === true
+    return (
+      <div className="care phone-shell final-page">
+        <p className="signup-kicker">Gone to the glen</p>
+        <h2>{h.name}</h2>
+        <div className="care-stage">
+          <img
+            className="ghost-portrait"
+            src={stagePortraitFor(temp.id, life.stage)}
+            alt={`${h.name}, remembered`}
+          />
+        </div>
+        <p className="epitaph">{h.epitaph ?? 'The mother is carving the stone. Back in a few minutes…'}</p>
+        <p className="care-sub">
+          {temp.label} · {life.day} days · Level {lifeLevel(h.lifeXp ?? 0).level}
+        </p>
+        {h.departedAt && h.ghostOptIn == null ? (
+          <section className="transfer-card">
+            <p className="care-sub">Keep a wee ghost of {h.name} in the mother&rsquo;s graveyard?</p>
+            <div className="cta-row">
+              <button type="button" className="btn btn-primary" onClick={() => void chooseGhost(true)}>
+                Keep a ghost
+              </button>
+              <button type="button" className="btn btn-ghost" onClick={() => void chooseGhost(false)}>
+                Let them rest
+              </button>
+            </div>
+          </section>
+        ) : ghost ? (
+          <p className="care-sub">A wee ghost of {h.name} drifts between the stones.</p>
+        ) : null}
+        <section className="care-scrap">
+          <h3>Last pages</h3>
+          <ul>
+            {h.scrapbook.slice(0, 5).map((e) => (
+              <li key={e.id}>
+                <span>{e.text}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <div className="cta-row">
+          <a className="btn btn-primary" href="/?new=1">
+            Claim a new egg
+          </a>
+          <a className="btn btn-ghost" href="/mother">
+            Visit the graveyard
+          </a>
+        </div>
+      </div>
+    )
+  }
+
   const breakfastHour = h.breakfastHour ?? h.feedHour ?? 8
   const dinnerHour = h.dinnerHour ?? 18
   const alert = careAlertFor(h)
@@ -225,6 +286,29 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       taps.current = []
       setDemoOpen((v) => !v)
     }
+  }
+
+  /** Pull this carer's brood from the cloud (after server-side life changes). */
+  async function refreshFromCloud() {
+    const cloud = await pullBroodFromCloud()
+    if (cloud) replaceLocalBrood(cloud)
+    onChange()
+  }
+
+  async function demoLife(action: 'next' | 'end') {
+    const childId = h?.cloudChildId
+    if (!childId) return
+    setDemoNote(action === 'next' ? 'Growing up…' : 'Saying goodbye…')
+    const r = await lifecycleAction(childId, action)
+    setDemoNote(r.ok ? (action === 'next' ? 'Next stage!' : 'Gone to the glen.') : (r.error ?? 'Could not do that.'))
+    await refreshFromCloud()
+  }
+
+  async function chooseGhost(keep: boolean) {
+    const childId = h?.cloudChildId
+    if (!childId) return
+    await lifecycleAction(childId, 'ghost', keep)
+    await refreshFromCloud()
   }
 
   function demoWeather(bucket: (typeof WEATHER_BUCKETS)[number]) {
@@ -325,7 +409,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           <p className="signup-kicker">Your Haggling</p>
           <h2 onClick={tapName}>{h.name}</h2>
           <p className="care-sub">
-            {temp.label} · {moodLabel(h.mood)} · {healthLabel(h)}
+            {life.label} · {life.daysLeft} days left · {temp.label} · {moodLabel(h.mood)} · {healthLabel(h)}
             {alert === 'amber' ? ' · amber warning' : ''}
             {alert === 'red' ? ' · sick' : ''}
             {!isHome ? ' · watching' : ''}
@@ -358,6 +442,18 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
               </button>
             ))}
           </div>
+          {isDemo ? (
+            <div className="cta-row">
+              <button type="button" className="btn btn-ghost" onClick={() => void demoLife('next')}>
+                Next stage ({life.label} now)
+              </button>
+              <button type="button" className="btn btn-ghost" onClick={() => void demoLife('end')}>
+                Skip to the end
+              </button>
+            </div>
+          ) : (
+            <p className="care-sub">Life fast-forward works on demo eggs only.</p>
+          )}
           {demoNote ? <p className="care-sub">{demoNote}</p> : null}
           <button type="button" className="btn btn-ghost" onClick={() => setDemoOpen(false)}>
             Close demo menu
@@ -422,7 +518,8 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       ) : null}
 
       <div className="care-stage">
-        <img src={carePortraitFor(temp.id)} alt={`${h.name}, a ${temp.label} Haggling`} />
+        <img src={stagePortraitFor(temp.id, life.stage)} alt={`${h.name}, a ${temp.label} Haggling`} />
+        {life.stage !== 'baby' ? <span className="stage-badge">{life.label}</span> : null}
       </div>
 
       <div className="care-meters">

@@ -1154,3 +1154,35 @@
 .share-toggle {
   margin-top: 0.5rem;
 }
+
+/* lifespan-graveyard (18 Nov) */
+.care-stage { position: relative; }
+.stage-badge {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: var(--heather);
+  color: var(--cream);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.ghost-portrait { filter: grayscale(0.85) opacity(0.7); }
+.stone-portrait { filter: grayscale(1) contrast(0.9); }
+.epitaph {
+  font-family: var(--font-display);
+  font-style: italic;
+  line-height: 1.4;
+}
+.final-page .cta-row { margin-top: 1rem; }
+.graveyard-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+.graveyard-list li { display: flex; gap: 0.75rem; align-items: flex-start; }
+.graveyard-list img { border-radius: 50%; object-fit: cover; flex: none; }
+.graveyard-list .epitaph { margin: 0.2rem 0; font-size: 0.95rem; }

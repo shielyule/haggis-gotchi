@@ -43,6 +43,12 @@ type ChildRow = {
   weather_applied: string[] | null
   public_id: string | null
   share_enabled: boolean | null
+  born_at: string | null
+  span_ends_at: string | null
+  departed_at: string | null
+  ghost_opt_in: boolean | null
+  tone: string | null
+  epitaph: string | null
 }
 
 /** Health XP column is -100..100; Life XP never below 0. */
@@ -241,6 +247,12 @@ function childToHaggling(child: ChildRow, scraps: ScrapEntry[]): Haggling {
     homeDeviceId: child.home_device_id ?? undefined,
     hatchedAt: child.created_at,
     publicId: child.public_id ?? undefined,
+    bornAt: child.born_at ?? child.created_at,
+    spanEndsAt: child.span_ends_at ?? undefined,
+    departedAt: child.departed_at ?? undefined,
+    ghostOptIn: child.ghost_opt_in,
+    tone: child.tone ?? undefined,
+    epitaph: child.epitaph ?? undefined,
     shareEnabled: child.share_enabled ?? true,
     weatherApplied: child.weather_applied ?? [],
     lastCleanAt: child.last_tick_at,
@@ -557,4 +569,39 @@ export async function fetchShowInFeed(): Promise<boolean | null> {
   if (!supabase || !uid) return null
   const { data } = await supabase.from('carers').select('show_in_feed').eq('id', uid).maybeSingle()
   return (data as { show_in_feed?: boolean } | null)?.show_in_feed ?? null
+}
+
+/** lifespan-graveyard: demo fast-forward ("next" / "end", demo eggs only) and ghost choice. */
+export async function lifecycleAction(
+  childId: string,
+  action: 'next' | 'end' | 'ghost',
+  keep?: boolean,
+): Promise<{ ok: boolean; error?: string }> {
+  if (!supabase || !(await requireUserId())) return { ok: false, error: 'Sign in first.' }
+  const { data, error } = await supabase.functions.invoke('lifecycle', { body: { action, childId, keep } })
+  if (error) {
+    const ctx = (error as { context?: Response }).context
+    const body = (await ctx?.json().catch(() => null)) as { error?: string } | null
+    return { ok: false, error: body?.error ?? 'Could not reach the mother.' }
+  }
+  return { ok: Boolean((data as { ok?: boolean })?.ok) }
+}
+
+export type Stone = {
+  name: string
+  temperament_id: string
+  days_lived: number
+  tone: string
+  epitaph: string
+  departed_at: string
+  public_id: string | null
+  ghost: boolean
+}
+
+/** Public graveyard (mother page; later the 3D graveyard). Stones only. */
+export async function fetchGraveyard(): Promise<Stone[] | null> {
+  if (!supabase) return null
+  const { data, error } = await supabase.rpc('public_graveyard')
+  if (error) return null
+  return (data ?? []) as Stone[]
 }

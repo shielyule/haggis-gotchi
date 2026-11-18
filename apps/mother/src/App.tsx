@@ -4,7 +4,8 @@ import { AuthBar } from './AuthBar'
 import { NestApp } from './NestApp'
 import { PhoneApp } from './PhoneApp'
 import { PublicCard, readCardIdFromPath } from './PublicCard'
-import { fetchPublicFeed, type FeedRow } from './lib/cloud'
+import { fetchGraveyard, fetchPublicFeed, type FeedRow, type Stone } from './lib/cloud'
+import { carePortraitFor, TEMPERAMENTS } from './data/temperaments'
 import { isDesktopLayout } from './lib/device'
 import { feedSentence, timeAgo } from './lib/feed'
 import { careAlertFor } from './lib/health'
@@ -58,6 +59,40 @@ function BroodFeed() {
         <li key={`${r.at}-${r.carer_name}-${r.haggling_name}-${r.action}`}>
           <span>{feedSentence(r)}</span>
           <time dateTime={r.at}>{timeAgo(r.at, now)}</time>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+/** lifespan-graveyard R4: the mother's graveyard (stones only). The 3D graveyard reads the same list. */
+function Graveyard() {
+  const [stones, setStones] = useState<Stone[] | null>(null)
+  useEffect(() => {
+    void fetchGraveyard().then(setStones)
+  }, [])
+  if (stones === null) return <p>The mist is lifting…</p>
+  if (stones.length === 0) return <p>No stones yet. Every Haggling lives about six weeks.</p>
+  return (
+    <ul className="graveyard-list">
+      {stones.map((g) => (
+        <li key={`${g.name}-${g.departed_at}`}>
+          <img
+            className={g.ghost ? 'ghost-portrait' : 'stone-portrait'}
+            src={carePortraitFor(g.temperament_id)}
+            alt=""
+            width={56}
+            height={56}
+          />
+          <div>
+            <strong>{g.name}</strong>{' '}
+            <span className="care-sub">
+              {TEMPERAMENTS.find((t) => t.id === g.temperament_id)?.label ?? ''} · {g.days_lived} days
+              {g.ghost ? ' · a ghost lingers' : ''}
+            </span>
+            <p className="epitaph">{g.epitaph}</p>
+            {g.public_id ? <a href={`/h/${g.public_id}`}>Memorial card</a> : null}
+          </div>
         </li>
       ))}
     </ul>
@@ -249,10 +284,7 @@ function MotherApp() {
           </div>
           <div className="yard-block">
             <h3>Graveyard</h3>
-            <p>
-              When the span ends, memory lives here. Ghosts are optional and
-              read-only for the MVP.
-            </p>
+            <Graveyard />
           </div>
         </div>
       </section>

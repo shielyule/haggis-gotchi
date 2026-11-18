@@ -154,3 +154,14 @@ export function temperamentForChaos(chaos: number): Temperament {
     TEMPERAMENTS[TEMPERAMENTS.length - 1]
   )
 }
+
+/**
+ * Stage portraits (lifespan-graveyard). Owner is making teen/adult/elder images:
+ * add entries here as `haggling-<stage>-<temperament>.jpeg` lands in public/art.
+ * Missing stages fall back to the baby portrait (the care screen shows a stage badge).
+ */
+export const STAGE_PORTRAITS: Record<string, Record<string, string>> = {}
+
+export function stagePortraitFor(temperamentId: string, stage: string): string {
+  return STAGE_PORTRAITS[stage]?.[temperamentId] ?? carePortraitFor(temperamentId)
+}

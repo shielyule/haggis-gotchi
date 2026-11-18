@@ -78,6 +78,7 @@ Deno.serve(async (req) => {
         .from('children')
         .select('id, carer_id, name, created_at, egg_id')
         .not('home_device_id', 'is', null)
+        .is('departed_at', null)
         .gte('created_at', since)
       const eggIds = (young ?? []).map((k) => k.egg_id as string)
       const { data: kidEggs } = eggIds.length
@@ -143,6 +144,7 @@ Deno.serve(async (req) => {
       .select('id, carer_id, name, temperament_id, breakfast_hour, dinner_hour, bed_hour, hunger, mood, energy, mess, health_xp, last_tick_at')
       .in('carer_id', carerIds)
       .not('home_device_id', 'is', null)
+      .is('departed_at', null)
     if (kidErr) throw kidErr
     for (const k of (kids ?? []) as (ChildRow & { carer_id: string })[]) {
       const tz = byCarer.get(k.carer_id)?.[0]?.timezone ?? 'Europe/London'

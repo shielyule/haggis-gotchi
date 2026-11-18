@@ -84,6 +84,9 @@ Deno.serve(async (req) => {
       .maybeSingle()
     if (error) throw error
     if (!row) return json(404, { ok: false, error: 'Haggling not found.' })
+    if (row.departed_at) {
+      return json(409, { ok: false, error: `${row.name} has gone to the glen.` })
+    }
     if (row.home_device_id && row.home_device_id !== deviceId) {
       return json(409, { ok: false, error: `Photo Treats happen on ${row.name}'s home phone.` })
     }

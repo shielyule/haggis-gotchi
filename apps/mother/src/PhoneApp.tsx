@@ -92,8 +92,10 @@ export function PhoneApp() {
     )
   }
 
+  // "Claim a new egg" after a departure (lifespan-graveyard R2.3) opens /?new=1.
+  const wantsNew = new URLSearchParams(window.location.search).get('new') === '1'
   const mine = eggs[0]
-  if (mine) return <NestApp slug={eggSlug(mine)} />
+  if (mine && !wantsNew) return <NestApp slug={eggSlug(mine)} />
 
   return (
     <main className="phone-start">
@@ -105,7 +107,10 @@ export function PhoneApp() {
       <SignupForm
         demoCompress={demo}
         presetEmail={email}
-        onClaimed={() => setEggs(loadStore().eggs)}
+        onClaimed={() => {
+          window.history.replaceState(null, '', '/')
+          setEggs(loadStore().eggs)
+        }}
       />
     </main>
   )

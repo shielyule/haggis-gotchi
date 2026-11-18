@@ -144,6 +144,8 @@ export function nameHaggling(
     egg.haggling = {
       eggId,
       hatchedAt: now,
+      bornAt: now, // server sets the authoritative dates (lifespan-graveyard)
+      spanEndsAt: new Date(Date.parse(now) + 42 * 86_400_000).toISOString(),
       name: name.trim() || 'Wee Yin',
       breakfastHour,
       dinnerHour,

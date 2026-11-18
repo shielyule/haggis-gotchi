@@ -49,3 +49,4 @@ export {
   PLAY_FILM_DEMO_DELAY_MS,
   playFilmUnlockAt,
 } from './films.ts'
+export { epitaph, LIFESPAN_DAYS, lifeStatus, STAGES, toneFor, type LifeStatus, type StageId, type Tone } from './life.ts'

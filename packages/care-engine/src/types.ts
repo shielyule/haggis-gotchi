@@ -67,6 +67,13 @@ export type Haggling = {
   careXpToday?: number
   /** Local date of the last Photo Treat (one per day). */
   lastTreatDay?: string
+  /** lifespan-graveyard: server-decided life (born_at, span_ends_at, departed_at). */
+  bornAt?: string
+  spanEndsAt?: string
+  departedAt?: string
+  ghostOptIn?: boolean | null
+  tone?: string
+  epitaph?: string
   /** When it was named/hatched (children.created_at). Drives growth films. */
   hatchedAt?: string
   /** share-card: public id for /h/<id>, and whether the card is on. */

@@ -15,6 +15,9 @@ type Card = {
   health_xp: number | null
   hatched_at: string | null
   share_enabled: boolean
+  departed_at?: string | null
+  epitaph?: string | null
+  ghost?: boolean | null
 }
 
 export function readCardIdFromPath(pathname = window.location.pathname): string | null {
@@ -81,6 +84,29 @@ export function PublicCard({ id }: { id: string }) {
   const days = card.hatched_at
     ? Math.max(0, Math.floor((Date.now() - Date.parse(card.hatched_at)) / 86_400_000))
     : 0
+
+  // lifespan-graveyard R4.1: departed Hagglings' cards become memorials.
+  if (card.departed_at) {
+    return (
+      <main className="phone-start public-card">
+        <p className="brand">Haggis-gotchi</p>
+        <p className="signup-kicker">In memory of</p>
+        <h1>{card.name}</h1>
+        <div className="care-stage">
+          <img className="ghost-portrait" src={carePortraitFor(card.temperament_id)} alt={`${card.name}, remembered`} />
+        </div>
+        <p className="epitaph">{card.epitaph}</p>
+        <p className="care-sub">
+          {temp?.label} Haggling · Level {level.level}
+          {card.ghost ? ' · a wee ghost still drifts in the graveyard' : ''}
+        </p>
+        <a className="btn btn-ghost" href="/mother">
+          Visit the graveyard
+        </a>
+        {getEgg}
+      </main>
+    )
+  }
 
   return (
     <main className="phone-start public-card">

@@ -16,6 +16,7 @@ Kiro adds to this file as features land. Times are targets.
 | The playing film | Demo eggs unlock it 3 minutes after hatching: notification + "New film in Watch again" |
 | Mist / haar love | Demo menu: Mist and fog (+8 Mood for all), Haar (+10) |
 | Public scrapbook | Mother page on the Mac shows "Fred just fed Harry · 2 min ago" as you care on the phone |
+| Life stages + graveyard | Demo egg: demo menu -> **Next stage** (Baby -> Child -> Teen -> Adult -> Old age) or **Skip to the end** -> final page, epitaph, ghost choice; Mac mother page shows the new stone |
 | Share card | Share on social -> WhatsApp shows "{name} the {temperament} Haggling" with the portrait |
 
 **Hidden demo menu (works in the installed app):** tap the Haggling's name **5 times
