@@ -294,7 +294,21 @@ function MotherApp() {
             <BroodFeed />
           </div>
           <div className="yard-block">
-            <h3>Graveyard</h3>
+            <h3>
+              <a
+                className="yard-link"
+                href="/haggis-graveyard"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Graveyard
+              </a>
+            </h3>
+            <p>
+              <a href="/haggis-graveyard" target="_blank" rel="noopener noreferrer">
+                Explore the Haggis Kirkyard (opens in a new tab)
+              </a>
+            </p>
             <Graveyard />
           </div>
         </div>

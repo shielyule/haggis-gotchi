@@ -1186,3 +1186,5 @@
 .graveyard-list li { display: flex; gap: 0.75rem; align-items: flex-start; }
 .graveyard-list img { border-radius: 50%; object-fit: cover; flex: none; }
 .graveyard-list .epitaph { margin: 0.2rem 0; font-size: 0.95rem; }
+.yard-link { text-decoration: none; }
+.yard-link:hover, .yard-link:focus-visible { text-decoration: underline; }
