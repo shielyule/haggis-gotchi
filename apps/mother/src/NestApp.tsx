@@ -3,6 +3,7 @@ import { AuthBar } from './AuthBar'
 import { CareScreen, NameHagglingForm } from './CareScreen'
 import { beatIndex, filledBeats } from './data/birthStories'
 import {
+  carePortraitFor,
   HATCH_FILM_FALLBACK,
   hatchFilmFor,
   temperamentForChaos,
@@ -42,7 +43,7 @@ function HatchFilm({
       muted
       playsInline
       controls
-      poster="/art/haggis-hero.jpg"
+      poster={carePortraitFor(temperamentId)}
       onError={() => {
         if (src !== HATCH_FILM_FALLBACK) setSrc(HATCH_FILM_FALLBACK)
       }}

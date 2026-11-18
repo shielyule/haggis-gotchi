@@ -1,0 +1,2363 @@
+{
+ "irn-bru-front-1": {
+  "labels": [
+   {
+    "name": "Glass",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Alcohol",
+    "confidence": 99.8,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 99.8,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 99.8,
+    "parents": []
+   },
+   {
+    "name": "Beer Glass",
+    "confidence": 91.3,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage",
+     "Glass",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Liquor",
+    "confidence": 91.3,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Juice",
+    "confidence": 90.4,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Cocktail",
+    "confidence": 67.9,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Soda",
+    "confidence": 64.7,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Lager",
+    "confidence": 57.8,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Cup",
+    "confidence": 56.5,
+    "parents": []
+   },
+   {
+    "name": "Pottery",
+    "confidence": 55.6,
+    "parents": []
+   },
+   {
+    "name": "Jar",
+    "confidence": 54,
+    "parents": []
+   },
+   {
+    "name": "Goblet",
+    "confidence": 53.7,
+    "parents": [
+     "Glass"
+    ]
+   },
+   {
+    "name": "Cooking",
+    "confidence": 52.6,
+    "parents": []
+   },
+   {
+    "name": "Soaking Ingredients",
+    "confidence": 52.6,
+    "parents": [
+     "Cooking"
+    ]
+   },
+   {
+    "name": "Wine",
+    "confidence": 52.3,
+    "parents": [
+     "Alcohol",
+     "Beverage",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Whisky",
+    "confidence": 51.1,
+    "parents": [
+     "Alcohol",
+     "Beverage",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Wine Glass",
+    "confidence": 50.9,
+    "parents": [
+     "Alcohol",
+     "Beverage",
+     "Glass",
+     "Liquor",
+     "Wine"
+    ]
+   },
+   {
+    "name": "Bottle",
+    "confidence": 50.8,
+    "parents": []
+   },
+   {
+    "name": "Pop Bottle",
+    "confidence": 50.8,
+    "parents": [
+     "Beverage",
+     "Bottle",
+     "Soda"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 50.6,
+    "parents": []
+   },
+   {
+    "name": "Seasoning",
+    "confidence": 50.6,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Syrup",
+    "confidence": 50.6,
+    "parents": [
+     "Food",
+     "Seasoning"
+    ]
+   },
+   {
+    "name": "Stein",
+    "confidence": 50.4,
+    "parents": [
+     "Cup"
+    ]
+   },
+   {
+    "name": "Honey",
+    "confidence": 50.4,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Orange Juice",
+    "confidence": 50.3,
+    "parents": [
+     "Beverage",
+     "Juice"
+    ]
+   },
+   {
+    "name": "Tea",
+    "confidence": 50.1,
+    "parents": [
+     "Beverage"
+    ]
+   }
+  ],
+  "words": []
+ },
+ "irn-bru-front-2": {
+  "labels": [
+   {
+    "name": "Glass",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Alcohol",
+    "confidence": 100,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 100,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Beer Glass",
+    "confidence": 99.9,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage",
+     "Glass",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Liquor",
+    "confidence": 99.9,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Lager",
+    "confidence": 99.4,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Cocktail",
+    "confidence": 57.5,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Juice",
+    "confidence": 54.9,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Goblet",
+    "confidence": 54.4,
+    "parents": [
+     "Glass"
+    ]
+   },
+   {
+    "name": "Wine",
+    "confidence": 53,
+    "parents": [
+     "Alcohol",
+     "Beverage",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Cup",
+    "confidence": 51.9,
+    "parents": []
+   },
+   {
+    "name": "Whisky",
+    "confidence": 51.8,
+    "parents": [
+     "Alcohol",
+     "Beverage",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Wine Glass",
+    "confidence": 51.7,
+    "parents": [
+     "Alcohol",
+     "Beverage",
+     "Glass",
+     "Liquor",
+     "Wine"
+    ]
+   },
+   {
+    "name": "Soda",
+    "confidence": 51.5,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer Bottle",
+    "confidence": 51.4,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage",
+     "Bottle",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Bottle",
+    "confidence": 51.4,
+    "parents": []
+   },
+   {
+    "name": "Architecture",
+    "confidence": 50.6,
+    "parents": []
+   },
+   {
+    "name": "Building",
+    "confidence": 50.6,
+    "parents": [
+     "Architecture"
+    ]
+   },
+   {
+    "name": "Factory",
+    "confidence": 50.6,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "Sake",
+    "confidence": 50.3,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   }
+  ],
+  "words": []
+ },
+ "irn-bru-front-crop": {
+  "labels": [
+   {
+    "name": "Glass",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Alcohol",
+    "confidence": 100,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 100,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Beer Glass",
+    "confidence": 99.8,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage",
+     "Glass",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Liquor",
+    "confidence": 99.8,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Lager",
+    "confidence": 99.3,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Can",
+    "confidence": 82.5,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Tin",
+    "confidence": 82.5,
+    "parents": []
+   },
+   {
+    "name": "Cocktail",
+    "confidence": 56.2,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Juice",
+    "confidence": 53.3,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Whisky",
+    "confidence": 52.7,
+    "parents": [
+     "Alcohol",
+     "Beverage",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Goblet",
+    "confidence": 52.6,
+    "parents": [
+     "Glass"
+    ]
+   },
+   {
+    "name": "Wine",
+    "confidence": 52.4,
+    "parents": [
+     "Alcohol",
+     "Beverage",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Soda",
+    "confidence": 51.6,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Architecture",
+    "confidence": 51.6,
+    "parents": []
+   },
+   {
+    "name": "Building",
+    "confidence": 51.6,
+    "parents": [
+     "Architecture"
+    ]
+   },
+   {
+    "name": "Factory",
+    "confidence": 51.6,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "Cup",
+    "confidence": 50.9,
+    "parents": []
+   },
+   {
+    "name": "Wine Glass",
+    "confidence": 50.2,
+    "parents": [
+     "Alcohol",
+     "Beverage",
+     "Glass",
+     "Liquor",
+     "Wine"
+    ]
+   }
+  ],
+  "words": []
+ },
+ "irn-bru-fm": {
+  "labels": [
+   {
+    "name": "Bottle",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Beverage",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Pop Bottle",
+    "confidence": 100,
+    "parents": [
+     "Beverage",
+     "Bottle",
+     "Soda"
+    ]
+   },
+   {
+    "name": "Soda",
+    "confidence": 100,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 94.7,
+    "parents": []
+   },
+   {
+    "name": "Ketchup",
+    "confidence": 94.7,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Aftershave",
+    "confidence": 56,
+    "parents": [
+     "Bottle"
+    ]
+   },
+   {
+    "name": "Water Bottle",
+    "confidence": 55.8,
+    "parents": [
+     "Bottle"
+    ]
+   },
+   {
+    "name": "Seasoning",
+    "confidence": 55.1,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Syrup",
+    "confidence": 55.1,
+    "parents": [
+     "Food",
+     "Seasoning"
+    ]
+   },
+   {
+    "name": "Juice",
+    "confidence": 53.8,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Alcohol",
+    "confidence": 50.5,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Sake",
+    "confidence": 50.5,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Cleaning",
+    "confidence": 50.3,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Person",
+    "confidence": 50.3,
+    "parents": []
+   },
+   {
+    "name": "Beer",
+    "confidence": 50.2,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "IN",
+    "confidence": 38.7
+   },
+   {
+    "text": "IRN-BRU",
+    "confidence": 99.2
+   },
+   {
+    "text": "\u0637\u064a\u0628",
+    "confidence": 9.1
+   }
+  ]
+ },
+ "irn-bru-can": {
+  "labels": [
+   {
+    "name": "Alcohol",
+    "confidence": 99.7,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 99.7,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 99.7,
+    "parents": []
+   },
+   {
+    "name": "Can",
+    "confidence": 98,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Tin",
+    "confidence": 98,
+    "parents": []
+   },
+   {
+    "name": "Glass",
+    "confidence": 76.7,
+    "parents": []
+   },
+   {
+    "name": "Soda",
+    "confidence": 58.4,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Lager",
+    "confidence": 57.9,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Juice",
+    "confidence": 56.1,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Cocktail",
+    "confidence": 55.7,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Liquor",
+    "confidence": 54.9,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Cup",
+    "confidence": 54.7,
+    "parents": []
+   },
+   {
+    "name": "Beer Glass",
+    "confidence": 54.2,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage",
+     "Glass",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Coke",
+    "confidence": 53.7,
+    "parents": [
+     "Beverage",
+     "Soda"
+    ]
+   },
+   {
+    "name": "Sake",
+    "confidence": 53.7,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Aluminium",
+    "confidence": 51.2,
+    "parents": []
+   },
+   {
+    "name": "Canned Goods",
+    "confidence": 51.2,
+    "parents": [
+     "Aluminium",
+     "Can",
+     "Food",
+     "Tin"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 51.2,
+    "parents": []
+   },
+   {
+    "name": "Tea",
+    "confidence": 50.8,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Lemonade",
+    "confidence": 50.7,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Produce",
+    "confidence": 50.5,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Whisky",
+    "confidence": 50.3,
+    "parents": [
+     "Alcohol",
+     "Beverage",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Seasoning",
+    "confidence": 50.2,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Syrup",
+    "confidence": 50.2,
+    "parents": [
+     "Food",
+     "Seasoning"
+    ]
+   },
+   {
+    "name": "Fruit",
+    "confidence": 50.1,
+    "parents": [
+     "Food",
+     "Plant",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Plant",
+    "confidence": 50.1,
+    "parents": []
+   }
+  ],
+  "words": [
+   {
+    "text": "MU",
+    "confidence": 12.9
+   },
+   {
+    "text": "MULTIPACK",
+    "confidence": 99.8
+   },
+   {
+    "text": "CAN",
+    "confidence": 99.8
+   },
+   {
+    "text": "NOT",
+    "confidence": 63.1
+   },
+   {
+    "text": "NOT",
+    "confidence": 98.3
+   },
+   {
+    "text": "FOR",
+    "confidence": 98.7
+   },
+   {
+    "text": "RESALE",
+    "confidence": 99.1
+   },
+   {
+    "text": "AS",
+    "confidence": 98.7
+   },
+   {
+    "text": "A",
+    "confidence": 61.7
+   },
+   {
+    "text": "SINGLE",
+    "confidence": 98.9
+   },
+   {
+    "text": "UNIT",
+    "confidence": 99.2
+   },
+   {
+    "text": "BRU'D",
+    "confidence": 99
+   },
+   {
+    "text": "IN",
+    "confidence": 98.4
+   },
+   {
+    "text": "SCOTLAND",
+    "confidence": 99.2
+   },
+   {
+    "text": "TO",
+    "confidence": 99.1
+   },
+   {
+    "text": "A",
+    "confidence": 86
+   },
+   {
+    "text": "SPARKLING",
+    "confidence": 97
+   },
+   {
+    "text": "SECRET",
+    "confidence": 94.9
+   },
+   {
+    "text": "LOW",
+    "confidence": 97.4
+   },
+   {
+    "text": "CALORIE",
+    "confidence": 97.9
+   },
+   {
+    "text": "RECIPE",
+    "confidence": 99.1
+   },
+   {
+    "text": "FLAVOURED",
+    "confidence": 97.8
+   },
+   {
+    "text": "SINCE",
+    "confidence": 99.4
+   },
+   {
+    "text": "SOFT",
+    "confidence": 98.4
+   },
+   {
+    "text": "DRINK",
+    "confidence": 98.6
+   },
+   {
+    "text": "1901",
+    "confidence": 99.5
+   },
+   {
+    "text": "INGREDIENTS:",
+    "confidence": 93.3
+   },
+   {
+    "text": "WITH",
+    "confidence": 90.1
+   },
+   {
+    "text": "Acid",
+    "confidence": 16.2
+   },
+   {
+    "text": "Preservative",
+    "confidence": 91.5
+   },
+   {
+    "text": "Pascas",
+    "confidence": 14.3
+   },
+   {
+    "text": "SWEETENERS",
+    "confidence": 95.9
+   },
+   {
+    "text": "estee",
+    "confidence": 15.7
+   },
+   {
+    "text": "Store be cool",
+    "confidence": 12.1
+   },
+   {
+    "text": "Flavourings",
+    "confidence": 94.7
+   },
+   {
+    "text": "if",
+    "confidence": 21
+   },
+   {
+    "text": "BMW",
+    "confidence": 17.8
+   },
+   {
+    "text": "48.",
+    "confidence": 59.2
+   },
+   {
+    "text": "ins-in",
+    "confidence": 12
+   },
+   {
+    "text": "BEFORE",
+    "confidence": 79
+   },
+   {
+    "text": "[Acesall",
+    "confidence": 26
+   },
+   {
+    "text": "activity",
+    "confidence": 96.4
+   },
+   {
+    "text": "Carbonated",
+    "confidence": 89.4
+   },
+   {
+    "text": "4HP",
+    "confidence": 59.4
+   },
+   {
+    "text": "May",
+    "confidence": 95.6
+   },
+   {
+    "text": "-",
+    "confidence": 30.2
+   },
+   {
+    "text": ".co.uk",
+    "confidence": 34.7
+   },
+   {
+    "text": "END:",
+    "confidence": 80.6
+   },
+   {
+    "text": "(Including",
+    "confidence": 91.2
+   },
+   {
+    "text": "dry",
+    "confidence": 95.6
+   },
+   {
+    "text": "have",
+    "confidence": 97
+   },
+   {
+    "text": "am",
+    "confidence": 73.7
+   },
+   {
+    "text": "and",
+    "confidence": 97
+   },
+   {
+    "text": "Colours",
+    "confidence": 94.5
+   },
+   {
+    "text": "01",
+    "confidence": 62.2
+   },
+   {
+    "text": "Phenylalaniat",
+    "confidence": 12.5
+   },
+   {
+    "text": "place.",
+    "confidence": 83.9
+   },
+   {
+    "text": "SEE",
+    "confidence": 78.7
+   },
+   {
+    "text": "attention",
+    "confidence": 96
+   },
+   {
+    "text": "an",
+    "confidence": 73.8
+   },
+   {
+    "text": "CORSE",
+    "confidence": 75.4
+   },
+   {
+    "text": "YelloH",
+    "confidence": 72
+   },
+   {
+    "text": "Water,",
+    "confidence": 96
+   },
+   {
+    "text": "BASE",
+    "confidence": 65.8
+   },
+   {
+    "text": "adverst",
+    "confidence": 95
+   },
+   {
+    "text": "SERVE",
+    "confidence": 97.1
+   },
+   {
+    "text": "Quinine],",
+    "confidence": 63.7
+   },
+   {
+    "text": "Barco",
+    "confidence": 67.6
+   },
+   {
+    "text": "Caffeine,",
+    "confidence": 96.6
+   },
+   {
+    "text": "De",
+    "confidence": 7.3
+   },
+   {
+    "text": "in ca",
+    "confidence": 10.9
+   },
+   {
+    "text": "artame],",
+    "confidence": 82.9
+   },
+   {
+    "text": "Acid",
+    "confidence": 97.4
+   },
+   {
+    "text": "set",
+    "confidence": 96.9
+   },
+   {
+    "text": "F &",
+    "confidence": 81.7
+   },
+   {
+    "text": "(Citric",
+    "confidence": 84
+   },
+   {
+    "text": "Yellow",
+    "confidence": 97.2
+   },
+   {
+    "text": "hildren.",
+    "confidence": 97.6
+   },
+   {
+    "text": "JOL",
+    "confidence": 90.8
+   },
+   {
+    "text": "Each",
+    "confidence": 96.9
+   },
+   {
+    "text": "330ml",
+    "confidence": 96.9
+   },
+   {
+    "text": "@",
+    "confidence": 93.6
+   },
+   {
+    "text": "agbarr.co.uk",
+    "confidence": 97.4
+   },
+   {
+    "text": "can",
+    "confidence": 95.9
+   },
+   {
+    "text": "contains",
+    "confidence": 92.4
+   },
+   {
+    "text": "Energy",
+    "confidence": 97.2
+   },
+   {
+    "text": "<1%",
+    "confidence": 92.8
+   },
+   {
+    "text": "9kJ",
+    "confidence": 66.9
+   },
+   {
+    "text": "2kcal",
+    "confidence": 96.8
+   },
+   {
+    "text": "0%",
+    "confidence": 95
+   },
+   {
+    "text": "ITT",
+    "confidence": 87
+   },
+   {
+    "text": "Freepost",
+    "confidence": 98.1
+   },
+   {
+    "text": "Fat",
+    "confidence": 96.4
+   },
+   {
+    "text": "SERY-RSAK.",
+    "confidence": 41.7
+   },
+   {
+    "text": "0g",
+    "confidence": 83.3
+   },
+   {
+    "text": "W,",
+    "confidence": 86
+   },
+   {
+    "text": "ID,",
+    "confidence": 62.9
+   },
+   {
+    "text": "UK",
+    "confidence": 63.5
+   },
+   {
+    "text": "Saturates",
+    "confidence": 97.2
+   },
+   {
+    "text": "0%",
+    "confidence": 96.4
+   }
+  ]
+ },
+ "irn-bru-girder": {
+  "labels": [
+   {
+    "name": "Alcohol",
+    "confidence": 100,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 100,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Bottle",
+    "confidence": 99.6,
+    "parents": []
+   },
+   {
+    "name": "Beer Bottle",
+    "confidence": 98.4,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage",
+     "Bottle",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Liquor",
+    "confidence": 98.4,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Shelter",
+    "confidence": 57.8,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Outdoors"
+    ]
+   },
+   {
+    "name": "Tin",
+    "confidence": 57.7,
+    "parents": []
+   },
+   {
+    "name": "Lager",
+    "confidence": 57.7,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Wood",
+    "confidence": 57.6,
+    "parents": []
+   },
+   {
+    "name": "Housing",
+    "confidence": 57,
+    "parents": [
+     "Architecture",
+     "Building"
+    ]
+   },
+   {
+    "name": "House",
+    "confidence": 55.9,
+    "parents": [
+     "Architecture",
+     "Building",
+     "Housing"
+    ]
+   },
+   {
+    "name": "Porch",
+    "confidence": 55.9,
+    "parents": [
+     "Architecture",
+     "Building",
+     "House",
+     "Housing"
+    ]
+   },
+   {
+    "name": "Window",
+    "confidence": 55.7,
+    "parents": []
+   },
+   {
+    "name": "Bucket",
+    "confidence": 55,
+    "parents": []
+   },
+   {
+    "name": "Can",
+    "confidence": 54.7,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Glass",
+    "confidence": 54.7,
+    "parents": []
+   },
+   {
+    "name": "Potted Plant",
+    "confidence": 54.4,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Plywood",
+    "confidence": 54.3,
+    "parents": [
+     "Wood"
+    ]
+   },
+   {
+    "name": "Pop Bottle",
+    "confidence": 54.1,
+    "parents": [
+     "Beverage",
+     "Bottle",
+     "Soda"
+    ]
+   },
+   {
+    "name": "Soda",
+    "confidence": 54.1,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Soil",
+    "confidence": 53.9,
+    "parents": []
+   },
+   {
+    "name": "City",
+    "confidence": 53.7,
+    "parents": []
+   },
+   {
+    "name": "Tub",
+    "confidence": 53.2,
+    "parents": []
+   },
+   {
+    "name": "Door",
+    "confidence": 53.1,
+    "parents": []
+   },
+   {
+    "name": "Rust",
+    "confidence": 52.6,
+    "parents": [
+     "Corrosion"
+    ]
+   },
+   {
+    "name": "Machine",
+    "confidence": 52.5,
+    "parents": []
+   },
+   {
+    "name": "Hardwood",
+    "confidence": 52.4,
+    "parents": [
+     "Wood"
+    ]
+   },
+   {
+    "name": "Cup",
+    "confidence": 52.3,
+    "parents": []
+   },
+   {
+    "name": "Beer Glass",
+    "confidence": 51.8,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage",
+     "Glass",
+     "Liquor"
+    ]
+   },
+   {
+    "name": "Road",
+    "confidence": 51.7,
+    "parents": []
+   },
+   {
+    "name": "Street",
+    "confidence": 51.7,
+    "parents": [
+     "City",
+     "Road",
+     "Urban"
+    ]
+   },
+   {
+    "name": "Table",
+    "confidence": 51.5,
+    "parents": [
+     "Furniture"
+    ]
+   },
+   {
+    "name": "Trash Can",
+    "confidence": 51.5,
+    "parents": [
+     "Can",
+     "Tin"
+    ]
+   },
+   {
+    "name": "Cleaning",
+    "confidence": 51,
+    "parents": [
+     "Person"
+    ]
+   },
+   {
+    "name": "Trash",
+    "confidence": 50.9,
+    "parents": [
+     "Garbage"
+    ]
+   },
+   {
+    "name": "Patio",
+    "confidence": 50.7,
+    "parents": [
+     "Architecture",
+     "Building",
+     "House",
+     "Housing"
+    ]
+   },
+   {
+    "name": "Cooler",
+    "confidence": 50.4,
+    "parents": [
+     "Appliance",
+     "Device",
+     "Electrical Device"
+    ]
+   },
+   {
+    "name": "Walkway",
+    "confidence": 50.3,
+    "parents": [
+     "Path"
+    ]
+   },
+   {
+    "name": "Floor",
+    "confidence": 50.2,
+    "parents": []
+   }
+  ],
+  "words": [
+   {
+    "text": "IRNIBRU",
+    "confidence": 79.8
+   }
+  ]
+ },
+ "control-fanta-330": {
+  "labels": [
+   {
+    "name": "Tin",
+    "confidence": 99.9,
+    "parents": []
+   },
+   {
+    "name": "Can",
+    "confidence": 99.1,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Citrus Fruit",
+    "confidence": 94.6,
+    "parents": [
+     "Food",
+     "Fruit",
+     "Plant",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 94.6,
+    "parents": []
+   },
+   {
+    "name": "Fruit",
+    "confidence": 94.6,
+    "parents": [
+     "Food",
+     "Plant",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Orange",
+    "confidence": 94.6,
+    "parents": [
+     "Citrus Fruit",
+     "Food",
+     "Fruit",
+     "Plant",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Plant",
+    "confidence": 94.6,
+    "parents": []
+   },
+   {
+    "name": "Produce",
+    "confidence": 94.6,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Aluminium",
+    "confidence": 54,
+    "parents": []
+   },
+   {
+    "name": "Canned Goods",
+    "confidence": 54,
+    "parents": [
+     "Aluminium",
+     "Can",
+     "Food",
+     "Tin"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 53.6,
+    "parents": []
+   },
+   {
+    "name": "Lemonade",
+    "confidence": 51.7,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Soda",
+    "confidence": 50.3,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Grapefruit",
+    "confidence": 50.2,
+    "parents": [
+     "Citrus Fruit",
+     "Food",
+     "Fruit",
+     "Plant",
+     "Produce"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "LEI",
+    "confidence": 96.2
+   },
+   {
+    "text": "CONTINE",
+    "confidence": 98.4
+   },
+   {
+    "text": "pret",
+    "confidence": 98.5
+   },
+   {
+    "text": "maxim",
+    "confidence": 97.7
+   },
+   {
+    "text": "recomando",
+    "confidence": 33.6
+   },
+   {
+    "text": "SUC",
+    "confidence": 98.9
+   },
+   {
+    "text": "DE",
+    "confidence": 99.4
+   },
+   {
+    "text": "PORTOCALE",
+    "confidence": 98.6
+   },
+   {
+    "text": "PAUP!",
+    "confidence": 22.1
+   },
+   {
+    "text": "BOBROCUTE",
+    "confidence": 37.1
+   },
+   {
+    "text": "Aceasta",
+    "confidence": 90.8
+   },
+   {
+    "text": "cutie",
+    "confidence": 82.6
+   },
+   {
+    "text": "de",
+    "confidence": 84.4
+   },
+   {
+    "text": "Kcal",
+    "confidence": 96.9
+   },
+   {
+    "text": "139",
+    "confidence": 96.9
+   },
+   {
+    "text": "TO",
+    "confidence": 10.6
+   },
+   {
+    "text": "racoritor",
+    "confidence": 94.4
+   },
+   {
+    "text": "de",
+    "confidence": 98.5
+   },
+   {
+    "text": "CU",
+    "confidence": 96.9
+   },
+   {
+    "text": "gust",
+    "confidence": 98.1
+   },
+   {
+    "text": "PORTOCALE",
+    "confidence": 99.2
+   },
+   {
+    "text": "LL",
+    "confidence": 38.5
+   },
+   {
+    "text": "B",
+    "confidence": 36.9
+   },
+   {
+    "text": "Cantitatea",
+    "confidence": 89
+   },
+   {
+    "text": "Cay",
+    "confidence": 47.3
+   },
+   {
+    "text": "e0,33L",
+    "confidence": 96.8
+   },
+   {
+    "text": "AND",
+    "confidence": 22.7
+   },
+   {
+    "text": "S",
+    "confidence": 44.6
+   },
+   {
+    "text": "Ceca",
+    "confidence": 28.4
+   },
+   {
+    "text": "The",
+    "confidence": 99.2
+   },
+   {
+    "text": "\u00b0P",
+    "confidence": 47.1
+   },
+   {
+    "text": "mmond",
+    "confidence": 18.1
+   },
+   {
+    "text": "um",
+    "confidence": 65.1
+   }
+  ]
+ },
+ "control-fanta-thai": {
+  "labels": [
+   {
+    "name": "Can",
+    "confidence": 98,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Tin",
+    "confidence": 98,
+    "parents": []
+   },
+   {
+    "name": "Beverage",
+    "confidence": 55.7,
+    "parents": []
+   },
+   {
+    "name": "Soda",
+    "confidence": 55.3,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Alcohol",
+    "confidence": 54.3,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 54.3,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Aluminium",
+    "confidence": 53.9,
+    "parents": []
+   },
+   {
+    "name": "Canned Goods",
+    "confidence": 52.2,
+    "parents": [
+     "Aluminium",
+     "Can",
+     "Food",
+     "Tin"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 52.2,
+    "parents": []
+   },
+   {
+    "name": "Device",
+    "confidence": 52.1,
+    "parents": []
+   },
+   {
+    "name": "Appliance",
+    "confidence": 51.2,
+    "parents": [
+     "Device",
+     "Electrical Device"
+    ]
+   },
+   {
+    "name": "Electrical Device",
+    "confidence": 51.2,
+    "parents": []
+   },
+   {
+    "name": "Lager",
+    "confidence": 51.1,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Coke",
+    "confidence": 51.1,
+    "parents": [
+     "Beverage",
+     "Soda"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "FOODS",
+    "confidence": 11.2
+   },
+   {
+    "text": "Vas",
+    "confidence": 7.6
+   },
+   {
+    "text": "Insume",
+    "confidence": 12
+   },
+   {
+    "text": "(325",
+    "confidence": 95.9
+   },
+   {
+    "text": "SIRL)",
+    "confidence": 13.4
+   },
+   {
+    "text": "S",
+    "confidence": 27.1
+   },
+   {
+    "text": "FANT",
+    "confidence": 66.4
+   },
+   {
+    "text": "0%",
+    "confidence": 82.9
+   },
+   {
+    "text": "5 %",
+    "confidence": 30.7
+   },
+   {
+    "text": "2%",
+    "confidence": 62.5
+   },
+   {
+    "text": "F",
+    "confidence": 93.7
+   },
+   {
+    "text": "The",
+    "confidence": 79.1
+   },
+   {
+    "text": "2.000",
+    "confidence": 42.8
+   },
+   {
+    "text": "\u041f\u0430\u0448\u0435\u043d!",
+    "confidence": 11.4
+   },
+   {
+    "text": "IWUM",
+    "confidence": 46.2
+   },
+   {
+    "text": "IWHM",
+    "confidence": 18.1
+   },
+   {
+    "text": "IWH",
+    "confidence": 24.4
+   },
+   {
+    "text": "4.5%",
+    "confidence": 78.5
+   },
+   {
+    "text": "nded",
+    "confidence": 30.6
+   },
+   {
+    "text": "LLW",
+    "confidence": 37.6
+   },
+   {
+    "text": "and",
+    "confidence": 9.5
+   },
+   {
+    "text": "D",
+    "confidence": 27.1
+   },
+   {
+    "text": "/",
+    "confidence": 71.5
+   },
+   {
+    "text": "FORD",
+    "confidence": 12.1
+   },
+   {
+    "text": "1",
+    "confidence": 39.6
+   },
+   {
+    "text": "211) ms M",
+    "confidence": 12
+   },
+   {
+    "text": "UMT",
+    "confidence": 17.4
+   },
+   {
+    "text": "use",
+    "confidence": 13.5
+   },
+   {
+    "text": "nauau",
+    "confidence": 85.7
+   },
+   {
+    "text": "one",
+    "confidence": 21.2
+   },
+   {
+    "text": "A",
+    "confidence": 18.6
+   },
+   {
+    "text": "uluau",
+    "confidence": 32.7
+   },
+   {
+    "text": "School",
+    "confidence": 7.9
+   },
+   {
+    "text": "00",
+    "confidence": 41.4
+   },
+   {
+    "text": "Des-On",
+    "confidence": 17.6
+   },
+   {
+    "text": "3003",
+    "confidence": 22.1
+   },
+   {
+    "text": "-",
+    "confidence": 12.7
+   },
+   {
+    "text": "decented",
+    "confidence": 32
+   },
+   {
+    "text": "adidas",
+    "confidence": 14.9
+   },
+   {
+    "text": "-",
+    "confidence": 85.6
+   },
+   {
+    "text": "-",
+    "confidence": 77
+   },
+   {
+    "text": "158",
+    "confidence": 60.3
+   },
+   {
+    "text": "minuto",
+    "confidence": 12.3
+   },
+   {
+    "text": "Fanta",
+    "confidence": 97.4
+   },
+   {
+    "text": "(87.91",
+    "confidence": 50.5
+   }
+  ]
+ },
+ "control-fanta-hk": {
+  "labels": [
+   {
+    "name": "Tin",
+    "confidence": 99.2,
+    "parents": []
+   },
+   {
+    "name": "Can",
+    "confidence": 94.8,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Tape",
+    "confidence": 86,
+    "parents": []
+   },
+   {
+    "name": "Alcohol",
+    "confidence": 68.8,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beer",
+    "confidence": 68.8,
+    "parents": [
+     "Alcohol",
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Beverage",
+    "confidence": 68.8,
+    "parents": []
+   },
+   {
+    "name": "Aluminium",
+    "confidence": 54.2,
+    "parents": []
+   },
+   {
+    "name": "Canned Goods",
+    "confidence": 54.2,
+    "parents": [
+     "Aluminium",
+     "Can",
+     "Food",
+     "Tin"
+    ]
+   },
+   {
+    "name": "Food",
+    "confidence": 54.2,
+    "parents": []
+   },
+   {
+    "name": "Soda",
+    "confidence": 53.1,
+    "parents": [
+     "Beverage"
+    ]
+   },
+   {
+    "name": "Coke",
+    "confidence": 52,
+    "parents": [
+     "Beverage",
+     "Soda"
+    ]
+   },
+   {
+    "name": "Lager",
+    "confidence": 51.7,
+    "parents": [
+     "Alcohol",
+     "Beer",
+     "Beverage"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "BLEASE",
+    "confidence": 30.7
+   },
+   {
+    "text": "LITER",
+    "confidence": 31
+   },
+   {
+    "text": "DON'T",
+    "confidence": 94.3
+   },
+   {
+    "text": "PROPERLY",
+    "confidence": 84.9
+   },
+   {
+    "text": "DISPOSE",
+    "confidence": 88.9
+   },
+   {
+    "text": "OF",
+    "confidence": 97.5
+   },
+   {
+    "text": "FANTA",
+    "confidence": 98.5
+   },
+   {
+    "text": "\"Fanta",
+    "confidence": 97.3
+   },
+   {
+    "text": "\"",
+    "confidence": 92.2
+   },
+   {
+    "text": "Orange",
+    "confidence": 74.8
+   },
+   {
+    "text": "ANV",
+    "confidence": 39.1
+   },
+   {
+    "text": "Water,",
+    "confidence": 96.2
+   },
+   {
+    "text": "Sugar",
+    "confidence": 80.1
+   },
+   {
+    "text": "Servings",
+    "confidence": 97.5
+   },
+   {
+    "text": "Serving",
+    "confidence": 95.7
+   },
+   {
+    "text": "102).",
+    "confidence": 85.5
+   },
+   {
+    "text": "Preservative",
+    "confidence": 85.7
+   },
+   {
+    "text": "136",
+    "confidence": 12
+   },
+   {
+    "text": "Per",
+    "confidence": 97.9
+   },
+   {
+    "text": "(330)",
+    "confidence": 96.6
+   },
+   {
+    "text": "way",
+    "confidence": 6.9
+   },
+   {
+    "text": "Size",
+    "confidence": 89.2
+   },
+   {
+    "text": "I",
+    "confidence": 16.5
+   },
+   {
+    "text": "Package",
+    "confidence": 69.6
+   },
+   {
+    "text": "Nutrition",
+    "confidence": 33.4
+   },
+   {
+    "text": "2024.10.09",
+    "confidence": 98.6
+   },
+   {
+    "text": "21:12",
+    "confidence": 100
+   }
+  ]
+ },
+ "control-coke-can": {
+  "labels": [
+   {
+    "name": "Can",
+    "confidence": 98.8,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Tin",
+    "confidence": 98.8,
+    "parents": []
+   },
+   {
+    "name": "Beverage",
+    "confidence": 98.8,
+    "parents": []
+   },
+   {
+    "name": "Coke",
+    "confidence": 98.8,
+    "parents": [
+     "Beverage",
+     "Soda"
+    ]
+   },
+   {
+    "name": "Soda",
+    "confidence": 98.8,
+    "parents": [
+     "Beverage"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "105",
+    "confidence": 99.1
+   },
+   {
+    "text": "1200",
+    "confidence": 12.2
+   },
+   {
+    "text": "GDA*",
+    "confidence": 92
+   },
+   {
+    "text": "adidas",
+    "confidence": 17.1
+   },
+   {
+    "text": "a",
+    "confidence": 35.1
+   },
+   {
+    "text": "Y",
+    "confidence": 53.6
+   },
+   {
+    "text": "AROMI",
+    "confidence": 98.1
+   },
+   {
+    "text": "NATURALI.",
+    "confidence": 95.2
+   },
+   {
+    "text": "ono",
+    "confidence": 9.7
+   },
+   {
+    "text": "kcal",
+    "confidence": 98.2
+   },
+   {
+    "text": "SENZA",
+    "confidence": 99.2
+   },
+   {
+    "text": "1886.",
+    "confidence": 99.3
+   },
+   {
+    "text": "AGGIUNTA",
+    "confidence": 98.1
+   },
+   {
+    "text": "DI",
+    "confidence": 100
+   },
+   {
+    "text": "CONSERVANTI.",
+    "confidence": 96.5
+   },
+   {
+    "text": ".",
+    "confidence": 60.9
+   },
+   {
+    "text": "5%",
+    "confidence": 93.5
+   },
+   {
+    "text": "DAL",
+    "confidence": 99.4
+   }
+  ]
+ }
+}

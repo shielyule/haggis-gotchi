@@ -79,17 +79,17 @@ function nearHour(hour: number, target: number) {
   return Math.abs(hour - target) <= 1 || Math.abs(hour - target) >= 23
 }
 
-/** Shrink on the device before upload (photo-care R1.3): long side <= 1280 px, JPEG. */
+/** Shrink on the device before upload (photo-care R1.3): long side <= 1600 px (sharp enough for can lettering), JPEG. */
 async function shrinkPhoto(file: File): Promise<Blob> {
   const bitmap = await createImageBitmap(file)
-  const scale = Math.min(1, 1280 / Math.max(bitmap.width, bitmap.height))
+  const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height))
   const canvas = document.createElement('canvas')
   canvas.width = Math.max(1, Math.round(bitmap.width * scale))
   canvas.height = Math.max(1, Math.round(bitmap.height * scale))
   canvas.getContext('2d')?.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
   bitmap.close?.()
   return new Promise((resolve, reject) =>
-    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('encode failed'))), 'image/jpeg', 0.85),
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('encode failed'))), 'image/jpeg', 0.9),
   )
 }
 

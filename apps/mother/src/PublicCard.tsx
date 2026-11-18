@@ -101,7 +101,7 @@ export function PublicCard({ id }: { id: string }) {
         <Bar label="Mess" value={card.mess ?? 0} />
       </div>
       <h3>The hatching</h3>
-      <video className="watch-film" controls playsInline preload="metadata" poster="/art/haggis-hero.jpg">
+      <video className="watch-film" controls playsInline preload="metadata" poster={carePortraitFor(card.temperament_id)}>
         <source src={hatchFilmFor(card.temperament_id)} type="video/mp4" />
       </video>
       {getEgg}

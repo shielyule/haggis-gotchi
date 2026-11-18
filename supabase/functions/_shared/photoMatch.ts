@@ -21,7 +21,7 @@ export const TREATS: Record<TreatId, { name: string; line: string }> = {
 }
 
 /** Thresholds from the evidence: Irn-Bru logo text is read at ~80% (girder photo 79.8). */
-export const THRESHOLDS = { text: 75, label: 80 }
+export const THRESHOLDS = { text: 75, label: 80, exactWord: 60 }
 
 const label = (d: Detected, names: string[], min: number) =>
   Math.max(0, ...d.labels.filter((l) => names.includes(l.name) && l.confidence >= min).map((l) => l.confidence))
@@ -29,8 +29,14 @@ const label = (d: Detected, names: string[], min: number) =>
 function irnBru(d: Detected): number {
   let best = 0
   for (const w of d.words) {
-    if (w.confidence < THRESHOLDS.text) continue
     const t = w.text.toUpperCase().replace(/[^A-Z]/g, '')
+    // An exact "IRN" / "BRU" / "IRNBRU" word is strong evidence even when the logo font lowers confidence.
+    const exact = /^(IRN|BRU|IRNBRU|IRNIBRU)$/.test(t)
+    if (w.confidence < (exact ? THRESHOLDS.exactWord : THRESHOLDS.text)) continue
+    if (t === 'IRN') {
+      best = Math.max(best, w.confidence)
+      continue
+    }
     // Seen in real reads: "IRN BRU", "IRNIBRU", "BRU", "BRU'D" (the "Bru'd in Scotland" line).
     if (/^(IRNI?)?BRUD?$/.test(t) || t.includes('IRNBRU') || t.includes('IRNIBRU')) best = Math.max(best, w.confidence)
   }

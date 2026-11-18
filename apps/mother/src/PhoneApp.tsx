@@ -5,6 +5,7 @@ import { NestApp } from './NestApp'
 import { SignupForm } from './SignupForm'
 import { pullBroodFromCloud } from './lib/cloud'
 import { installSkipped, isInstalled, skipInstall } from './lib/device'
+import { carePortraitFor, temperamentForChaos } from './data/temperaments'
 import { eggSlug, loadStore, replaceLocalBrood, type EggRecord } from './lib/storage'
 import { supabase } from './lib/supabase'
 
@@ -59,10 +60,20 @@ export function PhoneApp() {
   }
 
   if (!authReady || (email && !pulled)) {
+    // Start-up still: this phone's own Haggling type, if it has one.
+    const known = eggs.find((e) => e.haggling)
     return (
       <main className="phone-start">
         <p className="brand">Haggis-gotchi</p>
-        <p>Waking the mother…</p>
+        {known ? (
+          <div className="care-stage">
+            <img
+              src={carePortraitFor(temperamentForChaos(known.answers.chaos).id)}
+              alt={known.haggling?.name ?? 'Your Haggling'}
+            />
+          </div>
+        ) : null}
+        <p>{known?.haggling ? `Waking ${known.haggling.name}…` : 'Waking the mother…'}</p>
       </main>
     )
   }

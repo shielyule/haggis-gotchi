@@ -17,7 +17,7 @@ import { localClock } from '../_shared/reminders.ts'
 
 const CHECKS_PER_DAY = 10 // cost cap per carer (about $0.002 a check)
 
-const MAX_BYTES = 1_500_000
+const MAX_BYTES = 2_500_000 // 1600 px JPEG from the phone; Rekognition allows 5 MB
 const ORIGINS = [
   'https://haggisgotchi.com',
   'https://www.haggisgotchi.com',
@@ -124,10 +124,21 @@ Deno.serve(async (req) => {
       seen = seenSummary(detected)
       const match = matchTreat(detected)
       if (!match) {
+        // Evidence for tuning: which words were read (product text on the photo).
+        const read = detected.words
+          .filter((w) => w.confidence >= 50 && /[A-Za-z]{2,}/.test(w.text))
+          .slice(0, 8)
+          .map((w) => w.text.replace(/[^\p{L}\p{N}'-]/gu, '').slice(0, 20))
+          .filter(Boolean)
+        console.log(`photo-treat: no match; labels=${seen.join('|')} words=${read.join('|')}`)
         return json(200, {
           ok: false,
           seen,
-          error: `${row.name} squints. ${seen.length ? `That looks like ${seen.join(', ').toLowerCase()}, ` : ''}but it is not a Scottish treat. Try Irn-Bru, bagpipes, a kilt or tartan, heather or shortbread.`,
+          read,
+          error:
+            `${row.name} squints. ${seen.length ? `That looks like ${seen.join(', ').toLowerCase()}, ` : ''}but it is not a Scottish treat. ` +
+            (read.length ? `(Could read: ${read.join(' ')}.) ` : '(Could not read any words.) ') +
+            'For Irn-Bru, get the IRN BRU letters big and sharp in the photo. Or try bagpipes, a kilt or tartan, heather or shortbread.',
         })
       }
       treatId = match.id

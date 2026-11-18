@@ -36,3 +36,23 @@ for (const [k, want] of Object.entries(expected)) {
 test('the result card never lists people', () => {
   assert.ok(!seenSummary(fx['piper']).some((n) => /Person|Woman|Female|Adult/.test(n)))
 })
+
+// 18 Nov: front-of-can / glass photos (owner's Irn-Bru screenshot failed the same way: no text read).
+const cans = JSON.parse(
+  readFileSync(new URL('./fixtures/photo/rekognition-2026-11-18-cans.json', import.meta.url), 'utf8'),
+) as Record<string, Detected>
+const cansExpected: Record<string, string | null> = {
+  'irn-bru-fm': 'irn-bru', // bottle, "IRN-BRU" read at 99%
+  'irn-bru-can': 'irn-bru',
+  'irn-bru-girder': 'irn-bru',
+  'irn-bru-front-1': null, // known miss: no text read, labelled Glass/Beer
+  'control-fanta-330': null,
+  'control-fanta-thai': null,
+  'control-fanta-hk': null,
+  'control-coke-can': null,
+}
+for (const [k, want] of Object.entries(cansExpected)) {
+  test(`real photo (18 Nov): ${k} -> ${want ?? 'no treat'}`, () => {
+    assert.equal(matchTreat(cans[k])?.id ?? null, want)
+  })
+}

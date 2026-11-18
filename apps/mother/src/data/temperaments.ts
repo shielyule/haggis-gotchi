@@ -101,7 +101,7 @@ export const CARE_PORTRAITS: Record<string, string> = {
   'fair-wud': '/art/haggling-care-fair-wud.jpeg',
 }
 
-export const CARE_PORTRAIT_FALLBACK = '/art/haggis-hero.jpg'
+export const CARE_PORTRAIT_FALLBACK = '/art/mother-haggis.jpeg'
 
 export function hatchFilmFor(temperamentId: string): string {
   return HATCH_FILMS[temperamentId] ?? HATCH_FILM_FALLBACK
@@ -143,7 +143,8 @@ export function memoryFilmsFor(
     opts.playUnlocked && PLAY_FILMS[temperamentId]
       ? [{ id: `play-${temperamentId}`, title: `Playing: ${temp.label}`, src: PLAY_FILMS[temperamentId] }]
       : []
-  return [hatch, ...play, ...more]
+  // Newest first (owner, 18 Nov): later growth films come before the hatch film.
+  return [...[...more].reverse(), ...play, hatch]
 }
 
 export function temperamentForChaos(chaos: number): Temperament {

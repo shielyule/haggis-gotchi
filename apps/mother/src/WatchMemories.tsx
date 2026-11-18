@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
+  carePortraitFor,
   HATCH_FILM_FALLBACK,
   memoryFilmsFor,
   type MemoryFilm,
@@ -20,6 +21,13 @@ export function WatchMemories({ temperamentId, extras = [], playUnlocked = false
   const [selectedId, setSelectedId] = useState(films[0]?.id ?? '')
   const [playingId, setPlayingId] = useState<string | null>(null)
   const [src, setSrc] = useState(() => films[0]?.src ?? HATCH_FILM_FALLBACK)
+
+  // Newest film is the default; switch to it when a new one unlocks while open.
+  const newestId = films[0]?.id ?? ''
+  useEffect(() => {
+    setSelectedId(newestId)
+    setPlayingId(null)
+  }, [newestId])
 
   const selected = films.find((f) => f.id === selectedId) ?? films[0]
   const playing = playingId ? films.find((f) => f.id === playingId) : null
@@ -72,7 +80,7 @@ export function WatchMemories({ temperamentId, extras = [], playUnlocked = false
             controls
             autoPlay
             playsInline
-            poster="/art/haggis-hero.jpg"
+            poster={carePortraitFor(temperamentId)}
             onError={() => {
               if (src !== HATCH_FILM_FALLBACK) setSrc(HATCH_FILM_FALLBACK)
             }}
