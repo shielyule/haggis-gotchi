@@ -1,5 +1,5 @@
 import QRCode from 'qrcode'
-import { useCallback, useEffect, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
 import { AuthBar } from './AuthBar'
 import { NestApp } from './NestApp'
 import { PhoneApp } from './PhoneApp'
@@ -21,11 +21,22 @@ import {
 import { openNestInNewTab, readNestSlugFromPath, slugifyName } from './lib/slug'
 import './App.css'
 
+/** graveyard-3d: its own chunk, so the phone app never downloads it. */
+const GraveyardPage = lazy(() => import('./graveyard/GraveyardPage'))
+
 /**
  * phone-home R1: one site, two faces. Phones get the Haggling; desktops get the mother.
  * Layout only, never security.
  */
 export default function App() {
+  // graveyard-3d: the painted kirkyard, any device, no sign-in.
+  if (window.location.pathname.replace(/\/+$/, '') === '/haggis-graveyard') {
+    return (
+      <Suspense fallback={<p style={{ padding: '2rem' }}>Walking up to the kirk…</p>}>
+        <GraveyardPage />
+      </Suspense>
+    )
+  }
   // share-card: public Haggling card, any device, no sign-in.
   const cardId = readCardIdFromPath()
   if (cardId) return <PublicCard id={cardId} />
