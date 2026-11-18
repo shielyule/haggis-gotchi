@@ -2,7 +2,7 @@
 
 Depends on `sync-conflict` T1-T5. Commit format: `lifespan-graveyard T3: <what>`.
 
-- [ ] T1 Confirm span length with the carer (14 days proposed)
+- [x] T1 Span decided 18 Nov: 42 days (6 weeks) with stages; demo fast-forward (spec v2). Stage content still to agree.
 - [ ] T2 Migration: columns, insert trigger, `graveyard_entries`, `depart_due_children()`, pg_cron (R1, R2, R4)
 - [ ] T3 Engine: departed state, care blocked, `moodDaily`, `toneFor` + tests (R2, R3)
 - [ ] T4 Scrapbook wording sets by tone; epitaph templates (R3.2)
