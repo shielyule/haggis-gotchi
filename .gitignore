@@ -12,6 +12,8 @@ build/
 supabase/.temp/
 # Local data backups (contain emails) - never commit
 backups/
+# Cloudflare wrangler local state (dev runs) - never commit
+.wrangler/
 # Env
 .env
 .env.*
