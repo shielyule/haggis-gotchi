@@ -239,6 +239,27 @@
   background: #000;
   margin-bottom: 0.75rem;
 }
+.gy-dialog-video {
+  margin: 0.5rem 0 0;
+}
+/* Always-visible gold scroll bar (overlay scroll bars on Mac and phones hide themselves). */
+.gy-dialog::-webkit-scrollbar {
+  width: 12px;
+}
+.gy-dialog::-webkit-scrollbar-track {
+  background: #120d09;
+  border-radius: 0 0.75rem 0.75rem 0;
+}
+.gy-dialog::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 999px;
+  border: 3px solid #120d09;
+}
+@supports not selector(::-webkit-scrollbar) {
+  .gy-dialog {
+    scrollbar-color: var(--gold) #120d09;
+  }
+}
 img.gy-dialog-media {
   width: auto;
   max-width: 100%;
