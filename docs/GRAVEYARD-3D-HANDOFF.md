@@ -14,7 +14,7 @@ overnight burials, Undertaker's Ledger, ghost lore). Do **not** commit the PDF t
 | --- | --- |
 | Departure at day 42, once, by the server | Edge Function `lifecycle` (cron every 5 min) |
 | One headstone row per departed Haggling | table `graveyard_entries` (owner-only RLS; service role writes) |
-| Public list of stones | `rpc('public_graveyard')` -> `name, temperament_id, days_lived, tone, epitaph, departed_at, public_id, ghost` (max 100, newest first, no carer details, honours the public-scrapbook opt-out) |
+| Public list of stones | `rpc('public_graveyard')` -> `name, temperament_id, days_lived, tone, epitaph, departed_at, public_id, ghost` (max 100, newest first, no carer details; ALL stones since 19 Nov, owner decision) |
 | Memorial card per Haggling | `/h/<public_id>` |
 | Ghost portraits (owner art) | `apps/mother/public/art/haggling-ghost-<temperament>.jpeg`, `ghostPortraitFor()` in `src/data/temperaments.ts` |
 | Tone | `bright` / `dim` / `dark` (from the last 7 days of mood) |
