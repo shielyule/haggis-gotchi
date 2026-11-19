@@ -239,6 +239,12 @@
   background: #000;
   margin-bottom: 0.75rem;
 }
+img.gy-dialog-media {
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto 0.75rem;
+  background: transparent;
+}
 .gy-dialog-x {
   position: absolute;
   top: 0.5rem;

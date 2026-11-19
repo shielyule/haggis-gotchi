@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": "new-kilbryde-parish-church-built-1712",
+    "title": "New Kilbryde Parish Church (Built 1712)",
+    "views": "all",
+    "points": [
+      [
+        63.7,
+        41.7
+      ],
+      [
+        57.1,
+        39.6
+      ],
+      [
+        56.9,
+        26.3
+      ],
+      [
+        66.1,
+        24.6
+      ],
+      [
+        69.2,
+        35.4
+      ]
+    ],
+    "lore": "The History: Constructed just twenty paces west of the ivy-choked ruins, this modest, steep-roofed stone kirk features a stout bell-tower designed to withstand mountain squalls and a warm amber-lit sanctuary that still holds Sunday services.\n\nWhy It Took Over: By the early 1700s, the growing parish needed a weather-tight roof and a proper watch-house window overlooking the yard to deter body snatchers. Rather than risk disturbing the ancient, crowded burials beneath the ruined nave—or provoking the restless spirits rumored to guard it—the parish elders built on fresh ground right beside it. The glowing window in its side wall still acts as an unofficial beacon for anyone foolish enough to cross the kirkyard after dark.",
+    "image": "/graveyard/hotspots/new-kilbryde-parish-church.webp",
+    "imageAlt": "The New Kilbryde parish church on a misty evening: a small stone kirk with a pointed bell-tower and a glowing amber window."
+  }
+]
