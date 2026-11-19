@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import {
   LEVELS,
   TIMES,
@@ -9,7 +9,13 @@ import {
   type TimeOfDay,
   type ViewKey,
 } from './views'
+import { HotspotDialog } from './HotspotDialog'
+import { HotspotLayer } from './HotspotLayer'
+import { HOTSPOTS, hotspotsFor, viewId } from './hotspots'
 import './graveyard.css'
+
+/** The drawing tool exists only in the dev build. In production this is null and the file is left out. */
+const HotspotEditor = import.meta.env.DEV ? lazy(() => import('./HotspotEditor')) : null
 
 /** Fade length. Keep in step with `--gy-fade` in graveyard.css. */
 const FADE_MS = 450
@@ -72,13 +78,40 @@ function useMusic() {
 }
 
 /**
+ * The view from the address. A shared link like `?open=the-kirk` may name a hotspot that only
+ * exists on another view, so in that case start on that view.
+ */
+function initialView(search: string): ViewKey {
+  const fromUrl = readViewFromSearch(search)
+  const h = HOTSPOTS.find((x) => x.id === new URLSearchParams(search).get('open'))
+  if (!h || h.views === 'all' || h.views.includes(viewId(fromUrl))) return fromUrl
+  const [level, time] = h.views[0].split('-') as [ViewKey['level'], ViewKey['time']]
+  return { level, time }
+}
+
+/**
  * graveyard-3d, Tier A: the painted kirkyard with a Day/Night and Above/Below switch.
  * Only the current and the outgoing picture are in the page, so memory stays small.
  */
 export default function GraveyardPage() {
-  const [view, setView] = useState<ViewKey>(() => readViewFromSearch(window.location.search))
+  const [view, setView] = useState<ViewKey>(() => initialView(window.location.search))
   const [outgoing, setOutgoing] = useState<ViewKey | null>(null)
   const music = useMusic()
+  const [openId, setOpenId] = useState<string | null>(
+    () => new URLSearchParams(window.location.search).get('open'),
+  )
+  const editing = import.meta.env.DEV && new URLSearchParams(window.location.search).has('edit')
+  const hotspots = hotspotsFor(HOTSPOTS, view)
+  const opened = HOTSPOTS.find((h) => h.id === openId) ?? null
+
+  function openHotspot(id: string | null) {
+    setOpenId(id)
+    const url = new URL(window.location.href)
+    if (id) url.searchParams.set('open', id)
+    else url.searchParams.delete('open')
+    window.history.replaceState(null, '', url)
+  }
+
 
   function choose(next: Partial<ViewKey>) {
     const merged = { ...view, ...next }
@@ -114,8 +147,15 @@ export default function GraveyardPage() {
         <div className="gy-frame">
           {outgoing && <Picture key={`out-${outgoing.time}-${outgoing.level}`} view={outgoing} fading />}
           <Picture key={`in-${view.time}-${view.level}`} view={view} />
+          <HotspotLayer hotspots={hotspots} onOpen={openHotspot} showAll={editing} />
+          {editing && HotspotEditor && (
+            <Suspense fallback={null}>
+              <HotspotEditor view={view} />
+            </Suspense>
+          )}
         </div>
       </div>
+      {opened && <HotspotDialog key={opened.id} hotspot={opened} onClose={() => openHotspot(null)} />}
     </main>
   )
 }

@@ -147,3 +147,178 @@
     animation: none;
   }
 }
+
+/* ---- Hotspots (graveyard-3d phase 2) ---- */
+.gy-hot,
+.gy-edit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+.gy-hot-shape {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 0.3;
+  pointer-events: all;
+  cursor: pointer;
+  outline: none;
+  transition: fill 150ms ease, stroke 150ms ease;
+}
+.gy-hot-shape:hover,
+.gy-hot-shape.gy-on,
+.gy-hot-shape:focus-visible {
+  fill: rgba(196, 163, 90, 0.22);
+  stroke: var(--gold);
+}
+.gy-hot-all .gy-hot-shape {
+  stroke: var(--gold);
+  stroke-dasharray: 1 0.8;
+}
+/* A small glowing dot says "something here", and works on touch screens where there is no hover. */
+.gy-hot-dot {
+  fill: var(--gold);
+  opacity: 0.75;
+  pointer-events: none;
+  animation: gy-pulse 2.4s ease-in-out infinite;
+}
+@keyframes gy-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+.gy-hot-label {
+  position: absolute;
+  z-index: 3;
+  transform: translate(-50%, -140%);
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(20, 16, 12, 0.88);
+  border: 1px solid var(--gold);
+  color: var(--cream);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.gy-dialog {
+  max-width: min(36rem, 92vw);
+  max-height: 88vh;
+  padding: 0;
+  border: 1px solid var(--gold);
+  border-radius: 0.75rem;
+  background: #1a140f;
+  color: var(--cream);
+  overflow: auto;
+}
+.gy-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.65);
+}
+.gy-dialog-body {
+  position: relative;
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+.gy-dialog h2 {
+  margin: 0 2rem 0.75rem 0;
+  font-family: var(--font-display);
+  color: var(--gold);
+}
+.gy-dialog p {
+  line-height: 1.55;
+}
+.gy-dialog-media {
+  display: block;
+  width: 100%;
+  max-height: 50vh;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  background: #000;
+  margin-bottom: 0.75rem;
+}
+.gy-dialog-x {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.6rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  background: transparent;
+  color: var(--cream);
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.gy-dialog-x:focus-visible {
+  outline: 2px solid var(--gold);
+}
+@media (prefers-reduced-motion: reduce) {
+  .gy-hot-dot {
+    animation: none;
+  }
+  .gy-hot-shape {
+    transition: none;
+  }
+}
+
+/* ---- Dev-only drawing tool ---- */
+.gy-edit {
+  z-index: 4;
+  cursor: crosshair;
+}
+.gy-edit-fill {
+  fill: rgba(80, 200, 255, 0.25);
+}
+.gy-edit-line {
+  fill: none;
+  stroke: #5cf;
+  stroke-width: 0.3;
+}
+.gy-edit-pt {
+  fill: #fff;
+  stroke: #5cf;
+  stroke-width: 0.2;
+}
+.gy-edit-panel {
+  position: fixed;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 50;
+  width: min(22rem, 90vw);
+  max-height: 70vh;
+  overflow: auto;
+  padding: 0.75rem;
+  border: 1px solid #5cf;
+  border-radius: 0.5rem;
+  background: rgba(10, 14, 20, 0.95);
+  color: #dfe;
+  font-size: 0.85rem;
+}
+.gy-edit-panel label {
+  display: block;
+  margin: 0.4rem 0;
+}
+.gy-edit-panel input[type='text'],
+.gy-edit-panel input:not([type]) {
+  width: 100%;
+  margin-top: 0.15rem;
+}
+.gy-edit-check {
+  display: flex !important;
+  gap: 0.4rem;
+  align-items: center;
+}
+.gy-edit-row {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+}
+.gy-edit-panel pre {
+  margin: 0;
+  max-height: 12rem;
+  overflow: auto;
+  font-size: 0.75rem;
+}
