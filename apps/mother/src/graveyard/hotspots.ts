@@ -4,6 +4,9 @@ import type { Level, TimeOfDay, ViewKey } from './views'
 /** `above-day`, `below-night`, ... Same words as the image file names. */
 export type ViewId = `${Level}-${TimeOfDay}`
 export type Point = [number, number]
+/** Pin colour group: history = gold, legend = emerald (famous Haggis), spooky = cyan (superstitions, underground). */
+export type Kind = 'history' | 'legend' | 'spooky'
+export const KINDS: Kind[] = ['history', 'legend', 'spooky']
 
 /**
  * One clickable area on the painting.
@@ -16,6 +19,7 @@ export type Hotspot = {
   id: string
   title: string
   views: 'all' | ViewId[]
+  kind: Kind
   points: Point[]
   lore: string
   image?: string
@@ -99,6 +103,7 @@ export function cleanHotspots(input: unknown): Hotspot[] {
       id,
       title,
       views,
+      kind: KINDS.includes(item.kind as Kind) ? (item.kind as Kind) : 'history',
       points,
       lore: typeof item.lore === 'string' ? item.lore.slice(0, 4000) : '',
       image: cleanPath(item.image),

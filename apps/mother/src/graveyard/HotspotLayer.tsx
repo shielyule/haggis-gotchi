@@ -31,7 +31,7 @@ export function HotspotLayer({
         {hotspots.map((h) => {
           const [cx, cy] = centre(h.points)
           return (
-            <g key={h.id}>
+            <g key={h.id} className={`gy-k-${h.kind}`}>
               <polygon
                 className={h.id === active ? 'gy-hot-shape gy-on' : 'gy-hot-shape'}
                 points={pointsAttr(h.points)}
@@ -50,14 +50,14 @@ export function HotspotLayer({
                 onFocus={() => setActive(h.id)}
                 onBlur={() => setActive((a) => (a === h.id ? null : a))}
               />
-              <circle className="gy-hot-dot" cx={cx} cy={cy} r={0.6} />
+              <circle className="gy-hot-dot" cx={cx} cy={cy} r={0.9} />
             </g>
           )
         })}
       </svg>
       {current && (
         <span
-          className="gy-hot-label"
+          className={`gy-hot-label gy-k-${current.kind}`}
           style={{ left: `${lx}%`, top: `${ly}%` }}
           aria-hidden="true"
         >

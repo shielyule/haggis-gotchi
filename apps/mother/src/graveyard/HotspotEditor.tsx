@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
-import { pointsAttr, viewId, type Point } from './hotspots'
+import { KINDS, pointsAttr, viewId, type Kind, type Point } from './hotspots'
 import type { ViewKey } from './views'
 
 /**
@@ -14,6 +14,7 @@ export default function HotspotEditor({ view }: { view: ViewKey }) {
   const [title, setTitle] = useState('')
   const [id, setId] = useState('')
   const [thisViewOnly, setThisViewOnly] = useState(false)
+  const [kind, setKind] = useState<Kind>('history')
   const [copied, setCopied] = useState(false)
 
   const slug =
@@ -28,6 +29,7 @@ export default function HotspotEditor({ view }: { view: ViewKey }) {
       id: slug || 'new-hotspot',
       title: title || 'New hotspot',
       views: thisViewOnly ? [viewId(view)] : 'all',
+      kind,
       points,
       lore: 'Write the lore here.',
     },
@@ -77,6 +79,16 @@ export default function HotspotEditor({ view }: { view: ViewKey }) {
           <label>
             Id (optional)
             <input value={id} onChange={(e) => setId(e.target.value)} placeholder={slug} />
+          </label>
+          <label>
+            Pin colour
+            <select value={kind} onChange={(e) => setKind(e.target.value as Kind)}>
+              {KINDS.map((k) => (
+                <option key={k} value={k}>
+                  {k === 'history' ? 'history (gold)' : k === 'legend' ? 'legend (emerald)' : 'spooky (cyan)'}
+                </option>
+              ))}
+            </select>
           </label>
           <label className="gy-edit-check">
             <input

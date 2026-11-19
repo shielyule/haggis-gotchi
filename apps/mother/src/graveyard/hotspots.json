@@ -27,7 +27,8 @@
     ],
     "lore": "The History: Constructed just twenty paces west of the ivy-choked ruins, this modest, steep-roofed stone kirk features a stout bell-tower designed to withstand mountain squalls and a warm amber-lit sanctuary that still holds Sunday services.\n\nWhy It Took Over: By the early 1700s, the growing parish needed a weather-tight roof and a proper watch-house window overlooking the yard to deter body snatchers. Rather than risk disturbing the ancient, crowded burials beneath the ruined nave—or provoking the restless spirits rumored to guard it—the parish elders built on fresh ground right beside it. The glowing window in its side wall still acts as an unofficial beacon for anyone foolish enough to cross the kirkyard after dark.",
     "image": "/graveyard/hotspots/new-kilbryde-parish-church.webp",
-    "imageAlt": "The New Kilbryde parish church on a misty evening: a small stone kirk with a pointed bell-tower and a glowing amber window."
+    "imageAlt": "The New Kilbryde parish church on a misty evening: a small stone kirk with a pointed bell-tower and a glowing amber window.",
+    "kind": "history"
   },
   {
     "id": "the-old-ruin-st-mungo-s-on-the-rigg-c-1180-1560",
@@ -67,6 +68,208 @@
     "video": "/graveyard/hotspots/old-ruin-st-mungos.mp4",
     "poster": "/graveyard/hotspots/old-ruin-st-mungos-poster.webp",
     "image": "/graveyard/hotspots/old-ruin-st-mungos.webp",
-    "imageAlt": "The old ruined chapel of St. Mungo's in mist: an ivy-covered stone gable with a rose window and a pointed doorway, behind iron railings."
+    "imageAlt": "The old ruined chapel of St. Mungo's in mist: an ivy-covered stone gable with a rose window and a pointed doorway, behind iron railings.",
+    "kind": "history"
+  },
+  {
+    "id": "sir-thistlewick-of-elderslie-william-wallace-s-haggis-companion",
+    "title": "Sir Thistlewick of Elderslie (William Wallace’s Haggis Companion)",
+    "views": "all",
+    "kind": "legend",
+    "points": [
+      [
+        79.7,
+        44.9
+      ],
+      [
+        80.1,
+        52.1
+      ],
+      [
+        83.5,
+        50.5
+      ],
+      [
+        82.5,
+        44.8
+      ]
+    ],
+    "lore": "Here Lies Sir Thistlewick (d. 1305) — Loyal Scout of William Wallace. While history remembers Wallace’s five-foot claymore, few know of the ferocious, asymmetric-legged wild Haggis that rode in his saddlebag. Bred on the steep scree slopes of the Trossachs, Sir Thistlewick could outrun English cavalry on clockwise mountain traverses and reportedly bit the ankles off three Edwardian pikemen at the Battle of Stirling Bridge. After Wallace’s capture, Thistlewick returned to this kirkyard, refusing to leave the high ground until his master returned—eventually turning to mossy stone while keeping watch over the glen.",
+    "image": "/graveyard/hotspots/sir-thistlewick.webp",
+    "imageAlt": "A weathered Celtic cross in a misty kirkyard beside an iron railing, with mossy headstones and bare trees behind."
+  },
+  {
+    "id": "macleod-s-wee-clansman-bramble-of-glenfinnan-connor-macleod-s-haggis-pet",
+    "title": "MacLeod’s Wee Clansman: \"Bramble\" of Glenfinnan (Connor MacLeod’s Haggis Pet)",
+    "views": "all",
+    "kind": "legend",
+    "points": [
+      [
+        60.7,
+        43.2
+      ],
+      [
+        64.3,
+        43.2
+      ],
+      [
+        64.9,
+        50.3
+      ],
+      [
+        60.9,
+        50
+      ]
+    ],
+    "lore": "Bramble of Glenfinnan (1518–1536... and counting) — The Immortal Haggis. Found nestled in Connor MacLeod’s plaid after his mysterious resurrection on the battlefield in 1536, Bramble accidentally absorbed a stray spark of The Quickening during a lightning storm over Loch Shiel. Because this kirkyard is Holy Ground, no Immortal may draw steel—or set a Haggis trap—within its iron railings. Bramble still burrows beneath these roots today, emerging only at dusk to headbutt ankles and aggressively defend his patch of heather. (There can be only one... portion of neeps and tatties).",
+    "image": "/graveyard/hotspots/macleod-bramble.webp",
+    "imageAlt": "A tall, weathered stone obelisk on a plinth among mossy gravestones in a misty kirkyard."
+  },
+  {
+    "id": "the-iron-mortsafe",
+    "title": "The Iron Mortsafe",
+    "views": "all",
+    "kind": "spooky",
+    "points": [
+      [
+        33.3,
+        42.7
+      ],
+      [
+        33.2,
+        36.3
+      ],
+      [
+        38.1,
+        36.4
+      ],
+      [
+        38,
+        42.9
+      ]
+    ],
+    "lore": "1824 Iron Mortsafe — Bolted over fresh turf to foil Scotland’s notorious resurrectionists, this heavy wrought-iron cage kept medical-school body snatchers out. Local whisperers insist the heavy padlock is actually there to stop what’s buried underneath from getting out.",
+    "image": "/graveyard/hotspots/iron-mortsafe.webp",
+    "imageAlt": "A rusted wrought-iron domed mortsafe cage over a grave, on a muddy path between iron railings and old headstones."
+  },
+  {
+    "id": "the-watcher-s-duty-an-faire-chlaidh",
+    "title": "The Watcher’s Duty (An Faire-Chlaidh)",
+    "views": "all",
+    "kind": "spooky",
+    "points": [
+      [
+        23.6,
+        51.9
+      ],
+      [
+        36.4,
+        58
+      ],
+      [
+        41.5,
+        54.3
+      ],
+      [
+        28.4,
+        48.5
+      ]
+    ],
+    "lore": "Open plots await the next burials. According to ancient Norse-Celtic superstition, the last soul laid to rest in a kirkyard must stand eternal sentry at the gate, guarding the dead against wandering spirits until the next burial relieves them of duty. Nobody wants to be the last one in before winter freezes the ground.",
+    "image": "/graveyard/hotspots/watchers-duty.webp",
+    "imageAlt": "Freshly dug open graves on a grassy terrace beside a dry-stone wall, with a gravel path below."
+  },
+  {
+    "id": "never-whistle-after-dusk",
+    "title": "Never Whistle After Dusk",
+    "views": "all",
+    "kind": "spooky",
+    "points": [
+      [
+        41.6,
+        34.3
+      ],
+      [
+        43.7,
+        24.4
+      ],
+      [
+        45.5,
+        27.2
+      ],
+      [
+        47.7,
+        20.7
+      ],
+      [
+        52.3,
+        36.4
+      ],
+      [
+        47.7,
+        38.8
+      ]
+    ],
+    "lore": "Old parish law forbids whistling anywhere near these railings after sunset, lest the sound summon the Sluagh—the airborne host of the unforgiven dead—to sweep down from the treetops and carry the living away.",
+    "image": "/graveyard/hotspots/never-whistle.webp",
+    "imageAlt": "Pale, ghostly figures streaming through the mist above an iron railing and old headstones: the Sluagh, the airborne host of the unforgiven dead."
+  },
+  {
+    "id": "the-glowing-fungal-caverns",
+    "title": "The Glowing Fungal Caverns",
+    "views": "all",
+    "kind": "spooky",
+    "points": [
+      [
+        69.2,
+        63.2
+      ],
+      [
+        79.9,
+        55.6
+      ],
+      [
+        94.4,
+        49.3
+      ],
+      [
+        94.3,
+        57.9
+      ],
+      [
+        69.5,
+        72
+      ]
+    ],
+    "lore": "Corpse Candles (Teine Mhoire) — Deep beneath the roots, bioluminescent toadstools pulse with an eerie cyan glow. Above ground, locals know these subterranean lights as Corpse Candles—phantom blue flames that drift up through the soil and float toward the cottage of whichever villager is next to die.",
+    "image": "/graveyard/hotspots/fungal-caverns.webp",
+    "imageAlt": "Glowing cyan toadstools and tree roots in an underground cavern, with small bones among them."
+  },
+  {
+    "id": "the-sunken-gold-hoard",
+    "title": "The Sunken Gold Hoard",
+    "views": "all",
+    "kind": "history",
+    "points": [
+      [
+        19.1,
+        66.9
+      ],
+      [
+        33.7,
+        73.1
+      ],
+      [
+        32.5,
+        79.7
+      ],
+      [
+        17.9,
+        73.2
+      ]
+    ],
+    "lore": "The Abbot’s Lost Silver & Viking Gold — Sealed in a root-bound pocket beneath the lower terrace lies a forgotten hoard of melted church plate and ninth-century Norse arm-rings. Guarded by the tangled roots of the elder trees and a very territorial subterranean Haggis warren, every shovel that has ever struck this chamber has snapped clean in two.",
+    "image": "/graveyard/hotspots/gold-hoard.webp",
+    "imageAlt": "A hoard of old gold coins, rings and plate sunk in a root-bound pocket beneath the kirkyard, lit by a single candle."
   }
 ]

@@ -19,7 +19,7 @@ export function HotspotDialog({ hotspot, onClose }: { hotspot: Hotspot; onClose:
   return (
     <dialog
       ref={ref}
-      className="gy-dialog"
+      className={`gy-dialog gy-k-${hotspot.kind}`}
       aria-labelledby="gy-dialog-title"
       onClose={onClose}
       onClick={(e) => {

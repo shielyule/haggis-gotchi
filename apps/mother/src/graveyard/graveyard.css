@@ -149,6 +149,19 @@
 }
 
 /* ---- Hotspots (graveyard-3d phase 2) ---- */
+/* Pin colour groups. Each element with a gy-k-* class gets its own --pin colour. */
+.gy-k-history {
+  --pin: #d4af4f;
+  --pin-rgb: 212 175 79;
+}
+.gy-k-legend {
+  --pin: #4fc283;
+  --pin-rgb: 79 194 131;
+}
+.gy-k-spooky {
+  --pin: #5fd8ec;
+  --pin-rgb: 95 216 236;
+}
 .gy-hot,
 .gy-edit {
   position: absolute;
@@ -169,27 +182,29 @@
 .gy-hot-shape:hover,
 .gy-hot-shape.gy-on,
 .gy-hot-shape:focus-visible {
-  fill: rgba(196, 163, 90, 0.22);
-  stroke: var(--gold);
+  fill: rgb(var(--pin-rgb) / 0.24);
+  stroke: var(--pin);
 }
 .gy-hot-all .gy-hot-shape {
-  stroke: var(--gold);
+  stroke: var(--pin);
   stroke-dasharray: 1 0.8;
 }
 /* A small glowing dot says "something here", and works on touch screens where there is no hover. */
 .gy-hot-dot {
-  fill: var(--gold);
-  opacity: 0.75;
+  fill: var(--pin);
+  stroke: rgb(0 0 0 / 0.6);
+  stroke-width: 0.25;
+  opacity: 0.85;
   pointer-events: none;
   animation: gy-pulse 2.4s ease-in-out infinite;
 }
 @keyframes gy-pulse {
   0%,
   100% {
-    opacity: 0.35;
+    opacity: 0.5;
   }
   50% {
-    opacity: 0.95;
+    opacity: 1;
   }
 }
 .gy-hot-label {
@@ -199,7 +214,7 @@
   padding: 0.25rem 0.6rem;
   border-radius: 999px;
   background: rgba(20, 16, 12, 0.88);
-  border: 1px solid var(--gold);
+  border: 1px solid var(--pin);
   color: var(--cream);
   font-size: 0.85rem;
   white-space: nowrap;
@@ -209,7 +224,7 @@
   max-width: min(36rem, 92vw);
   max-height: 88vh;
   padding: 0;
-  border: 1px solid var(--gold);
+  border: 1px solid var(--pin);
   border-radius: 0.75rem;
   background: #1a140f;
   color: var(--cream);
@@ -225,7 +240,7 @@
 .gy-dialog h2 {
   margin: 0 2rem 0.75rem 0;
   font-family: var(--font-display);
-  color: var(--gold);
+  color: var(--pin);
 }
 .gy-dialog p {
   line-height: 1.55;
@@ -251,13 +266,13 @@
   border-radius: 0 0.75rem 0.75rem 0;
 }
 .gy-dialog::-webkit-scrollbar-thumb {
-  background: var(--gold);
+  background: var(--pin);
   border-radius: 999px;
   border: 3px solid #120d09;
 }
 @supports not selector(::-webkit-scrollbar) {
   .gy-dialog {
-    scrollbar-color: var(--gold) #120d09;
+    scrollbar-color: var(--pin) #120d09;
   }
 }
 img.gy-dialog-media {
@@ -323,6 +338,10 @@ img.gy-dialog-media {
   background: rgba(10, 14, 20, 0.95);
   color: #dfe;
   font-size: 0.85rem;
+}
+.gy-edit-panel select {
+  display: block;
+  margin-top: 0.15rem;
 }
 .gy-edit-panel label {
   display: block;
