@@ -29,7 +29,6 @@ export function HotspotLayer({
         aria-label="Places to explore"
       >
         {hotspots.map((h) => {
-          const [cx, cy] = centre(h.points)
           return (
             <g key={h.id} className={`gy-k-${h.kind}`}>
               <polygon
@@ -50,7 +49,6 @@ export function HotspotLayer({
                 onFocus={() => setActive(h.id)}
                 onBlur={() => setActive((a) => (a === h.id ? null : a))}
               />
-              <circle className="gy-hot-dot" cx={cx} cy={cy} r={0.9} />
             </g>
           )
         })}

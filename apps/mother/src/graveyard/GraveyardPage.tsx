@@ -142,6 +142,9 @@ export default function GraveyardPage() {
         </a>
         <h1>The Haggis Kirkyard</h1>
         <Switcher view={view} onChange={choose} music={music} />
+        <p className="gy-sub">
+          Roll over the image to find hidden hotspots that reveal the kirkyard hidden secrets
+        </p>
       </header>
       <div className="gy-stage">
         <div className="gy-frame">

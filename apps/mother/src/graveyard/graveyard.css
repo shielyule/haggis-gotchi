@@ -41,6 +41,15 @@
   text-align: center;
   color: var(--mist);
 }
+.gy-sub {
+  grid-column: 1 / -1;
+  margin: 0;
+  text-align: center;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--mist);
+  opacity: 0.85;
+}
 .gy-back {
   justify-self: start;
   font-size: 0.9rem;
@@ -132,12 +141,19 @@
 }
 @media (max-width: 720px) {
   .gy-head {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     justify-items: center;
   }
-  .gy-back,
+  .gy-back {
+    justify-self: center;
+  }
   .gy-switch {
     justify-self: center;
+    justify-content: center;
+    max-width: 100%;
+  }
+  .gy-btn {
+    padding: 0.45rem 0.7rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -188,24 +204,6 @@
 .gy-hot-all .gy-hot-shape {
   stroke: var(--pin);
   stroke-dasharray: 1 0.8;
-}
-/* A small glowing dot says "something here", and works on touch screens where there is no hover. */
-.gy-hot-dot {
-  fill: var(--pin);
-  stroke: rgb(0 0 0 / 0.6);
-  stroke-width: 0.25;
-  opacity: 0.85;
-  pointer-events: none;
-  animation: gy-pulse 2.4s ease-in-out infinite;
-}
-@keyframes gy-pulse {
-  0%,
-  100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
 }
 .gy-hot-label {
   position: absolute;
@@ -298,9 +296,6 @@ img.gy-dialog-media {
   outline: 2px solid var(--gold);
 }
 @media (prefers-reduced-motion: reduce) {
-  .gy-hot-dot {
-    animation: none;
-  }
   .gy-hot-shape {
     transition: none;
   }
