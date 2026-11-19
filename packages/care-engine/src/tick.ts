@@ -71,10 +71,23 @@ function tickInPlace(h: Haggling, notices: Notice[], ctx: EngineContext) {
   const calm = ctx.temperamentId === RULES.calmTemperament ? RULES.calmFactor : 1
   const d = RULES.decayPerHour
 
-  h.hunger = clamp(h.hunger - hours * d.hunger * wild)
-  h.energy = clamp(h.energy - hours * d.energy * calm)
+  // Sleep: split the gap into asleep and awake hours.
+  const sleepEnd = h.asleepUntil ? Date.parse(h.asleepUntil) : Number.NaN
+  const asleepH = Number.isFinite(sleepEnd) ? Math.min(hours, Math.max(0, (sleepEnd - last) / 3_600_000)) : 0
+  const awakeH = hours - asleepH
+  const wasAsleep = asleepH > 0
+
+  h.hunger = clamp(h.hunger - awakeH * d.hunger * wild - asleepH * d.hunger * wild * RULES.sleepHungerFactor)
+  h.energy = clamp(h.energy - awakeH * d.energy * calm + asleepH * RULES.sleepEnergyPerHour)
   h.mess = clamp(h.mess + hours * d.mess * wild)
-  h.mood = clamp(h.mood - hours * d.mood)
+  h.mood = clamp(h.mood - awakeH * d.mood)
+
+  // Natural wake-up after the full sleep: bright-eyed.
+  if (Number.isFinite(sleepEnd) && ctx.nowMs >= sleepEnd) {
+    h.asleepUntil = undefined
+    h.mood = clamp(h.mood + RULES.restedMoodBonus)
+    addScrap(h, `${h.name} woke up bright-eyed after a long sleep. Ready for porridge.`, new Date(sleepEnd).toISOString())
+  }
 
   // Life XP grows with age, never down.
   h.lifeXp = (h.lifeXp ?? 0) + (hours * RULES.lifeXpPerDayAlive) / 24
@@ -97,7 +110,7 @@ function tickInPlace(h: Haggling, notices: Notice[], ctx: EngineContext) {
     h.mood = clamp(h.mood - RULES.missedMealMoodHit)
     penaliseMissedSchedule(h, notices, 'dinner')
   }
-  if (crossed(h.bedHour) && h.energy < RULES.missedBedEnergyBelow) {
+  if (!wasAsleep && crossed(h.bedHour) && h.energy < RULES.missedBedEnergyBelow) {
     h.mood = clamp(h.mood - RULES.missedBedMoodHit)
     penaliseMissedSchedule(h, notices, 'bedtime')
   }
@@ -135,7 +148,21 @@ export function applyCare(
   const nearBed = nearHour(hour, h.bedHour)
   const mealLabel = nearBreakfast ? 'breakfast' : nearDinner ? 'dinner' : null
 
+  // Woken early (fed, walked or given a treat while asleep): grumpy.
+  const asleep = h.asleepUntil ? ctx.nowMs < Date.parse(h.asleepUntil) : false
+  if (asleep && RULES.wakesGrumpy.includes(action)) {
+    h.asleepUntil = undefined
+    h.mood = clamp(h.mood - RULES.grumpyMoodHit)
+    addScrap(h, `${h.name} was woken up early and is in a right crabbit mood.`)
+  }
+
   switch (action) {
+    case 'sleep':
+      if (asleep) break // already asleep
+      h.asleepUntil = new Date(ctx.nowMs + RULES.sleepHours * 3_600_000).toISOString()
+      h.lastBedAt = now.toISOString()
+      addScrap(h, `${h.name} was tucked in for the night. Wheesht now.`)
+      break
     case 'feed':
       h.hunger = clamp(h.hunger + 28)
       h.mood = clamp(h.mood + (nearFeed ? 14 : 6))

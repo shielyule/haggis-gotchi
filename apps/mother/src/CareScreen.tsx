@@ -32,8 +32,10 @@ import {
   weatherChoice,
   type WeatherChip,
 } from './lib/weather'
-import { fetchShareInfo, fetchShowInFeed, lifecycleAction, pullBroodFromCloud, saveShowInFeed, setShareEnabled } from './lib/cloud'
-import { replaceLocalBrood } from './lib/storage'
+import { fetchShareInfo, fetchShowInFeed, lifecycleAction, pullBroodFromCloud, pushCheckIn, saveShowInFeed, setShareEnabled } from './lib/cloud'
+import { loadStore, replaceHaggling, replaceLocalBrood } from './lib/storage'
+import { CareIntro, introSeen } from './CareIntro'
+import { InfoTip } from './InfoTip'
 import { WatchMemories } from './WatchMemories'
 
 const WEATHER_ICON: Record<string, string> = {
@@ -113,6 +115,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const [demoNote, setDemoNote] = useState('')
   const taps = useRef<number[]>([])
   const [filmNote, setFilmNote] = useState('')
+  const [introOpen, setIntroOpen] = useState(() => !introSeen())
   const [share, setShare] = useState<{ publicId: string; on: boolean } | null>(null)
   const [inFeed, setInFeed] = useState<boolean | null>(null)
   const h = egg.haggling
@@ -197,6 +200,10 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
 
   const life = lifeStatus(h.bornAt ?? h.hatchedAt, h.spanEndsAt, now, h.departedAt)
   const isDemo = isDemoEgg(egg.createdAt, egg.readyAt)
+  const asleep = Boolean(h.asleepUntil) && now < Date.parse(h.asleepUntil ?? '')
+  const wakeTime = asleep
+    ? new Date(h.asleepUntil!).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+    : ''
 
   // lifespan-graveyard R2/R5: the final page.
   if (life.departed) {
@@ -302,6 +309,23 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
     const r = await lifecycleAction(childId, action)
     setDemoNote(r.ok ? (action === 'next' ? 'Next stage!' : 'Gone to the glen.') : (r.error ?? 'Could not do that.'))
     await refreshFromCloud()
+  }
+
+  /** Demo: skip the 8 hours of sleep (wakes rested, through the same engine rule). */
+  function demoWake() {
+    const e = loadStore().eggs.find((x) => x.id === egg.id)
+    const hh = e?.haggling
+    if (!e || !hh?.asleepUntil) {
+      setDemoNote('Not asleep just now. Tap Put to bed first.')
+      return
+    }
+    const t = Date.now()
+    replaceHaggling(egg.id, { ...hh, asleepUntil: new Date(t - 1000).toISOString(), lastTickAt: new Date(t - 120_000).toISOString() })
+    tickHaggling(egg.id)
+    const woke = loadStore().eggs.find((x) => x.id === egg.id)
+    if (woke) void pushCheckIn(woke, 'phone')
+    setDemoNote('Awake! (8 hours skipped)')
+    onChange()
   }
 
   async function chooseGhost(keep: boolean) {
@@ -442,6 +466,9 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
               </button>
             ))}
           </div>
+          <button type="button" className="btn btn-ghost" onClick={demoWake}>
+            Wake up now (skip the 8 hours)
+          </button>
           {isDemo ? (
             <div className="cta-row">
               <button type="button" className="btn btn-ghost" onClick={() => void demoLife('next')}>
@@ -520,6 +547,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       <div className="care-stage">
         <img src={stagePortraitFor(temp.id, life.stage)} alt={`${h.name}, a ${temp.label} Haggling`} />
         {life.stage !== 'baby' ? <span className="stage-badge">{life.label}</span> : null}
+        {asleep ? <span className="sleep-badge">Zzz… asleep until {wakeTime}</span> : null}
       </div>
 
       <div className="care-meters">
@@ -574,8 +602,21 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
             hidden
             onChange={(e) => void onPhoto(e.target.files?.[0])}
           />
+          <button
+            type="button"
+            className="care-action care-action-sleep"
+            onClick={() => act('sleep')}
+            disabled={asleep}
+          >
+            <span>{asleep ? `Asleep till ${wakeTime}` : 'Put to bed'}</span>
+            <small>{asleep ? 'Feeding, walking or treats now wake them crabbit' : 'Sleeps 8 hours, wakes rested, tells you'}</small>
+          </button>
         </div>
       ) : null}
+      <button type="button" className="link-btn" onClick={() => setIntroOpen(true)}>
+        How do the buttons work?
+      </button>
+      {introOpen ? <CareIntro name={h.name} onClose={() => setIntroOpen(false)} /> : null}
       {treatNote ? (
         <p className={treatNote.good ? 'care-sub treat-note' : 'form-error'}>{treatNote.text}</p>
       ) : null}
@@ -607,7 +648,8 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       {share ? (
         <label className="demo-toggle share-toggle">
           <input type="checkbox" checked={share.on} onChange={() => void toggleShare()} />
-          Public card for {h.name} ({share.on ? 'on' : 'off'})
+          Public card for {h.name} ({share.on ? 'on' : 'off'}){' '}
+          <InfoTip text="A read-only page anyone with the link can see: portrait, level, bars and hatching film, with a 'Get your own egg' button. It never shows your name, email or where you live. Share on social sends this link when it is on." />
           {share.on ? (
             <a href={`/h/${share.publicId}`} target="_blank" rel="noopener noreferrer">
               {' '}
@@ -626,7 +668,8 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
               void saveShowInFeed(v).then((ok) => ok && setInFeed(v))
             }}
           />
-          Show {h.name} in the mother&rsquo;s public scrapbook
+          Show {h.name} in the mother&rsquo;s public scrapbook{' '}
+          <InfoTip text="The mother's page lists the brood's latest moments, like 'Fred just fed Harry'. Only your first name and your Haggling's name appear." />
         </label>
       ) : null}
       {shareNote ? <p className="care-sub">{shareNote}</p> : null}

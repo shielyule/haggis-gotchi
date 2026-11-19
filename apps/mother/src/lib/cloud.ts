@@ -43,6 +43,7 @@ type ChildRow = {
   weather_applied: string[] | null
   public_id: string | null
   share_enabled: boolean | null
+  asleep_until: string | null
   born_at: string | null
   span_ends_at: string | null
   departed_at: string | null
@@ -58,6 +59,8 @@ function xpColumns(h: Haggling) {
     life_xp: Math.max(0, Math.round((h.lifeXp ?? 0) * 100) / 100),
     // weather-mood: applied slots (server keeps a union, never removes)
     weather_applied: h.weatherApplied ?? [],
+    // sleep (19 Nov): the 8-hour bedtime, so the server can send the wake-up alert
+    asleep_until: h.asleepUntil ?? null,
   }
 }
 
@@ -194,7 +197,7 @@ export async function syncChildToCloud(egg: EggRecord): Promise<string | null> {
 }
 
 /** What happened (public-feed). Weather check-ins never appear in the feed. */
-export type CheckInAction = 'feed' | 'cuddle' | 'walk' | 'treat' | 'clean' | 'weather'
+export type CheckInAction = 'feed' | 'cuddle' | 'walk' | 'treat' | 'clean' | 'weather' | 'sleep'
 
 export async function pushCheckIn(
   egg: EggRecord,
@@ -247,6 +250,7 @@ function childToHaggling(child: ChildRow, scraps: ScrapEntry[]): Haggling {
     homeDeviceId: child.home_device_id ?? undefined,
     hatchedAt: child.created_at,
     publicId: child.public_id ?? undefined,
+    asleepUntil: child.asleep_until ?? undefined,
     bornAt: child.born_at ?? child.created_at,
     spanEndsAt: child.span_ends_at ?? undefined,
     departedAt: child.departed_at ?? undefined,

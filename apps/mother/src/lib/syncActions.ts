@@ -27,7 +27,7 @@ import {
   type SignupAnswers,
 } from './storage'
 
-export const DEMO_WAIT_MS = 90 * 1000
+export const DEMO_WAIT_MS = 20 * 1000 // owner, 19 Nov: 20 s demo wait
 export const FULL_WAIT_MS = 30 * 60 * 1000
 
 /**

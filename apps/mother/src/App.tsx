@@ -119,10 +119,14 @@ function PhoneQr() {
   if (!src) return null
   return (
     <div className="phone-qr">
-      <img src={src} width={200} height={200} alt="QR code: open Haggis-gotchi on your phone" />
+      {/* Clicking the code opens the same place as scanning it (owner, 19 Nov). */}
+      <a href="/" target="_blank" rel="noopener noreferrer" title="Open Haggis-gotchi">
+        <img src={src} width={200} height={200} alt="QR code: open Haggis-gotchi on your phone" />
+      </a>
       <p>
         <strong>Your Haggling lives on your phone.</strong> Point your phone camera here
-        to claim an egg.
+        to claim an egg. Haggis-gotchi is a <strong>web app</strong>: it opens in your
+        phone&rsquo;s browser, with no app store needed.
       </p>
     </div>
   )

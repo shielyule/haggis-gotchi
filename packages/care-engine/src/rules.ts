@@ -38,6 +38,15 @@ export const RULES = {
 
   scrapbookMax: 40,
 
+  /** Sleep (owner, 19 Nov): 8 hours; asleep it recovers energy and gets hungry slower. */
+  sleepHours: 8,
+  sleepEnergyPerHour: 8,
+  sleepHungerFactor: 0.5,
+  restedMoodBonus: 10,
+  /** Woken early by being fed, walked or given a treat: grumpy. */
+  grumpyMoodHit: 20,
+  wakesGrumpy: ['feed', 'walk', 'treat'] as readonly string[],
+
   /** Life XP (photo-care R5). */
   lifeXpPerDayAlive: 10,
   lifeXpPerCare: 1,

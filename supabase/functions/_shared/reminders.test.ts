@@ -48,3 +48,10 @@ test('a fresh care action re-arms (new last_tick_at gives a new key)', () => {
   const kb = b.find((x) => x.key.includes('hunger'))?.key
   assert.ok(ka && kb && ka !== kb)
 })
+
+test('asleep: no reminders until the 8 hours are up, then one wake alert', () => {
+  const bed = row({ asleep_until: '2026-11-17T16:00:00Z', breakfast_hour: 8 })
+  assert.equal(dueReminders(bed, 'Europe/London', Date.parse('2026-11-17T08:10:00Z')).length, 0) // breakfast hour, asleep
+  const r = dueReminders(bed, 'Europe/London', Date.parse('2026-11-17T16:05:00Z'))
+  assert.ok(r.some((x) => x.key === 'wake:c1:2026-11-17T16:00:00Z'))
+})

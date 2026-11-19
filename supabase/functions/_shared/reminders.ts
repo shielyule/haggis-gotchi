@@ -17,6 +17,7 @@ export type ChildRow = {
   mess: number
   health_xp: number | null
   last_tick_at: string
+  asleep_until?: string | null
 }
 
 export type Reminder = { key: string; title: string; body: string }
@@ -56,6 +57,7 @@ export function projectedBars(row: ChildRow, nowMs: number) {
     mess: row.mess,
     healthXp: row.health_xp ?? 50,
     lastTickAt: row.last_tick_at,
+    asleepUntil: row.asleep_until ?? undefined,
     scrapbook: [],
     livingOn: 'phone',
   }
@@ -67,6 +69,15 @@ export function dueReminders(row: ChildRow, timezone: string, nowMs: number): Re
   const out: Reminder[] = []
   const { hour, date } = localClock(timezone, nowMs)
   const n = row.name
+
+  // Sleep (owner, 19 Nov): quiet while asleep; one "awake" alert when the 8 hours are up.
+  const sleepEnd = row.asleep_until ? Date.parse(row.asleep_until) : Number.NaN
+  if (Number.isFinite(sleepEnd)) {
+    if (nowMs < sleepEnd) return out
+    if (nowMs - sleepEnd < 6 * 3_600_000) {
+      out.push({ key: `wake:${row.id}:${row.asleep_until}`, title: `${n} is awake!`, body: `${n} slept like a log and is ready for porridge.` })
+    }
+  }
 
   const meals: [number, string, string, string][] = [
     [row.breakfast_hour, 'breakfast', `Breakfast for ${n}`, `${n} is sat by the bowl. Porridge time.`],

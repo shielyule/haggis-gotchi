@@ -2,9 +2,10 @@
 insert into auth.users (id, email, aud, role, instance_id) values
   ('aaaaaaaa-0000-0000-0000-00000000000a', 'fred@feed-test.invalid', 'authenticated', 'authenticated', '00000000-0000-0000-0000-000000000000'),
   ('bbbbbbbb-0000-0000-0000-00000000000b', 'sally@feed-test.invalid', 'authenticated', 'authenticated', '00000000-0000-0000-0000-000000000000');
-insert into public.carers (id, display_name) values
-  ('aaaaaaaa-0000-0000-0000-00000000000a', 'fred.private'), ('bbbbbbbb-0000-0000-0000-00000000000b', 'sally.private')
-  on conflict (id) do update set display_name = excluded.display_name;
+-- Both carers opt in (the public scrapbook is off by default since 19 Nov).
+insert into public.carers (id, display_name, show_in_feed) values
+  ('aaaaaaaa-0000-0000-0000-00000000000a', 'fred.private', true), ('bbbbbbbb-0000-0000-0000-00000000000b', 'sally.private', true)
+  on conflict (id) do update set display_name = excluded.display_name, show_in_feed = true;
 insert into public.eggs (id, carer_id, ready_at, status, answers, email) values
   ('aaaaaaaa-1111-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-00000000000a', now(), 'hatched', '{"displayName":"Fred"}', 'fred@feed-test.invalid'),
   ('bbbbbbbb-1111-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-00000000000b', now(), 'hatched', '{"displayName":"Sally"}', 'sally@feed-test.invalid');

@@ -1188,3 +1188,33 @@
 .graveyard-list .epitaph { margin: 0.2rem 0; font-size: 0.95rem; }
 .yard-link { text-decoration: none; }
 .yard-link:hover, .yard-link:focus-visible { text-decoration: underline; }
+
+/* 19 Nov owner feedback */
+.info-tip-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.3rem; height: 1.3rem; margin-left: 0.3rem; padding: 0;
+  border-radius: 50%; border: 1px solid var(--gold); background: transparent;
+  color: var(--gold); font: italic 700 0.8rem var(--font-display); cursor: pointer; vertical-align: middle;
+}
+.info-tip-text {
+  display: block; margin: 0.35rem 0 0.2rem; padding: 0.5rem 0.65rem; border-radius: 8px;
+  background: rgba(36, 53, 40, 0.85); font-size: 0.88rem; font-weight: 400; line-height: 1.4;
+}
+.view-hagglings { margin: 0.4rem 0; padding: 0.35rem 0.7rem; font-size: 0.85rem; }
+.haggling-preview { display: grid; grid-template-columns: 72px 1fr; column-gap: 0.75rem; align-items: start; }
+.haggling-preview img { grid-row: span 3; border-radius: 12px; object-fit: cover; }
+.egg-still { display: block; width: 100%; max-width: 32rem; margin: 0.75rem auto; border-radius: 14px; }
+.brood-bar { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.6rem 1rem 0; max-width: 34rem; margin: 0 auto; }
+.brood-chip {
+  padding: 0.3rem 0.75rem; border-radius: 999px; border: 1px solid var(--mist); background: transparent;
+  color: var(--cream); font: inherit; font-size: 0.85rem; text-decoration: none; cursor: pointer;
+}
+.brood-chip-on { background: var(--moss); border-color: var(--moss); font-weight: 700; }
+.brood-signout { margin-left: auto; }
+.care-action-sleep { background: linear-gradient(135deg, #2b3a5c, var(--moss-deep)); color: var(--cream); }
+.care-action-sleep small { color: var(--mist); }
+.sleep-badge {
+  position: absolute; right: 0.75rem; top: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 999px;
+  background: #2b3a5c; color: var(--cream); font-weight: 700; font-size: 0.85rem;
+}
+.link-btn { background: none; border: 0; padding: 0; margin: 0 0 0.75rem; color: var(--mist); text-decoration: underline; font: inherit; cursor: pointer; }

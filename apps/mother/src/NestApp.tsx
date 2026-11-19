@@ -18,6 +18,7 @@ import {
   type EggRecord,
 } from './lib/storage'
 import { setEggStatusSynced } from './lib/syncActions'
+import { supabase } from './lib/supabase'
 
 type NestView = 'waiting' | 'name' | 'care' | 'empty'
 
@@ -61,7 +62,11 @@ function formatRemaining(ms: number) {
   return m > 0 ? `${m}m ${r}s` : `${r}s`
 }
 
-type Props = { slug: string }
+/** eggId picks one Haggling when a carer has several (same name = same slug). */
+type Props = { slug: string; eggId?: string }
+
+/** First frame of each hatch film (ffmpeg, 19 Nov): the still egg on the countdown. */
+const eggStillFor = (temperamentId: string) => `/art/haggling-egg-${temperamentId}.jpeg`
 
 function defaultViewFor(egg: EggRecord | null): NestView {
   if (!egg) return 'empty'
@@ -74,9 +79,10 @@ function defaultViewFor(egg: EggRecord | null): NestView {
  * Personal nest: haggisgotchi.com/{slug}
  * Birth wait, hatch, name, and care — never rendered on `/`.
  */
-export function NestApp({ slug }: Props) {
+export function NestApp({ slug, eggId }: Props) {
   const [eggs, setEggs] = useState<EggRecord[]>(() => loadStore().eggs)
-  const mine = findEggsBySlug(eggs, slug)
+  const byId = eggId ? eggs.filter((e) => e.id === eggId) : []
+  const mine = byId.length ? byId : findEggsBySlug(eggs, slug)
   const [activeEggId, setActiveEggId] = useState<string | null>(
     () => mine[0]?.id ?? null,
   )
@@ -134,6 +140,23 @@ export function NestApp({ slug }: Props) {
     })
   }, [active, remaining])
 
+  // "Hatching first" (owner, 19 Nov): signed-in carers go straight to the hatch film.
+  useEffect(() => {
+    if (!active || active.status === 'hatched' || !eggReady || !supabase) return
+    let cancelled = false
+    void supabase.auth.getSession().then(({ data }) => {
+      if (cancelled || !data.session) return
+      void setEggStatusSynced(active.id, 'hatched').then(() => {
+        if (cancelled) return
+        setEggs(loadStore().eggs)
+        setView('waiting') // the hatch film card
+      })
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [active?.id, active?.status, eggReady])
+
   const storyBeats = active ? filledBeats(active.answers, active.storyId) : []
   const shownBeat =
     active && active.status !== 'hatched'
@@ -179,6 +202,13 @@ export function NestApp({ slug }: Props) {
               ? `Ready for you, ${active.answers.displayName || 'carer'}`
               : `Hatching in ${formatRemaining(remaining)}`}
           </h1>
+          {!eggReady ? (
+            <img
+              className="egg-still"
+              src={eggStillFor(temperamentForChaos(active.answers.chaos).id)}
+              alt="Your egg, waiting in its nest"
+            />
+          ) : null}
           <p className="story-beat">{shownBeat}</p>
           {eggReady ? (
             <>

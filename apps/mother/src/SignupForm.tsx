@@ -1,5 +1,6 @@
 import { useId, useState, type FormEvent } from 'react'
 import {
+  carePortraitFor,
   TEMPERAMENTS,
   temperamentForChaos,
 } from './data/temperaments'
@@ -8,6 +9,7 @@ import { slugifyName } from './lib/slug'
 import { supabaseConfigured } from './lib/supabase'
 import { saveShowInFeed } from './lib/cloud'
 import { claimEggSynced } from './lib/syncActions'
+import { InfoTip } from './InfoTip'
 import { Turnstile } from './Turnstile'
 
 type Props = {
@@ -35,7 +37,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
   const [botToken, setBotToken] = useState<string | null>(null)
   const [botReset, setBotReset] = useState(0)
   const [busy, setBusy] = useState(false)
-  const [showInFeed, setShowInFeed] = useState(true)
+  const [showInFeed, setShowInFeed] = useState(false) // off by default (owner, 19 Nov)
   const teenInfoTitleId = useId()
   const chaosInfoTitleId = useId()
   const temperament = temperamentForChaos(answers.chaos)
@@ -101,7 +103,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       </header>
 
       <label className="field">
-        <span>What should we call you?</span>
+        <span>What should we call you? <InfoTip text="Your first name or a nickname. The mother uses it in your birth story; if you join the public scrapbook, others see this name." /></span>
         <input
           value={answers.displayName}
           onChange={(e) => set('displayName', e.target.value)}
@@ -113,7 +115,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       </label>
 
       <label className="field">
-        <span>Your email</span>
+        <span>Your email <InfoTip text="Only for signing in and important messages (your egg, your Haggling's news). Never shown to anyone." /></span>
         <input
           type="email"
           value={answers.email}
@@ -126,7 +128,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       </label>
 
       <label className="field">
-        <span>Pet you have now — or wish you had?</span>
+        <span>Pet you have now — or wish you had? <InfoTip text="Seasons the birth story. Leave blank if you like." /></span>
         <input
           value={answers.pet}
           onChange={(e) => set('pet', e.target.value)}
@@ -135,7 +137,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       </label>
 
       <fieldset className="field-set">
-        <legend>Where do you feel most at home?</legend>
+        <legend>Where do you feel most at home? <InfoTip text="Picks your Haggling's home scenery, and the weather it feels if you do not share your location. Seaside brings haar (sea fog), a Haggis favourite." /></legend>
         <div className="chip-row">
           {(
             [
@@ -160,7 +162,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       </fieldset>
 
       <label className="field">
-        <span>What games do you play?</span>
+        <span>What games do you play? <InfoTip text="A wee detail for the story. Optional." /></span>
         <input
           value={answers.games}
           onChange={(e) => set('games', e.target.value)}
@@ -169,7 +171,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       </label>
 
       <label className="field">
-        <span>Favourite comfort food?</span>
+        <span>Favourite comfort food? <InfoTip text="Your Haggling dreams about it in the birth story." /></span>
         <input
           value={answers.comfortFood}
           onChange={(e) => set('comfortFood', e.target.value)}
@@ -178,7 +180,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       </label>
 
       <fieldset className="field-set">
-        <legend>Perfect day?</legend>
+        <legend>Perfect day? <InfoTip text="Colours the birth story: rainy, beach or forest." /></legend>
         <div className="chip-row">
           {(
             [
@@ -202,7 +204,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       </fieldset>
 
       <label className="field">
-        <span>One family quirk or saying you inherited</span>
+        <span>One family quirk or saying you inherited <InfoTip text="Someone in the birth story says it out loud. Keep it kind." /></span>
         <input
           value={answers.familyQuirk}
           onChange={(e) => set('familyQuirk', e.target.value)}
@@ -213,6 +215,9 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       <div className="field chaos-field">
         <div className="teen-title-row">
           <span>Chaos in the pet — calm to feral ({answers.chaos})</span>
+          <button type="button" className="btn btn-ghost view-hagglings" onClick={() => setChaosInfoOpen(true)}>
+            View the Hagglings
+          </button>
           <button
             type="button"
             className="info-dot"
@@ -323,7 +328,8 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
             <p>{CHAOS_INFO}</p>
             <ul className="temperament-glossary">
               {TEMPERAMENTS.map((t) => (
-                <li key={t.id}>
+                <li key={t.id} className="haggling-preview">
+                  <img src={carePortraitFor(t.id)} alt={`A ${t.label} Haggling`} width={72} height={72} />
                   <strong>
                     {t.label}
                     {t.pronounce ? ` (‘${t.pronounce}’)` : ''}
@@ -346,8 +352,8 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
 
       <label className="demo-toggle">
         <input type="checkbox" checked={showInFeed} onChange={(e) => setShowInFeed(e.target.checked)} />
-        Show my Haggling in the mother&rsquo;s public scrapbook (your first name and your
-        Haggling&rsquo;s name only)
+        Show my Haggling in the mother&rsquo;s public scrapbook{' '}
+        <InfoTip text="The mother's page shows the brood's latest moments, like 'Fred just fed Harry'. Only your first name and your Haggling's name appear: never your email or where you live. Change it any time on the care screen." />
       </label>
 
       {supabaseConfigured ? (
@@ -366,7 +372,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
           {busy
             ? 'Asking the mother…'
             : demoCompress
-              ? 'Start demo birth (~90s)'
+              ? 'Start demo birth (~20 seconds)'
               : 'Begin ~30 min birth'}
         </button>
       </div>

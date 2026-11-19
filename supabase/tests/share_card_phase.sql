@@ -10,8 +10,9 @@ declare n int; pid text; r record;
 begin
   perform set_config('request.jwt.claims', '{"sub":"aaaaaaaa-0000-0000-0000-00000000000a","role":"authenticated"}', true);
   set local role authenticated;
-  insert into public.children (id, egg_id, carer_id, name, temperament_id, breakfast_hour, dinner_hour, bed_hour, public_id)
-  values ('aaaaaaaa-2222-0000-0000-000000000001', 'aaaaaaaa-1111-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-00000000000a', 'Testy', 'radge', 8, 18, 22, 'chosen0000');
+  -- the carer switches the card on (off by default since 19 Nov)
+  insert into public.children (id, egg_id, carer_id, name, temperament_id, breakfast_hour, dinner_hour, bed_hour, public_id, share_enabled)
+  values ('aaaaaaaa-2222-0000-0000-000000000001', 'aaaaaaaa-1111-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-00000000000a', 'Testy', 'radge', 8, 18, 22, 'chosen0000', true);
   select public_id into pid from public.children where id = 'aaaaaaaa-2222-0000-0000-000000000001';
   if pid is null or pid = 'chosen0000' or pid !~ '^[a-f0-9]{10}$' then raise exception 'FAIL 1: public id not server-made: %', pid; end if;
 

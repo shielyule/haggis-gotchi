@@ -39,8 +39,9 @@ export function InstallStep({ onSkip }: { onSkip: () => void }) {
       <p className="brand">Haggis-gotchi</p>
       <h1>Give your Haggling a home</h1>
       <p>
-        Add Haggis-gotchi to your home screen. You get an app icon, and your Haggling
-        can tell you when it is hungry or sleepy.
+        Haggis-gotchi is a <strong>web app</strong>: it opens in your phone&rsquo;s browser,
+        with no app store needed. Add it to your home screen to get an icon, and your
+        Haggling can tell you when it is hungry or sleepy.
       </p>
 
       {installed ? (

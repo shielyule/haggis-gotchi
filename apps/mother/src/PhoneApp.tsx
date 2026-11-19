@@ -6,8 +6,10 @@ import { SignupForm } from './SignupForm'
 import { pullBroodFromCloud } from './lib/cloud'
 import { installSkipped, isInstalled, skipInstall } from './lib/device'
 import { carePortraitFor, temperamentForChaos } from './data/temperaments'
-import { eggSlug, loadStore, replaceLocalBrood, type EggRecord } from './lib/storage'
+import { eggSlug, loadStore, replaceLocalBrood, savePhoneStore, type EggRecord } from './lib/storage'
 import { supabase } from './lib/supabase'
+
+const SELECTED_KEY = 'haggis-gotchi:selected-egg'
 
 /**
  * phone-home: the Haggling is born and lives on the phone.
@@ -20,6 +22,23 @@ export function PhoneApp() {
   const [eggs, setEggs] = useState<EggRecord[]>(() => loadStore().eggs)
   const [pulled, setPulled] = useState(false)
   const [demo, setDemo] = useState(true)
+  // Several Hagglings per carer (owner, 19 Nov): which one is on screen.
+  const [selectedId, setSelectedId] = useState<string | null>(() => localStorage.getItem(SELECTED_KEY))
+
+  function pick(id: string) {
+    localStorage.setItem(SELECTED_KEY, id)
+    setSelectedId(id)
+    window.history.replaceState(null, '', '/')
+  }
+
+  async function signOut() {
+    if (supabase) await supabase.auth.signOut()
+    // Hagglings stay safe in the cloud; this phone forgets them until you sign in again.
+    replaceLocalBrood([])
+    savePhoneStore({ child: null })
+    localStorage.removeItem(SELECTED_KEY)
+    window.location.href = '/'
+  }
 
   // Track the stored session ourselves, so the phone stays signed in (R3.2).
   useEffect(() => {
@@ -94,20 +113,50 @@ export function PhoneApp() {
 
   // "Claim a new egg" after a departure (lifespan-graveyard R2.3) opens /?new=1.
   const wantsNew = new URLSearchParams(window.location.search).get('new') === '1'
-  const mine = eggs[0]
-  if (mine && !wantsNew) return <NestApp slug={eggSlug(mine)} />
+  const mine = eggs.find((e) => e.id === selectedId) ?? eggs[0]
+  const broodBar = (
+    <nav className="brood-bar" aria-label="Your Hagglings">
+      {eggs.map((e) => (
+        <button
+          key={e.id}
+          type="button"
+          className={`brood-chip${e.id === mine?.id && !wantsNew ? ' brood-chip-on' : ''}`}
+          onClick={() => pick(e.id)}
+        >
+          {e.haggling?.name ?? 'Egg'}
+        </button>
+      ))}
+      <a className="brood-chip" href="/?new=1">
+        + New egg
+      </a>
+      <button type="button" className="brood-chip brood-signout" onClick={() => void signOut()}>
+        Sign out
+      </button>
+    </nav>
+  )
+  if (mine && !wantsNew) {
+    return (
+      <>
+        {broodBar}
+        <NestApp key={mine.id} slug={eggSlug(mine)} eggId={mine.id} />
+      </>
+    )
+  }
 
   return (
     <main className="phone-start">
+      {eggs.length ? broodBar : null}
       <p className="brand">Haggis-gotchi</p>
       <label className="demo-toggle">
         <input type="checkbox" checked={demo} onChange={(e) => setDemo(e.target.checked)} />
-        Demo wait (~90s instead of 30 min)
+        Demo wait (~20 seconds instead of 30 minutes)
       </label>
       <SignupForm
         demoCompress={demo}
         presetEmail={email}
-        onClaimed={() => {
+        onClaimed={(id) => {
+          localStorage.setItem(SELECTED_KEY, id)
+          setSelectedId(id)
           window.history.replaceState(null, '', '/')
           setEggs(loadStore().eggs)
         }}

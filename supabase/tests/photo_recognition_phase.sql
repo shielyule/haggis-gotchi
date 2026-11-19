@@ -1,7 +1,7 @@
 -- Test for 20261117210000_photo_recognition.sql (runner wraps begin/rollback).
 insert into auth.users (id, email, aud, role, instance_id) values
   ('aaaaaaaa-0000-0000-0000-00000000000a', 'billy@pr-test.invalid', 'authenticated', 'authenticated', '00000000-0000-0000-0000-000000000000');
-insert into public.carers (id) values ('aaaaaaaa-0000-0000-0000-00000000000a') on conflict (id) do nothing;
+insert into public.carers (id, show_in_feed) values ('aaaaaaaa-0000-0000-0000-00000000000a', true) on conflict (id) do update set show_in_feed = true;
 insert into public.eggs (id, carer_id, ready_at, status, answers, email) values
   ('aaaaaaaa-1111-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-00000000000a', now(), 'hatched', '{"displayName":"Billy"}', 'billy@pr-test.invalid');
 insert into public.children (id, egg_id, carer_id, name, temperament_id, breakfast_hour, dinner_hour, bed_hour) values
