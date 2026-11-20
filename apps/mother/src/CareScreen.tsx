@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ghostPortraitFor, stagePortraitFor, temperamentForChaos } from './data/temperaments'
+import { ghostPortraitFor, stageFilmFor, stagePortraitFor, temperamentForChaos } from './data/temperaments'
 import { lifeLevel } from './lib/engine'
 import { careAlertFor, healthLabel } from './lib/health'
 import { getDeviceId } from './lib/device'
@@ -540,6 +540,9 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
             <h2>{life.label}!</h2>
             <img className="stage-up-portrait" src={stagePortraitFor(temp.id, life.stage)} alt={`${h.name} as a ${life.label}`} />
             <p>{STAGE_NEWS[life.stage]}</p>
+            {stageFilmFor(temp.id, life.stage) ? (
+              <p className="treat-note">A new film is waiting in Watch again: {stageFilmFor(temp.id, life.stage)?.title}.</p>
+            ) : null}
             <button
               type="button"
               className="btn btn-primary"
@@ -756,7 +759,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
       {shareNote ? <p className="care-sub">{shareNote}</p> : null}
 
       {filmNote ? <p className="weather-swing">{filmNote}</p> : null}
-      <WatchMemories temperamentId={temp.id} extras={h.memoryFilms ?? []} playUnlocked={playUnlocked} />
+      <WatchMemories temperamentId={temp.id} extras={h.memoryFilms ?? []} playUnlocked={playUnlocked} stage={life.stage} />
 
       <section className="care-scrap">
         <h3>Scrapbook</h3>

@@ -11,12 +11,14 @@ type Props = {
   extras?: MemoryFilm[]
   /** play-film: the 24-hour "playing" film is unlocked. */
   playUnlocked?: boolean
+  /** Life stage reached: unlocks stage films. */
+  stage?: string
 }
 
-export function WatchMemories({ temperamentId, extras = [], playUnlocked = false }: Props) {
+export function WatchMemories({ temperamentId, extras = [], playUnlocked = false, stage }: Props) {
   const films = useMemo(
-    () => memoryFilmsFor(temperamentId, extras, { playUnlocked }),
-    [temperamentId, extras, playUnlocked],
+    () => memoryFilmsFor(temperamentId, extras, { playUnlocked, stage }),
+    [temperamentId, extras, playUnlocked, stage],
   )
   const [selectedId, setSelectedId] = useState(films[0]?.id ?? '')
   const [playingId, setPlayingId] = useState<string | null>(null)

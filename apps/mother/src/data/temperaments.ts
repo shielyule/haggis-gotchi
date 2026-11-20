@@ -119,10 +119,29 @@ export type MemoryFilm = {
 }
 
 /** Built-in + any unlocked extras stored on the Haggling. */
+/** Stage films (owner art): unlock when the stage begins. Add teen/adult/elder as they land. */
+export const STAGE_FILMS: Record<string, Record<string, { src: string; title: string }>> = {
+  child: {
+    douce: { src: '/art/haggling-child-play-douce.mp4', title: 'Child: lost in a book' },
+    skeigh: { src: '/art/haggling-child-play-skeigh.mp4', title: 'Child: texting' },
+    'ill-trickit': { src: '/art/haggling-child-play-ill-trickit.mp4', title: 'Child: gaming' },
+    ree: { src: '/art/haggling-child-play-ree.mp4', title: 'Child: dancing' },
+    radge: { src: '/art/haggling-child-play-radge.mp4', title: 'Child: parkour' },
+    'fair-wud': { src: '/art/haggling-child-play-fair-wud.mp4', title: 'Child: skateboarding' },
+  },
+}
+
+const STAGE_ORDER = ['baby', 'child', 'teen', 'adult', 'elder']
+
+/** The film for a stage, if one exists yet. */
+export function stageFilmFor(temperamentId: string, stage: string) {
+  return STAGE_FILMS[stage]?.[temperamentId] ?? null
+}
+
 export function memoryFilmsFor(
   temperamentId: string,
   extras: MemoryFilm[] = [],
-  opts: { playUnlocked?: boolean } = {},
+  opts: { playUnlocked?: boolean; stage?: string } = {},
 ): MemoryFilm[] {
   const temp =
     TEMPERAMENTS.find((t) => t.id === temperamentId) ??
@@ -143,8 +162,16 @@ export function memoryFilmsFor(
     opts.playUnlocked && PLAY_FILMS[temperamentId]
       ? [{ id: `play-${temperamentId}`, title: `Playing: ${temp.label}`, src: PLAY_FILMS[temperamentId] }]
       : []
+  // Stage films for every stage reached so far, latest stage first.
+  const reached = STAGE_ORDER.slice(1, STAGE_ORDER.indexOf(opts.stage ?? 'baby') + 1).reverse()
+  const stageFilms: MemoryFilm[] = reached
+    .map((st) => {
+      const f = stageFilmFor(temperamentId, st)
+      return f ? { id: `${st}-${temperamentId}`, title: f.title, src: f.src } : null
+    })
+    .filter((f): f is MemoryFilm => f !== null)
   // Newest first (owner, 18 Nov): later growth films come before the hatch film.
-  return [...[...more].reverse(), ...play, hatch]
+  return [...[...more].reverse(), ...stageFilms, ...play, hatch]
 }
 
 export function temperamentForChaos(chaos: number): Temperament {

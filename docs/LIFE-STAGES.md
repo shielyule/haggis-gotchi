@@ -10,7 +10,7 @@ there and every surface changes. Numbers are first guesses and easy to tune.
 | Stage | Days | Portrait (still) | Stage film | Status |
 | --- | --- | --- | --- | --- |
 | Baby | 0-7 | `haggling-care-<type>.jpeg` (have) | hatch film + playing film (have) | live |
-| Child | 7-14 | `haggling-child-<type>.jpeg` (**have, 21 Nov**) | `haggling-child-play-<type>.mp4` | portraits live; films to come |
+| Child | 7-14 | `haggling-child-<type>.jpeg` (**have, 21 Nov**) | `haggling-child-play-<type>.mp4` (**have, 21 Nov**: reading, texting, gaming, dancing, parkour, skateboarding) | live |
 | Teen | 14-24 | `haggling-teen-<type>.jpeg` (**have, 21 Nov**) | `haggling-teen-play-<type>.mp4` | portraits live; films to come |
 | Adult | 24-36 | `haggling-adult-<type>.jpeg` | `haggling-adult-play-<type>.mp4` | to make |
 | Old age | 36-42 | `haggling-elder-<type>.jpeg` | `haggling-elder-play-<type>.mp4` | to make |
@@ -88,7 +88,8 @@ Sexual orientation is **not** part of the game. Gender identity only; "Furry" dr
 
 ## On reaching a new stage (built 21 Nov)
 - The portrait swaps to the stage picture (care screen, start-up screen, public card).
-- A big "Growing up" announcement pops up once, with the new picture.
+- A big "Growing up" announcement pops up once, with the new picture (and a note when the stage has a new film).
+- The stage film unlocks at the top of Watch again (wired via `STAGE_FILMS` in `data/temperaments.ts`).
 - A phone notification ("{name} is a Teen now!") from the lifecycle job.
 - Demo menu (demo eggs): **+1 day**, **Next stage**, **Skip to the end**.
 
