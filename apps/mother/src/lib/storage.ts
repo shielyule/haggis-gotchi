@@ -44,6 +44,8 @@ export type EggRecord = {
   /** Which skeleton from birthStories.ts. Missing on eggs claimed before stories landed. */
   storyId?: string
   status: 'waiting' | 'ready' | 'hatched'
+  /** Demo egg (claimed with the demo wait): set by the server. */
+  demo?: boolean
   /** Set when we emailed the ready / OTP code for this egg. */
   readyCodeSentAt?: string
   haggling?: Haggling
@@ -137,12 +139,14 @@ export function nameHaggling(
   breakfastHour: number,
   dinnerHour: number,
   bedHour: number,
+  sex?: 'male' | 'female',
 ): EggRecord | null {
   return updateEgg(eggId, (egg) => {
     const temp = temperamentForChaos(egg.answers.chaos)
     const now = new Date().toISOString()
     egg.haggling = {
       eggId,
+      sex,
       hatchedAt: now,
       bornAt: now, // server sets the authoritative dates (lifespan-graveyard)
       spanEndsAt: new Date(Date.parse(now) + 42 * 86_400_000).toISOString(),

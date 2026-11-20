@@ -162,6 +162,7 @@ Deno.serve(async (req) => {
       story_id: claim.storyId,
       answers: claim.answers,
       email: claim.email,
+      demo: claim.demo,
     })
     if (insErr) {
       if (insErr.code === '23505') return json(409, { ok: false, error: 'That egg was already claimed.' })

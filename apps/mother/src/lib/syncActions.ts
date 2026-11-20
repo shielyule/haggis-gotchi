@@ -27,8 +27,8 @@ import {
   type SignupAnswers,
 } from './storage'
 
-export const DEMO_WAIT_MS = 20 * 1000 // owner, 19 Nov: 20 s demo wait
-export const FULL_WAIT_MS = 30 * 60 * 1000
+export const DEMO_WAIT_MS = 10 * 1000 // owner, 20 Nov
+export const FULL_WAIT_MS = 20 * 1000
 
 /**
  * Claim an egg. The cloud must accept it first (bot check, validation, rate
@@ -40,7 +40,7 @@ export async function claimEggSynced(
   demo: boolean,
   turnstileToken: string,
 ): Promise<{ ok: true; egg: EggRecord } | { ok: false; error: string }> {
-  const draft = newEggRecord(answers, demo ? DEMO_WAIT_MS : FULL_WAIT_MS)
+  const draft = { ...newEggRecord(answers, demo ? DEMO_WAIT_MS : FULL_WAIT_MS), demo }
   if (!supabaseConfigured) return { ok: true, egg: saveNewEgg(draft) }
 
   const result = await claimEggInCloud(draft, demo, turnstileToken)
@@ -68,8 +68,9 @@ export async function nameHagglingSynced(
   breakfastHour: number,
   dinnerHour: number,
   bedHour: number,
+  sex?: 'male' | 'female',
 ): Promise<EggRecord | null> {
-  nameHaggling(eggId, name, breakfastHour, dinnerHour, bedHour)
+  nameHaggling(eggId, name, breakfastHour, dinnerHour, bedHour, sex)
   const egg = loadStore().eggs.find((e) => e.id === eggId) ?? null
   if (!egg) return null
   const childId = await syncChildToCloud(egg)

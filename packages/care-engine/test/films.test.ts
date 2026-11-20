@@ -6,10 +6,12 @@ import { isDemoEgg, isPlayFilmUnlocked, playFilmUnlockAt } from '../src/films.ts
 const H = '2026-11-17T10:00:00Z'
 const t = (iso: string) => Date.parse(iso)
 
-test('demo eggs: wait of 2 minutes or less', () => {
-  assert.equal(isDemoEgg('2026-11-17T09:00:00Z', '2026-11-17T09:01:30Z'), true)
-  assert.equal(isDemoEgg('2026-11-17T09:00:00Z', '2026-11-17T09:30:00Z'), false)
-  assert.equal(isDemoEgg('bad', '2026-11-17T09:30:00Z'), false)
+test('demo eggs: explicit flag wins; old records fall back to a wait of 2 minutes or less', () => {
+  assert.equal(isDemoEgg(false, '2026-11-20T09:00:00Z', '2026-11-20T09:00:20Z'), false) // real egg, 20 s wait
+  assert.equal(isDemoEgg(true), true)
+  assert.equal(isDemoEgg(undefined, '2026-11-17T09:00:00Z', '2026-11-17T09:01:30Z'), true)
+  assert.equal(isDemoEgg(undefined, '2026-11-17T09:00:00Z', '2026-11-17T09:30:00Z'), false)
+  assert.equal(isDemoEgg(null, 'bad', '2026-11-17T09:30:00Z'), false)
 })
 
 test('real eggs unlock the playing film 24 hours after hatching', () => {

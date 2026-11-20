@@ -27,3 +27,6 @@ come first; AI may only elaborate within a chosen template (not built yet).
 
 ## Non-goals
 LLM ops, template marketplace, enacting teen morphing (opt-in is stored only).
+
+## Change 20 Nov 2026 (owner)
+Wait shortened: **20 seconds** real, **10 seconds** demo (was ~30 minutes / 90 seconds). Demo eggs now carry an explicit server-set `demo` flag (a short wait no longer means demo).

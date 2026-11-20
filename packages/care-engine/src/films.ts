@@ -7,7 +7,13 @@ export const PLAY_FILM_DEMO_DELAY_MS = 3 * 60 * 1000
 /** An egg claimed with the demo wait (90 s) has a wait of 2 minutes or less. */
 export const DEMO_WAIT_MAX_MS = 2 * 60 * 1000
 
-export function isDemoEgg(createdAt: string, readyAt: string): boolean {
+/**
+ * Demo eggs carry an explicit flag since 20 Nov (real waits are 20 s now, so a short
+ * wait no longer means demo). Old records without the flag fall back to the wait rule.
+ */
+export function isDemoEgg(flag: boolean | null | undefined, createdAt?: string, readyAt?: string): boolean {
+  if (typeof flag === 'boolean') return flag
+  if (!createdAt || !readyAt) return false
   const wait = Date.parse(readyAt) - Date.parse(createdAt)
   return Number.isFinite(wait) && wait <= DEMO_WAIT_MAX_MS
 }

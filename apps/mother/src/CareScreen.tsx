@@ -64,7 +64,16 @@ const HOUR_OPTIONS = Array.from({ length: 24 }, (_, hour) => ({
   label: formatClockHour(hour),
 }))
 
-function Meter({ label, value }: { label: string; value: number }) {
+
+/** Traffic-light bar (owner, 20 Nov): red when empty, amber halfway, green when full.
+ *  The gradient spans the whole track, so a short bar shows only its red end.
+ *  `bad` reverses it for Mess, where high is bad. */
+function trafficStyle(value: number) {
+  const v = Math.max(0, Math.min(100, value))
+  return { width: `${v}%`, backgroundSize: v > 0 ? `${10000 / v}% 100%` : undefined }
+}
+
+function Meter({ label, value, bad = false }: { label: string; value: number; bad?: boolean }) {
   return (
     <div className="meter">
       <div className="meter-top">
@@ -72,7 +81,7 @@ function Meter({ label, value }: { label: string; value: number }) {
         <span>{value}</span>
       </div>
       <div className="meter-track" aria-hidden="true">
-        <div className="meter-fill" style={{ width: `${value}%` }} />
+        <div className={`meter-fill meter-traffic${bad ? ' meter-traffic-bad' : ''}`} style={trafficStyle(value)} />
       </div>
     </div>
   )
@@ -169,7 +178,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
 
   // play-film R3/T4: announce the playing film once, when it unlocks.
   const filmReady =
-    Boolean(h) && isPlayFilmUnlocked(h?.hatchedAt, isDemoEgg(egg.createdAt, egg.readyAt), now)
+    Boolean(h) && isPlayFilmUnlocked(h?.hatchedAt, isDemoEgg(egg.demo, egg.createdAt, egg.readyAt), now)
   useEffect(() => {
     if (!filmReady || !h) return
     const key = `haggis-gotchi:play-film-seen:${egg.id}`
@@ -199,7 +208,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   if (!h) return null
 
   const life = lifeStatus(h.bornAt ?? h.hatchedAt, h.spanEndsAt, now, h.departedAt)
-  const isDemo = isDemoEgg(egg.createdAt, egg.readyAt)
+  const isDemo = isDemoEgg(egg.demo, egg.createdAt, egg.readyAt)
   const asleep = Boolean(h.asleepUntil) && now < Date.parse(h.asleepUntil ?? '')
   const wakeTime = asleep
     ? new Date(h.asleepUntil!).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
@@ -265,7 +274,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const alert = careAlertFor(h)
   const healthXp = typeof h.healthXp === 'number' ? h.healthXp : 50
   const level = lifeLevel(h.lifeXp ?? 0)
-  const playUnlocked = isPlayFilmUnlocked(h.hatchedAt, isDemoEgg(egg.createdAt, egg.readyAt), now)
+  const playUnlocked = isPlayFilmUnlocked(h.hatchedAt, isDemoEgg(egg.demo, egg.createdAt, egg.readyAt), now)
   const levelPct = Math.round(
     ((level.xp - level.levelStart) / Math.max(1, level.nextAt - level.levelStart)) * 100,
   )
@@ -433,6 +442,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           <p className="signup-kicker">Your Haggling</p>
           <h2 onClick={tapName}>{h.name}</h2>
           <p className="care-sub">
+            {h.sex === 'male' ? 'Laddie · ' : h.sex === 'female' ? 'Lassie · ' : ''}
             {life.label} · {life.daysLeft} days left · {temp.label} · {moodLabel(h.mood)} · {healthLabel(h)}
             {alert === 'amber' ? ' · amber warning' : ''}
             {alert === 'red' ? ' · sick' : ''}
@@ -555,7 +565,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
         <Meter label="Hunger" value={h.hunger} />
         <Meter label="Mood" value={h.mood} />
         <Meter label="Energy" value={h.energy} />
-        <Meter label="Mess" value={h.mess} />
+        <Meter label="Mess" value={h.mess} bad />
       </div>
       {healthXp < 0 ? (
         <p className="care-sub care-sick-note">
@@ -715,6 +725,7 @@ export function NameHagglingForm({ egg, onNamed, onBack }: NameProps) {
   const [breakfastHour, setBreakfastHour] = useState(8)
   const [dinnerHour, setDinnerHour] = useState(18)
   const [bedHour, setBedHour] = useState(20)
+  const [sex, setSex] = useState<'male' | 'female' | null>(null)
   const [error, setError] = useState('')
   const temp = temperamentForChaos(egg.answers.chaos)
 
@@ -727,12 +738,17 @@ export function NameHagglingForm({ egg, onNamed, onBack }: NameProps) {
           setError('Every Haggling needs a name.')
           return
         }
+        if (!sex) {
+          setError('Is your Haggling a wee laddie or a wee lassie?')
+          return
+        }
         void nameHagglingSynced(
           egg.id,
           name,
           breakfastHour,
           dinnerHour,
           bedHour,
+          sex,
         ).then(() => onNamed())
       }}
     >
@@ -754,6 +770,16 @@ export function NameHagglingForm({ egg, onNamed, onBack }: NameProps) {
           autoFocus
         />
       </label>
+
+      <fieldset className="field sex-choice">
+        <legend>Laddie or lassie?</legend>
+        <label>
+          <input type="radio" name="sex" checked={sex === 'male'} onChange={() => setSex('male')} /> Wee laddie (boy)
+        </label>
+        <label>
+          <input type="radio" name="sex" checked={sex === 'female'} onChange={() => setSex('female')} /> Wee lassie (girl)
+        </label>
+      </fieldset>
 
       <label className="field">
         <span>Breakfast</span>

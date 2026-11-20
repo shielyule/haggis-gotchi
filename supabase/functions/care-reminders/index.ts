@@ -82,11 +82,11 @@ Deno.serve(async (req) => {
         .gte('created_at', since)
       const eggIds = (young ?? []).map((k) => k.egg_id as string)
       const { data: kidEggs } = eggIds.length
-        ? await admin.from('eggs').select('id, created_at, ready_at, email, answers').in('id', eggIds)
+        ? await admin.from('eggs').select('id, created_at, ready_at, email, answers, demo').in('id', eggIds)
         : { data: [] }
       for (const k of young ?? []) {
         const e = (kidEggs ?? []).find((x) => x.id === k.egg_id)
-        if (!e || !isPlayFilmUnlocked(k.created_at, isDemoEgg(e.created_at, e.ready_at), now)) continue
+        if (!e || !isPlayFilmUnlocked(k.created_at, isDemoEgg(e.demo, e.created_at, e.ready_at), now)) continue
         const key = `play-film:${k.id}`
         const { error: dup } = await admin.from('reminder_log').insert({ key })
         if (dup) continue // already done

@@ -372,8 +372,8 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
           {busy
             ? 'Asking the mother…'
             : demoCompress
-              ? 'Start demo birth (~20 seconds)'
-              : 'Begin ~30 min birth'}
+              ? 'Start demo birth (10 seconds)'
+              : 'Begin the birth (20 seconds)'}
         </button>
       </div>
     </form>

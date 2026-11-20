@@ -11,6 +11,7 @@ type EggRow = {
   id: string
   carer_id: string | null
   email: string | null
+  demo?: boolean | null
   created_at: string
   ready_at: string
   status: EggRecord['status']
@@ -44,6 +45,7 @@ type ChildRow = {
   public_id: string | null
   share_enabled: boolean | null
   asleep_until: string | null
+  sex: 'male' | 'female' | null
   born_at: string | null
   span_ends_at: string | null
   departed_at: string | null
@@ -61,6 +63,7 @@ function xpColumns(h: Haggling) {
     weather_applied: h.weatherApplied ?? [],
     // sleep (19 Nov): the 8-hour bedtime, so the server can send the wake-up alert
     asleep_until: h.asleepUntil ?? null,
+    sex: h.sex ?? null,
   }
 }
 
@@ -251,6 +254,7 @@ function childToHaggling(child: ChildRow, scraps: ScrapEntry[]): Haggling {
     hatchedAt: child.created_at,
     publicId: child.public_id ?? undefined,
     asleepUntil: child.asleep_until ?? undefined,
+    sex: child.sex ?? undefined,
     bornAt: child.born_at ?? child.created_at,
     spanEndsAt: child.span_ends_at ?? undefined,
     departedAt: child.departed_at ?? undefined,
@@ -323,6 +327,7 @@ export async function pullBroodFromCloud(): Promise<EggRecord[] | null> {
       readyAt: egg.ready_at,
       status: egg.status,
       storyId: egg.story_id ?? undefined,
+      demo: egg.demo ?? undefined,
       answers: { ...egg.answers, email: egg.email ?? '' },
     }
     if (child) {
@@ -426,6 +431,7 @@ export async function claimChildByTransferCode(
       readyAt: eggRow.ready_at,
       status: eggRow.status,
       storyId: eggRow.story_id ?? undefined,
+      demo: eggRow.demo ?? undefined,
       answers: { ...eggRow.answers, email: eggRow.email ?? '' },
       haggling: childToHaggling(
         row,

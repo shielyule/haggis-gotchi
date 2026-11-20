@@ -67,6 +67,8 @@ export type Haggling = {
   careXpToday?: number
   /** Local date of the last Photo Treat (one per day). */
   lastTreatDay?: string
+  /** Chosen at hatch (owner, 20 Nov). */
+  sex?: 'male' | 'female'
   /** Put to bed (owner, 19 Nov): asleep until this time (8 hours). */
   asleepUntil?: string
   /** lifespan-graveyard: server-decided life (born_at, span_ends_at, departed_at). */

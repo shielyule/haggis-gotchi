@@ -8,7 +8,7 @@ Kiro adds to this file as features land. Times are targets.
 
 | Want to show | How |
 | --- | --- |
-| Birth without a 30-minute wait | Tick **Demo wait (~20 seconds)** on the claim form; the still egg shows, then the hatch film plays by itself |
+| Birth without a 30-minute wait | Tick **Demo wait (10 seconds)** on the claim form (real eggs take 20 seconds); the still egg shows, then the hatch film plays by itself |
 | A weather reaction on demand | Add `?weather=storm` to the address (also `rain`, `hot`, `snow`, `frost`, `windy`, `sunny`, `crisp`, `grey`, `humid`). Applies once per kind of weather per day |
 | Different temperaments reacting | See `docs/WEATHER-REACTIONS.md`; e.g. Douce + rain = big smile, Radge + hot = big sulk, Fair Wud + storm = delight |
 | A notification right now | Tell Kiro "test reminder" (sends one to your phone) |

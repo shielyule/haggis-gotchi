@@ -149,7 +149,7 @@ export function PhoneApp() {
       <p className="brand">Haggis-gotchi</p>
       <label className="demo-toggle">
         <input type="checkbox" checked={demo} onChange={(e) => setDemo(e.target.checked)} />
-        Demo wait (~20 seconds instead of 30 minutes)
+        Demo wait (10 seconds instead of 20)
       </label>
       <SignupForm
         demoCompress={demo}

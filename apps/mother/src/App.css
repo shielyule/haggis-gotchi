@@ -1218,3 +1218,13 @@
   background: #2b3a5c; color: var(--cream); font-weight: 700; font-size: 0.85rem;
 }
 .link-btn { background: none; border: 0; padding: 0; margin: 0 0 0.75rem; color: var(--mist); text-decoration: underline; font: inherit; cursor: pointer; }
+
+/* traffic-light bars (20 Nov) */
+.meter-traffic {
+  background-color: transparent;
+  background-image: linear-gradient(90deg, #b3261e 0%, #e0a100 50%, #3f8f3a 100%);
+  background-repeat: no-repeat;
+}
+.meter-traffic-bad { background-image: linear-gradient(90deg, #3f8f3a 0%, #e0a100 50%, #b3261e 100%); }
+.sex-choice { border: 0; padding: 0; display: grid; gap: 0.35rem; }
+.sex-choice legend { font-weight: 700; margin-bottom: 0.25rem; }

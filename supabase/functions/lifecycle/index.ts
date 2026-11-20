@@ -156,8 +156,8 @@ Deno.serve(async (req) => {
     }
 
     if (body.action === 'next' || body.action === 'end') {
-      const { data: egg } = await admin.from('eggs').select('created_at, ready_at').eq('id', c.egg_id).single()
-      if (!egg || !isDemoEgg(egg.created_at, egg.ready_at)) {
+      const { data: egg } = await admin.from('eggs').select('created_at, ready_at, demo').eq('id', c.egg_id).single()
+      if (!egg || !isDemoEgg(egg.demo, egg.created_at, egg.ready_at)) {
         return json(403, { error: 'Fast-forward is for demo eggs only.' })
       }
       if (c.departed_at) return json(409, { error: 'Already departed.' })

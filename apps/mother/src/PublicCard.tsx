@@ -25,7 +25,7 @@ export function readCardIdFromPath(pathname = window.location.pathname): string 
   return m ? m[1] : null
 }
 
-function Bar({ label, value }: { label: string; value: number }) {
+function Bar({ label, value, bad = false }: { label: string; value: number; bad?: boolean }) {
   const v = Math.max(0, Math.min(100, Math.round(value)))
   return (
     <div className="meter">
@@ -34,7 +34,10 @@ function Bar({ label, value }: { label: string; value: number }) {
         <span>{v}</span>
       </div>
       <div className="meter-track" aria-hidden="true">
-        <div className="meter-fill" style={{ width: `${v}%` }} />
+        <div
+          className={`meter-fill meter-traffic${bad ? ' meter-traffic-bad' : ''}`}
+          style={{ width: `${v}%`, backgroundSize: v > 0 ? `${10000 / v}% 100%` : undefined }}
+        />
       </div>
     </div>
   )
@@ -128,7 +131,7 @@ export function PublicCard({ id }: { id: string }) {
         <Bar label="Hunger" value={card.hunger ?? 0} />
         <Bar label="Mood" value={card.mood ?? 0} />
         <Bar label="Energy" value={card.energy ?? 0} />
-        <Bar label="Mess" value={card.mess ?? 0} />
+        <Bar label="Mess" value={card.mess ?? 0} bad />
       </div>
       <h3>The hatching</h3>
       <video className="watch-film" controls playsInline preload="metadata" poster={carePortraitFor(card.temperament_id)}>

@@ -4,8 +4,8 @@
  */
 import { cleanDisplayName, isPlausibleEmail, safeSlug } from './email.ts'
 
-export const DEMO_WAIT_MS = 20 * 1000 // owner, 19 Nov: 20 s demo wait
-export const FULL_WAIT_MS = 30 * 60 * 1000
+export const DEMO_WAIT_MS = 10 * 1000 // owner, 20 Nov: 10 s demo (voice-over), 20 s real
+export const FULL_WAIT_MS = 20 * 1000
 export const MAX_ANSWERS_BYTES = 4096
 
 const PLACES = ['', 'city', 'town', 'countryside', 'seaside'] as const
@@ -47,6 +47,8 @@ export type ClaimInput = {
   eggId: string
   storyId: string | null
   waitMs: number
+  /** Demo eggs allow life fast-forward and a 3-minute playing film. */
+  demo: boolean
   email: string
   /** Answers WITHOUT the email: email lives only in eggs.email (R4.1). */
   answers: CleanAnswers
@@ -130,6 +132,7 @@ export function validateClaim(body: unknown): ClaimValidation {
       eggId,
       storyId: storyId as string | null,
       waitMs,
+      demo: b.demo === true,
       email,
       answers: {
         displayName: cleanDisplayName(name),
