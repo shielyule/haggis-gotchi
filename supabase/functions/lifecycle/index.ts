@@ -155,13 +155,21 @@ Deno.serve(async (req) => {
       return json(200, { ok: true })
     }
 
-    if (body.action === 'next' || body.action === 'end') {
+    if (body.action === 'next' || body.action === 'end' || body.action === 'day') {
       const { data: egg } = await admin.from('eggs').select('created_at, ready_at, demo').eq('id', c.egg_id).single()
       if (!egg || !isDemoEgg(egg.demo, egg.created_at, egg.ready_at)) {
         return json(403, { error: 'Fast-forward is for demo eggs only.' })
       }
       if (c.departed_at) return json(409, { error: 'Already departed.' })
       const now = Date.now()
+      if (body.action === 'day') {
+        // Demo: one day older (born and end both move back a day).
+        const born = new Date(Date.parse(c.born_at) - DAY).toISOString()
+        const ends = new Date(Date.parse(c.span_ends_at) - DAY).toISOString()
+        await admin.from('children').update({ born_at: born, span_ends_at: ends }).eq('id', c.id)
+        if (Date.parse(ends) <= now) await depart(admin, { ...c, born_at: born })
+        return json(200, { ok: true })
+      }
       const st = lifeStatus(c.born_at, c.span_ends_at, now)
       const idx = STAGES.findIndex((s) => s.id === st.stage)
       const next = STAGES[idx + 1]

@@ -126,6 +126,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const [filmNote, setFilmNote] = useState('')
   const [introOpen, setIntroOpen] = useState(() => !introSeen())
   const [identityAck, setIdentityAck] = useState(0)
+  const [stageAck, setStageAck] = useState(0)
   const [share, setShare] = useState<{ publicId: string; on: boolean } | null>(null)
   const [inFeed, setInFeed] = useState<boolean | null>(null)
   const h = egg.haggling
@@ -231,6 +232,15 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
     setIdentityAck((n) => n + 1)
     onChange()
   }
+  // Growing up (owner, 21 Nov): a big announcement once per new stage, with the new picture.
+  const stageKey = `haggis-gotchi:stage-seen:${egg.id}:${life.stage}`
+  const stageNews = stageAck >= 0 && life.stage !== 'baby' && !localStorage.getItem(stageKey)
+  const STAGE_NEWS: Record<string, string> = {
+    child: `${h.name} is a Child now! Off to play out: walks and treats go down a storm.`,
+    teen: `${h.name} is a Teen now! Expect long lie-ins, big appetites and absolutely no cuddles in public.`,
+    adult: `${h.name} is all grown up! A taste for fine food and a tidy house.`,
+    elder: `${h.name} is getting on now. Gentle walks, soft tatties and plenty of cuddles.`,
+  }
   const asleep = Boolean(h.asleepUntil) && now < Date.parse(h.asleepUntil ?? '')
   const wakeTime = asleep
     ? new Date(h.asleepUntil!).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
@@ -333,12 +343,12 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
     onChange()
   }
 
-  async function demoLife(action: 'next' | 'end') {
+  async function demoLife(action: 'next' | 'end' | 'day') {
     const childId = h?.cloudChildId
     if (!childId) return
-    setDemoNote(action === 'next' ? 'Growing up…' : 'Saying goodbye…')
+    setDemoNote(action === 'end' ? 'Saying goodbye…' : 'Growing up…')
     const r = await lifecycleAction(childId, action)
-    setDemoNote(r.ok ? (action === 'next' ? 'Next stage!' : 'Gone to the glen.') : (r.error ?? 'Could not do that.'))
+    setDemoNote(r.ok ? (action === 'end' ? 'Gone to the glen.' : action === 'day' ? 'One day older.' : 'Next stage!') : (r.error ?? 'Could not do that.'))
     await refreshFromCloud()
   }
 
@@ -503,6 +513,9 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           </button>
           {isDemo ? (
             <div className="cta-row">
+              <button type="button" className="btn btn-ghost" onClick={() => void demoLife('day')}>
+                +1 day (day {life.day})
+              </button>
               <button type="button" className="btn btn-ghost" onClick={() => void demoLife('next')}>
                 Next stage ({life.label} now)
               </button>
@@ -518,6 +531,27 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
             Close demo menu
           </button>
         </section>
+      ) : null}
+
+      {stageNews ? (
+        <div className="info-modal stage-up" role="dialog" aria-modal="true" aria-label={`${h.name} has grown up`}>
+          <div className="info-panel">
+            <p className="signup-kicker">Growing up</p>
+            <h2>{life.label}!</h2>
+            <img className="stage-up-portrait" src={stagePortraitFor(temp.id, life.stage)} alt={`${h.name} as a ${life.label}`} />
+            <p>{STAGE_NEWS[life.stage]}</p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {
+                localStorage.setItem(stageKey, '1')
+                setStageAck((n) => n + 1)
+              }}
+            >
+              Brilliant!
+            </button>
+          </div>
+        </div>
       ) : null}
 
       {isHome && identityNews ? (

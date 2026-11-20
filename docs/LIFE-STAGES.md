@@ -10,8 +10,8 @@ there and every surface changes. Numbers are first guesses and easy to tune.
 | Stage | Days | Portrait (still) | Stage film | Status |
 | --- | --- | --- | --- | --- |
 | Baby | 0-7 | `haggling-care-<type>.jpeg` (have) | hatch film + playing film (have) | live |
-| Child | 7-14 | `haggling-child-<type>.jpeg` | `haggling-child-play-<type>.mp4` | kept (owner); owner making images |
-| Teen | 14-24 | `haggling-teen-<type>.jpeg` | `haggling-teen-play-<type>.mp4` | owner making now |
+| Child | 7-14 | `haggling-child-<type>.jpeg` (**have, 21 Nov**) | `haggling-child-play-<type>.mp4` | portraits live; films to come |
+| Teen | 14-24 | `haggling-teen-<type>.jpeg` (**have, 21 Nov**) | `haggling-teen-play-<type>.mp4` | portraits live; films to come |
 | Adult | 24-36 | `haggling-adult-<type>.jpeg` | `haggling-adult-play-<type>.mp4` | to make |
 | Old age | 36-42 | `haggling-elder-<type>.jpeg` | `haggling-elder-play-<type>.mp4` | to make |
 | Departed | day 42 | `haggling-ghost-<type>.jpeg` (have) | - | live |
@@ -85,6 +85,12 @@ Sexual orientation is **not** part of the game. Gender identity only; "Furry" dr
 - **The carer's response:** two buttons, both supportive: "Give them a big hug" (the one hug a teen accepts) or "Tell them you love them just the same". Each writes a warm scrapbook line.
 - **No outcome scores better or worse.** No points, no penalty. The jokes stay on food, weather and knees, never on identity.
 - Coded: `identityAt`, `identityLabel`, `identityMessage` in `packages/care-engine/src/stages.ts` (tests in `test/stages.test.ts`).
+
+## On reaching a new stage (built 21 Nov)
+- The portrait swaps to the stage picture (care screen, start-up screen, public card).
+- A big "Growing up" announcement pops up once, with the new picture.
+- A phone notification ("{name} is a Teen now!") from the lifecycle job.
+- Demo menu (demo eggs): **+1 day**, **Next stage**, **Skip to the end**.
 
 ## Not built yet
 - Stage portraits and stage films: drop the files in (names above) and Kiro wires them into `STAGE_PORTRAITS` / Watch again.

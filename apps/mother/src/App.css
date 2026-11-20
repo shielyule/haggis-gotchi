@@ -1228,3 +1228,6 @@
 .meter-traffic-bad { background-image: linear-gradient(90deg, #3f8f3a 0%, #e0a100 50%, #b3261e 100%); }
 .sex-choice { border: 0; padding: 0; display: grid; gap: 0.35rem; }
 .sex-choice legend { font-weight: 700; margin-bottom: 0.25rem; }
+.stage-up .info-panel { text-align: center; }
+.stage-up h2 { font-family: var(--font-display); font-size: 2rem; margin: 0.2rem 0; }
+.stage-up-portrait { width: 100%; max-width: 20rem; border-radius: 16px; margin: 0.5rem auto; display: block; }

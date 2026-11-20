@@ -5,7 +5,8 @@ import { NestApp } from './NestApp'
 import { SignupForm } from './SignupForm'
 import { pullBroodFromCloud } from './lib/cloud'
 import { installSkipped, isInstalled, skipInstall } from './lib/device'
-import { carePortraitFor, temperamentForChaos } from './data/temperaments'
+import { stagePortraitFor, temperamentForChaos } from './data/temperaments'
+import { lifeStatus } from './lib/engine'
 import { eggSlug, loadStore, replaceLocalBrood, savePhoneStore, type EggRecord } from './lib/storage'
 import { supabase } from './lib/supabase'
 
@@ -87,7 +88,10 @@ export function PhoneApp() {
         {known ? (
           <div className="care-stage">
             <img
-              src={carePortraitFor(temperamentForChaos(known.answers.chaos).id)}
+              src={stagePortraitFor(
+                temperamentForChaos(known.answers.chaos).id,
+                lifeStatus(known.haggling?.bornAt ?? known.haggling?.hatchedAt, known.haggling?.spanEndsAt, Date.now()).stage,
+              )}
               alt={known.haggling?.name ?? 'Your Haggling'}
             />
           </div>

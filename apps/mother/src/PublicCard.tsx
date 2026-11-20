@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { carePortraitFor, ghostPortraitFor, hatchFilmFor, TEMPERAMENTS } from './data/temperaments'
-import { lifeLevel } from './lib/engine'
+import { carePortraitFor, ghostPortraitFor, hatchFilmFor, stagePortraitFor, TEMPERAMENTS } from './data/temperaments'
+import { lifeLevel, lifeStatus } from './lib/engine'
 import { supabase } from './lib/supabase'
 
 /** share-card: public, read-only Haggling card at /h/<public id>. */
@@ -124,7 +124,10 @@ export function PublicCard({ id }: { id: string }) {
         {days === 0 ? 'hatched today' : `${days} day${days === 1 ? '' : 's'} old`}
       </p>
       <div className="care-stage">
-        <img src={carePortraitFor(card.temperament_id)} alt={`${card.name}, a ${temp?.label ?? ''} Haggling`} />
+        <img
+          src={stagePortraitFor(card.temperament_id, lifeStatus(card.hatched_at ?? undefined, undefined, Date.now()).stage)}
+          alt={`${card.name}, a ${temp?.label ?? ''} Haggling`}
+        />
       </div>
       <div className="care-meters">
         <Bar label="Health XP" value={card.health_xp ?? 50} />

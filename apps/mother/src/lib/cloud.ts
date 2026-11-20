@@ -584,7 +584,7 @@ export async function fetchShowInFeed(): Promise<boolean | null> {
 /** lifespan-graveyard: demo fast-forward ("next" / "end", demo eggs only) and ghost choice. */
 export async function lifecycleAction(
   childId: string,
-  action: 'next' | 'end' | 'ghost',
+  action: 'next' | 'end' | 'day' | 'ghost',
   keep?: boolean,
 ): Promise<{ ok: boolean; error?: string }> {
   if (!supabase || !(await requireUserId())) return { ok: false, error: 'Sign in first.' }

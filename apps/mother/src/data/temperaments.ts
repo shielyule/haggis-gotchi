@@ -160,7 +160,24 @@ export function temperamentForChaos(chaos: number): Temperament {
  * add entries here as `haggling-<stage>-<temperament>.jpeg` lands in public/art.
  * Missing stages fall back to the baby portrait (the care screen shows a stage badge).
  */
-export const STAGE_PORTRAITS: Record<string, Record<string, string>> = {}
+export const STAGE_PORTRAITS: Record<string, Record<string, string>> = {
+  child: {
+    'douce': '/art/haggling-child-douce.jpeg',
+    'skeigh': '/art/haggling-child-skeigh.jpeg',
+    'ill-trickit': '/art/haggling-child-ill-trickit.jpeg',
+    'ree': '/art/haggling-child-ree.jpeg',
+    'radge': '/art/haggling-child-radge.jpeg',
+    'fair-wud': '/art/haggling-child-fair-wud.jpeg',
+  },
+  teen: {
+    'douce': '/art/haggling-teen-douce.jpeg',
+    'skeigh': '/art/haggling-teen-skeigh.jpeg',
+    'ill-trickit': '/art/haggling-teen-ill-trickit.jpeg',
+    'ree': '/art/haggling-teen-ree.jpeg',
+    'radge': '/art/haggling-teen-radge.jpeg',
+    'fair-wud': '/art/haggling-teen-fair-wud.jpeg',
+  },
+}
 
 export function stagePortraitFor(temperamentId: string, stage: string): string {
   return STAGE_PORTRAITS[stage]?.[temperamentId] ?? carePortraitFor(temperamentId)
