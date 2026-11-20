@@ -41,15 +41,15 @@ test('baby rules unchanged when no stage is given', () => {
     applyCare(fresh(), 'treat', ctx('baby')).haggling.mood)
 })
 
-test('identity: only opted in, from day 17, same answer every time; questioning settles by day 26', () => {
+test('identity: only opted in, from day 14 (Teen), same answer every time; questioning settles at day 24 (Adult)', () => {
   assert.equal(identityAt('child-1', false, 30), 'as-hatched')
-  assert.equal(identityAt('child-1', true, 16), 'as-hatched')
+  assert.equal(identityAt('child-1', true, 13), 'as-hatched')
   const seen = new Set<string>()
   for (let i = 0; i < 400; i++) {
     const k = `child-${i}`
-    assert.equal(identityAt(k, true, 18), identityAt(k, true, 18))
-    seen.add(identityAt(k, true, 18))
-    assert.notEqual(identityAt(k, true, 27), 'questioning')
+    assert.equal(identityAt(k, true, 15), identityAt(k, true, 15))
+    seen.add(identityAt(k, true, 15))
+    assert.notEqual(identityAt(k, true, 24), 'questioning')
   }
   assert.deepEqual([...seen].sort(), ['as-hatched', 'non-binary', 'questioning', 'trans'])
 })

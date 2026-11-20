@@ -87,8 +87,8 @@ export function stageLine(stage: StageId | undefined, action: CareAction, name: 
 // Identity (agreed 20 Nov): random, opted-in carers only; no outcome scores better or worse.
 // ---------------------------------------------------------------------------
 export type Identity = 'as-hatched' | 'trans' | 'non-binary' | 'questioning'
-export const IDENTITY_DAY_TEEN = 17
-export const IDENTITY_DAY_ADULT = 26
+export const IDENTITY_DAY_TEEN = 14 // start of Teen, so the demo "Next stage" shows it
+export const IDENTITY_DAY_ADULT = 24 // start of Adult
 
 function hash(s: string): number {
   let h = 2166136261

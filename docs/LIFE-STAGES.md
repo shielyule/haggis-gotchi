@@ -72,7 +72,7 @@ Sexual orientation is **not** part of the game. Gender identity only; "Furry" dr
 
 - **At hatch:** the carer picks wee laddie (boy) or wee lassie (girl).
 - **Who it applies to:** only carers who ticked the sign-up box ("allow identity morphing" with the disclaimer). Everyone else: no change, ever.
-- **Teen, day 17:** the Haggling tells the carer who they are, chosen at random (same answer on every device):
+- **Start of Teen (day 14):** the Haggling tells the carer who they are, chosen at random (same answer on every device):
 
   | Outcome | Chance (first guess) | Shown as |
   | --- | --- | --- |
@@ -81,7 +81,7 @@ Sexual orientation is **not** part of the game. Gender identity only; "Furry" dr
   | Non-binary | 20% | **Non-binary** |
   | Questioning | 15% | **Questioning** |
 
-- **Adult, day 26:** a questioning Haggling settles (stays as hatched, trans or non-binary).
+- **Start of Adult (day 24):** a questioning Haggling settles (stays as hatched, trans or non-binary).
 - **The carer's response:** two buttons, both supportive: "Give them a big hug" (the one hug a teen accepts) or "Tell them you love them just the same". Each writes a warm scrapbook line.
 - **No outcome scores better or worse.** No points, no penalty. The jokes stay on food, weather and knees, never on identity.
 - Coded: `identityAt`, `identityLabel`, `identityMessage` in `packages/care-engine/src/stages.ts` (tests in `test/stages.test.ts`).
