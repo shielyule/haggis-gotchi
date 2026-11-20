@@ -8,6 +8,8 @@
 import { fetchRecentReadings, pushCheckIn, saveWeatherLocation } from './cloud'
 import { deviceTimezone } from './device'
 import {
+  lifeStatus,
+  stageRule,
   applyWeather,
   classifyWeather,
   dayKey,
@@ -30,6 +32,11 @@ export type WeatherChip = { bucket: WeatherBucket; label: string; tempC: number 
 export type WeatherSync = { chip: WeatherChip | null; swingLine: string | null }
 
 const round1 = (n: number) => Math.round(n * 10) / 10
+
+/** Teen weather swings x1.3, old age x0.7 (docs/LIFE-STAGES.md). */
+function swingFor(h: { bornAt?: string; hatchedAt?: string; spanEndsAt?: string }): number {
+  return stageRule(lifeStatus(h.bornAt ?? h.hatchedAt, h.spanEndsAt, Date.now()).stage).weatherSwing
+}
 
 export function weatherChoice(): WeatherChoice | null {
   const v = localStorage.getItem(CHOICE_KEY)
@@ -151,7 +158,7 @@ export async function syncWeather(eggId: string): Promise<WeatherSync> {
     const res = applyWeather(h, r.bucket as WeatherBucket, r.slot_id, temperament, r.at, {
       tempC: Number(r.temp_c ?? 0),
       place: r.place,
-    })
+    }, swingFor(h))
     if (res.applied) {
       h = res.haggling
       changed = true
@@ -167,7 +174,7 @@ export async function syncWeather(eggId: string): Promise<WeatherSync> {
       const res = applyWeather(h, live.bucket, slot, temperament, nowIso, {
         tempC: live.tempC ?? 0,
         place: live.place,
-      })
+      }, swingFor(h))
       if (res.applied) {
         h = res.haggling
         changed = true
@@ -196,7 +203,7 @@ export function applyDemoWeather(eggId: string, bucket: WeatherBucket): WeatherS
   const r = applyWeather(h, bucket, `demo-${dayKey(Date.now())}-${bucket}`, temperament, new Date().toISOString(), {
     tempC: 0,
     place: 'demo',
-  })
+  }, swingFor(h))
   if (r.applied) {
     replaceHaggling(eggId, r.haggling)
     void pushCheckIn({ ...egg, haggling: r.haggling }, 'phone', 'weather')

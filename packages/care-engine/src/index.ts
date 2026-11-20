@@ -50,3 +50,4 @@ export {
   playFilmUnlockAt,
 } from './films.ts'
 export { epitaph, LIFESPAN_DAYS, lifeStatus, STAGES, toneFor, type LifeStatus, type StageId, type Tone } from './life.ts'
+export { identityAt, identityLabel, identityMessage, IDENTITY_DAY_ADULT, IDENTITY_DAY_TEEN, STAGE_RULES, stageLine, stageRule, type Identity, type StageRule } from './stages.ts'

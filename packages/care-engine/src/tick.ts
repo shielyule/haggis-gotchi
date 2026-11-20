@@ -5,13 +5,17 @@ import {
   penaliseMissedSchedule,
   sootheHealth,
 } from './health.ts'
+import type { StageId } from './life.ts'
 import { RULES } from './rules.ts'
+import { stageLine, stageRule } from './stages.ts'
 import type { CareAction, EngineResult, Haggling, Notice } from './types.ts'
 
 export type EngineContext = {
   /** Temperament id from the egg's chaos band, e.g. 'douce'. */
   temperamentId: string
   nowMs: number
+  /** Life stage (docs/LIFE-STAGES.md). Missing = baby (the original rules). */
+  stage?: StageId
 }
 
 export function clamp(n: number) {
@@ -70,6 +74,7 @@ function tickInPlace(h: Haggling, notices: Notice[], ctx: EngineContext) {
   const wild = RULES.wildTemperaments.includes(ctx.temperamentId) ? RULES.wildFactor : 1
   const calm = ctx.temperamentId === RULES.calmTemperament ? RULES.calmFactor : 1
   const d = RULES.decayPerHour
+  const sr = stageRule(ctx.stage)
 
   // Sleep: split the gap into asleep and awake hours.
   const sleepEnd = h.asleepUntil ? Date.parse(h.asleepUntil) : Number.NaN
@@ -77,10 +82,10 @@ function tickInPlace(h: Haggling, notices: Notice[], ctx: EngineContext) {
   const awakeH = hours - asleepH
   const wasAsleep = asleepH > 0
 
-  h.hunger = clamp(h.hunger - awakeH * d.hunger * wild - asleepH * d.hunger * wild * RULES.sleepHungerFactor)
-  h.energy = clamp(h.energy - awakeH * d.energy * calm + asleepH * RULES.sleepEnergyPerHour)
-  h.mess = clamp(h.mess + hours * d.mess * wild)
-  h.mood = clamp(h.mood - awakeH * d.mood)
+  h.hunger = clamp(h.hunger - (awakeH + asleepH * RULES.sleepHungerFactor) * d.hunger * wild * sr.decay)
+  h.energy = clamp(h.energy - awakeH * d.energy * calm * sr.decay + asleepH * RULES.sleepEnergyPerHour)
+  h.mess = clamp(h.mess + hours * d.mess * wild * sr.messGrowth)
+  h.mood = clamp(h.mood - awakeH * d.mood * sr.decay)
 
   // Natural wake-up after the full sleep: bright-eyed.
   if (Number.isFinite(sleepEnd) && ctx.nowMs >= sleepEnd) {
@@ -156,10 +161,15 @@ export function applyCare(
     addScrap(h, `${h.name} was woken up early and is in a right crabbit mood.`)
   }
 
+  const moodBefore = h.mood
+  const energyBefore = h.energy
+  const scrapsBefore = h.scrapbook.length
+  const sr = stageRule(ctx.stage)
+
   switch (action) {
     case 'sleep':
       if (asleep) break // already asleep
-      h.asleepUntil = new Date(ctx.nowMs + RULES.sleepHours * 3_600_000).toISOString()
+      h.asleepUntil = new Date(ctx.nowMs + sr.sleepHours * 3_600_000).toISOString()
       h.lastBedAt = now.toISOString()
       addScrap(h, `${h.name} was tucked in for the night. Wheesht now.`)
       break
@@ -218,7 +228,20 @@ export function applyCare(
     h.lifeXp = (h.lifeXp ?? 0) + RULES.lifeXpPerCare
   }
 
-  if (nearBed && action === 'cuddle') {
+  // Life stage (docs/LIFE-STAGES.md): scale the mood/energy effect, teen cuddles, stage lines.
+  const tweak = sr.care[action]
+  if (action === 'cuddle' && sr.rejectsCuddles) {
+    h.mood = clamp(moodBefore - 3)
+  } else if (tweak?.mood) {
+    h.mood = clamp(moodBefore + (h.mood - moodBefore) * tweak.mood)
+  }
+  if (tweak?.energyCost && h.energy < energyBefore) {
+    h.energy = clamp(energyBefore - (energyBefore - h.energy) * tweak.energyCost)
+  }
+  const line = stageLine(ctx.stage, action, h.name, ctx.nowMs)
+  if (line && h.scrapbook.length > scrapsBefore) h.scrapbook[0] = { ...h.scrapbook[0], text: line }
+
+  if (nearBed && action === 'cuddle' && !sr.rejectsCuddles) {
     h.energy = clamp(h.energy + 12)
     h.lastBedAt = now.toISOString()
     sootheHealth(h, 3)

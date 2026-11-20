@@ -1,16 +1,16 @@
-# Kiro - Life stages crib sheet (DRAFT to agree, 20 Nov 2026)
+# Kiro - Life stages crib sheet (AGREED and built 20 Nov 2026)
 
 One place for what changes at each stage. Owner ideas are marked **(owner)**; the rest is
-Kiro's brainstorm. Nothing in "Behaviour" or "Lines" is coded yet: agree or change, then
-Kiro codes it as one table in the care engine (`packages/care-engine`), so phone and
-server stay the same. Numbers are first guesses and easy to tune.
+Kiro's brainstorm, kept by the owner. **Coded** as one table, `STAGE_RULES` in
+`packages/care-engine/src/stages.ts`, used by the phone and the server. Change a number
+there and every surface changes. Numbers are first guesses and easy to tune.
 
 ## Stages (agreed 18 Nov) and assets
 
 | Stage | Days | Portrait (still) | Stage film | Status |
 | --- | --- | --- | --- | --- |
 | Baby | 0-7 | `haggling-care-<type>.jpeg` (have) | hatch film + playing film (have) | live |
-| Child | 7-14 | `haggling-child-<type>.jpeg` | `haggling-child-play-<type>.mp4` | **Keep or merge into Baby? (owner)** |
+| Child | 7-14 | `haggling-child-<type>.jpeg` | `haggling-child-play-<type>.mp4` | kept (owner); owner making images |
 | Teen | 14-24 | `haggling-teen-<type>.jpeg` | `haggling-teen-play-<type>.mp4` | owner making now |
 | Adult | 24-36 | `haggling-adult-<type>.jpeg` | `haggling-adult-play-<type>.mp4` | to make |
 | Old age | 36-42 | `haggling-elder-<type>.jpeg` | `haggling-elder-play-<type>.mp4` | to make |
@@ -24,7 +24,7 @@ notification when the stage begins.
 
 | | Baby | Child | Teen | Adult | Old age |
 | --- | --- | --- | --- | --- | --- |
-| Sleep | 10 h, essential **(owner)** | 9 h | 10 h, essential **(owner)**, wakes crabbit before 10am | 7 h **(owner: less as they age)** | 6 h, plus a wee nap |
+| Sleep | 10 h, essential **(owner)** | 9 h | 10 h, essential **(owner)** | 7 h **(owner: less as they age)** | 6 h |
 | Feed | as now | as now | snacks over meals | **loves food, gourmet lines (owner)** x1.5 mood | soft food, x1.2 |
 | Cuddle | x1.5, adores it | as now | **rejected: Mood -3, "Really?!" (owner)** | as now | x1.5, loves it again |
 | Walk | short, x0.8 | x1.3, wants to play out | **x1.5 (owner)** | **important (owner)** x1.3 | knees: Energy cost x1.5, Mood x0.8 |
@@ -33,7 +33,7 @@ notification when the stage begins.
 | Weather | as now | as now | moodier: swings x1.3 | as now | calmer: swings x0.7 |
 | Decay | as now | as now | as now | as now | slower, x0.8 |
 
-## Lines (examples; Kiro writes the rest in the same voice)
+## Lines (all coded in `STAGE_RULES`; baby keeps the original lines)
 
 - **Baby, cuddle:** "Wee Yin went soft as a clootie dumpling."
 - **Child, walk:** "Wee Yin came back with a jam jar full of tadpoles and no shoes."
@@ -53,8 +53,10 @@ Same five treats (Irn-Bru, bagpipes, kilt/tartan, heather, shortbread), differen
 - **Adult:** "Wee Yin poured the Irn-Bru into a proper glass. With ice. Classy."
 - **Old age:** "Wee Yin remembers when Irn-Bru came in glass bottles and you got 10p back."
 
-**On asking an AI for "popular teenage culture where the Haggis lives":** Kiro's advice is
-not now. It needs a paid AI service and a new key, its answers need checking (brand names,
+Coded: `treatLine()` in `supabase/functions/_shared/photoMatch.ts` (all five treats for
+teen, adult and old age; baby and child keep the original lines).
+
+**On asking an AI for "popular teenage culture where the Haggis lives":** agreed: not now. It needs a paid AI service and a new key, its answers need checking (brand names,
 unsuitable content, things going out of date), and it slows the photo reply. A written
 list per stage gets the same laugh, reliably. A later version could let an AI rewrite one
 line at a time inside strict rules (like the birth-story plan), with the written line as
@@ -64,25 +66,26 @@ the fallback.
 
 Chosen at naming: "Wee laddie (boy)" or "Wee lassie (girl)". Stored with the Haggling.
 
-## Teen identity (needs owner decisions; nothing built)
+## Gender identity (AGREED and built 20 Nov)
 
-The sign-up already asks "When they reach teen age, allow identity morphing" with a
-disclaimer ("it may not go the direction I want"). Kiro's advice before building:
+Sexual orientation is **not** part of the game. Gender identity only; "Furry" dropped.
 
-1. **Two different things are in the proposed list.** Gender identity (stays the same,
-   trans, non-binary) and sexual orientation (straight, gay). Orientation only matters
-   once there is dating (post-hackathon). Suggestion: teen stage covers gender identity
-   only; orientation waits for the dating feature.
-2. **Leave "Furry" out of this list.** Furry is a fandom, not an identity, and listing it
-   next to trans and non-binary can read as a joke at trans people's expense, which
-   judges and players may take badly. It would work well elsewhere: a teen "fluffy phase"
-   look or costume, which suits a furry wee beast.
-3. **Choice or random?** The disclaimer already implies the Haggling decides, not the
-   carer. Suggestion: around day 17, an opted-in Haggling tells the carer who they are.
-   Most stay as they hatched, some find they are the other gender, some non-binary. No
-   outcome is better or worse in the game: no points, no penalty, a warm scrapbook line,
-   and the carer can only respond with support. Carers who did not opt in see no change.
-4. **Tone:** the Scottish humour stays on everything else (food, weather, the knees);
-   never on the identity itself.
+- **At hatch:** the carer picks wee laddie (boy) or wee lassie (girl).
+- **Who it applies to:** only carers who ticked the sign-up box ("allow identity morphing" with the disclaimer). Everyone else: no change, ever.
+- **Teen, day 17:** the Haggling tells the carer who they are, chosen at random (same answer on every device):
 
-Owner to decide: choice or the Haggling decides; the options; the day it happens.
+  | Outcome | Chance (first guess) | Shown as |
+  | --- | --- | --- |
+  | Stays as hatched | 40% | Laddie / Lassie (no message) |
+  | Trans | 25% | the other one: a trans lassie is shown as **Lassie** |
+  | Non-binary | 20% | **Non-binary** |
+  | Questioning | 15% | **Questioning** |
+
+- **Adult, day 26:** a questioning Haggling settles (stays as hatched, trans or non-binary).
+- **The carer's response:** two buttons, both supportive: "Give them a big hug" (the one hug a teen accepts) or "Tell them you love them just the same". Each writes a warm scrapbook line.
+- **No outcome scores better or worse.** No points, no penalty. The jokes stay on food, weather and knees, never on identity.
+- Coded: `identityAt`, `identityLabel`, `identityMessage` in `packages/care-engine/src/stages.ts` (tests in `test/stages.test.ts`).
+
+## Not built yet
+- Stage portraits and stage films: drop the files in (names above) and Kiro wires them into `STAGE_PORTRAITS` / Watch again.
+- Teen "wakes crabbit before 10am" and an old-age nap: left out to keep sleep simple.

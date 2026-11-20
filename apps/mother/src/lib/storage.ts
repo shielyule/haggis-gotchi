@@ -3,6 +3,7 @@ import { temperamentForChaos } from '../data/temperaments'
 import {
   addScrap,
   applyCare,
+  lifeStatus,
   tick,
   type CareAction,
   type EngineContext,
@@ -243,7 +244,10 @@ export function updatePhoneChild(patch: (egg: EggRecord) => void): EggRecord | n
 }
 
 function engineContext(egg: EggRecord, nowMs = Date.now()): EngineContext {
-  return { temperamentId: temperamentForChaos(egg.answers.chaos).id, nowMs }
+  const h = egg.haggling
+  // Life stage drives the stage rules (docs/LIFE-STAGES.md).
+  const stage = h ? lifeStatus(h.bornAt ?? h.hatchedAt, h.spanEndsAt, nowMs).stage : undefined
+  return { temperamentId: temperamentForChaos(egg.answers.chaos).id, nowMs, stage }
 }
 
 function showNotices(notices: Notice[]) {

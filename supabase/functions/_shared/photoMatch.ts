@@ -20,6 +20,35 @@ export const TREATS: Record<TreatId, { name: string; line: string }> = {
   shortbread: { name: 'shortbread', line: '{name} ate the shortbread in one bite. Crumbs everywhere.' },
 }
 
+/** Photo Treat lines by life stage (docs/LIFE-STAGES.md); baby and child use TREATS[].line. */
+const STAGE_TREAT_LINES: Record<string, Partial<Record<TreatId, string>>> = {
+  teen: {
+    'irn-bru': '{name} necked the Irn-Bru in one and burped the national anthem.',
+    bagpipes: '{name} pretended the pipes were embarrassing. Air-piped along when they thought nobody was looking.',
+    kilt: '{name} says kilts are cringe. Wore it to the party anyway.',
+    heather: '{name} put the heather behind one ear and took forty selfies.',
+    shortbread: '{name} ate the whole tin "by accident".',
+  },
+  adult: {
+    'irn-bru': '{name} poured the Irn-Bru into a proper glass. With ice. Classy.',
+    bagpipes: '{name} stood up straight for the pipes and got a wee bit misty-eyed.',
+    kilt: '{name} admired the pleats and asked who your weaver is.',
+    heather: '{name} put the heather in a jam jar on the windowsill. Very Homes and Gardens.',
+    shortbread: '{name} had one finger of shortbread with a cup of tea, as is proper.',
+  },
+  elder: {
+    'irn-bru': '{name} remembers when Irn-Bru came in glass bottles and you got 10p back.',
+    bagpipes: '{name} tapped a foot to the pipes and told you about the Gathering of 19-canteen-something.',
+    kilt: '{name} says kilts were thicker in their day. And so were winters.',
+    heather: '{name} pressed the heather in a book, next to the others.',
+    shortbread: '{name} dunked the shortbread. Controversial, but they\u2019ve earned it.',
+  },
+}
+
+export function treatLine(id: TreatId, stage: string | undefined, name: string): string {
+  return (STAGE_TREAT_LINES[stage ?? '']?.[id] ?? TREATS[id].line).replace(/\{name\}/g, name)
+}
+
 /** Thresholds from the evidence: Irn-Bru logo text is read at ~80% (girder photo 79.8). */
 export const THRESHOLDS = { text: 75, label: 80, exactWord: 60 }
 

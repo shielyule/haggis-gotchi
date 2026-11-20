@@ -10,8 +10,8 @@
  * (checks the user's token itself)
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
-import { applyPhotoTreat, type Haggling } from '../../../packages/care-engine/src/index.ts'
-import { matchTreat, seenSummary, TREATS, type TreatId } from '../_shared/photoMatch.ts'
+import { applyPhotoTreat, lifeStatus, type Haggling } from '../../../packages/care-engine/src/index.ts'
+import { matchTreat, seenSummary, treatLine, type TreatId } from '../_shared/photoMatch.ts'
 import { detect, rekognitionConfigured } from '../_shared/rekognition.ts'
 import { localClock } from '../_shared/reminders.ts'
 
@@ -165,7 +165,8 @@ Deno.serve(async (req) => {
       scrapbook: [],
       livingOn: 'phone',
     }
-    const result = applyPhotoTreat(h, treatName, { temperamentId: row.temperament_id, nowMs: Date.now() })
+    const stage = lifeStatus(row.born_at ?? row.created_at, row.span_ends_at ?? undefined, Date.now()).stage
+    const result = applyPhotoTreat(h, treatName, { temperamentId: row.temperament_id, nowMs: Date.now(), stage })
     if (!result.accepted) {
       return json(200, { ok: false, error: `${row.name} has had today's treat already.` })
     }
@@ -209,7 +210,7 @@ Deno.serve(async (req) => {
         id: scrap.id, child_id: row.id, carer_id: auth.user.id, at: scrap.at, text: scrap.text,
       })
     }
-    const line = treatId ? TREATS[treatId].line.replace(/\{name\}/g, row.name) : scrap?.text
+    const line = treatId ? treatLine(treatId, stage, row.name) : scrap?.text
     return json(200, { ok: true, treat: treatName, treatId, confidence, seen, line, placeholder, child: update, scrap })
   } catch (err) {
     console.error('photo-treat failed:', err instanceof Error ? err.message : err)

@@ -23,7 +23,7 @@ import {
   photoTreatSynced,
   refreshHomeDevice,
 } from './lib/syncActions'
-import { isDemoEgg, isPlayFilmUnlocked, lifeStatus, WEATHER_BUCKETS, WEATHER_LABEL } from './lib/engine'
+import { addScrap, identityAt, identityLabel, identityMessage, isDemoEgg, isPlayFilmUnlocked, lifeStatus, WEATHER_BUCKETS, WEATHER_LABEL } from './lib/engine'
 import {
   applyDemoWeather,
   chooseHomePlace,
@@ -125,6 +125,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const taps = useRef<number[]>([])
   const [filmNote, setFilmNote] = useState('')
   const [introOpen, setIntroOpen] = useState(() => !introSeen())
+  const [identityAck, setIdentityAck] = useState(0)
   const [share, setShare] = useState<{ publicId: string; on: boolean } | null>(null)
   const [inFeed, setInFeed] = useState<boolean | null>(null)
   const h = egg.haggling
@@ -209,6 +210,27 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
 
   const life = lifeStatus(h.bornAt ?? h.hatchedAt, h.spanEndsAt, now, h.departedAt)
   const isDemo = isDemoEgg(egg.demo, egg.createdAt, egg.readyAt)
+  // Teen identity (agreed 20 Nov): random, opted-in only, no outcome better or worse.
+  const identity = identityAt(egg.id, egg.answers.teenIdentityOptIn === true, life.day)
+  const who = identityLabel(h.sex, identity)
+  const ackKey = `haggis-gotchi:identity-ack:${egg.id}:${identity}`
+  const identityNews = identityAck >= 0 && !localStorage.getItem(ackKey) ? identityMessage(h.name, h.sex, identity) : null
+  function supportIdentity(kind: 'hug' | 'words') {
+    const e = loadStore().eggs.find((x) => x.id === egg.id)
+    if (e?.haggling) {
+      const next = structuredClone(e.haggling)
+      addScrap(
+        next,
+        kind === 'hug'
+          ? `${next.name} let you give them a big hug. For once, no "Really?!".`
+          : `You told ${next.name} you love them, just as they are. ${next.name} rolled their eyes and smiled.`,
+      )
+      replaceHaggling(egg.id, next)
+    }
+    localStorage.setItem(ackKey, '1')
+    setIdentityAck((n) => n + 1)
+    onChange()
+  }
   const asleep = Boolean(h.asleepUntil) && now < Date.parse(h.asleepUntil ?? '')
   const wakeTime = asleep
     ? new Date(h.asleepUntil!).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
@@ -442,7 +464,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           <p className="signup-kicker">Your Haggling</p>
           <h2 onClick={tapName}>{h.name}</h2>
           <p className="care-sub">
-            {h.sex === 'male' ? 'Laddie · ' : h.sex === 'female' ? 'Lassie · ' : ''}
+            {who ? `${who} · ` : ''}
             {life.label} · {life.daysLeft} days left · {temp.label} · {moodLabel(h.mood)} · {healthLabel(h)}
             {alert === 'amber' ? ' · amber warning' : ''}
             {alert === 'red' ? ' · sick' : ''}
@@ -477,7 +499,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
             ))}
           </div>
           <button type="button" className="btn btn-ghost" onClick={demoWake}>
-            Wake up now (skip the 8 hours)
+            Wake up now (skip the sleep)
           </button>
           {isDemo ? (
             <div className="cta-row">
@@ -495,6 +517,21 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           <button type="button" className="btn btn-ghost" onClick={() => setDemoOpen(false)}>
             Close demo menu
           </button>
+        </section>
+      ) : null}
+
+      {isHome && identityNews ? (
+        <section className="transfer-card identity-card">
+          <p className="signup-kicker">Growing up</p>
+          <p>{identityNews}</p>
+          <div className="cta-row">
+            <button type="button" className="btn btn-primary" onClick={() => supportIdentity('hug')}>
+              Give them a big hug
+            </button>
+            <button type="button" className="btn btn-ghost" onClick={() => supportIdentity('words')}>
+              Tell them you love them just the same
+            </button>
+          </div>
         </section>
       ) : null}
 
@@ -619,7 +656,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
             disabled={asleep}
           >
             <span>{asleep ? `Asleep till ${wakeTime}` : 'Put to bed'}</span>
-            <small>{asleep ? 'Feeding, walking or treats now wake them crabbit' : 'Sleeps 8 hours, wakes rested, tells you'}</small>
+            <small>{asleep ? 'Feeding, walking or treats now wake them crabbit' : 'A good long sleep, wakes rested, tells you'}</small>
           </button>
         </div>
       ) : null}

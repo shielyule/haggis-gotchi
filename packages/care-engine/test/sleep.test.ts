@@ -15,20 +15,24 @@ const fresh = (): Haggling => ({
   lastTickAt: new Date(START).toISOString(), scrapbook: [], livingOn: 'phone',
 })
 
-test('put to bed: asleep for 8 hours', () => {
+test('put to bed: sleep length by stage (baby 10 h, teen 10, adult 7, old age 6)', () => {
+  for (const [stage, hours] of [['baby', 10], ['child', 9], ['teen', 10], ['adult', 7], ['elder', 6]] as const) {
+    const s = applyCare(fresh(), 'sleep', { ...at(0), stage }).haggling
+    assert.equal(Date.parse(s.asleepUntil!), START + hours * 3_600_000, stage)
+  }
   const h = applyCare(fresh(), 'sleep', at(0)).haggling
-  assert.equal(Date.parse(h.asleepUntil!), START + 8 * 3_600_000)
   assert.match(h.scrapbook[0].text, /tucked in/)
 })
 
 test('asleep: energy recovers, hunger slows, mood holds; wakes rested after 8 hours', () => {
-  const bed = applyCare(fresh(), 'sleep', at(0)).haggling
-  const mid = tick(bed, at(4)).haggling
+  const adult = (hrs: number) => ({ ...at(hrs), stage: 'adult' as const }) // 7-hour sleep
+  const bed = applyCare(fresh(), 'sleep', adult(0)).haggling
+  const mid = tick(bed, adult(4)).haggling
   assert.ok(mid.energy > bed.energy, 'energy recovers while asleep')
   assert.equal(mid.mood, bed.mood, 'no mood decay while asleep')
   assert.equal(mid.hunger, 62) // 80 - 4h * 9 * 0.5
   assert.ok(mid.asleepUntil, 'still asleep at 4 hours')
-  const woke = tick(mid, at(8.5)).haggling
+  const woke = tick(mid, adult(8.5)).haggling
   assert.equal(woke.asleepUntil, undefined)
   assert.ok(woke.mood > mid.mood, 'wakes in a good mood')
   assert.match(woke.scrapbook[0].text, /bright-eyed/)

@@ -184,6 +184,8 @@ export function applyWeather(
   temperamentId: string,
   at: string,
   reading?: { tempC: number; place: string },
+  /** Life stage swing (teen moodier x1.3, old age calmer x0.7). */
+  stageSwing = 1,
 ): WeatherApplied {
   const h = structuredClone(input)
   const line = weatherLine(h.name, bucket, temperamentId)
@@ -191,7 +193,8 @@ export function applyWeather(
     return { applied: false, haggling: h, delta: { mood: 0, energy: 0, hunger: 0 }, line, swing: false }
   }
   const previous = h.weatherBucket as WeatherBucket | undefined
-  const delta = weatherDelta(bucket, temperamentId, previous)
+  const base = weatherDelta(bucket, temperamentId, previous)
+  const delta = { ...base, mood: Math.round(base.mood * stageSwing), energy: Math.round(base.energy * stageSwing) }
   const c = (n: number) => Math.max(0, Math.min(100, Math.round(n)))
   h.mood = c(h.mood + delta.mood)
   h.energy = c(h.energy + delta.energy)

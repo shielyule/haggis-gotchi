@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
-import { matchTreat, seenSummary, type Detected } from './photoMatch.ts'
+import { matchTreat, seenSummary, treatLine, type Detected } from './photoMatch.ts'
 
 const fx = JSON.parse(
   readFileSync(new URL('./fixtures/photo/rekognition-2026-11-17.json', import.meta.url), 'utf8'),
@@ -66,3 +66,9 @@ for (const k of ['owner-can-rot0', 'owner-can-rot90', 'owner-can-rot270']) {
     assert.equal(matchTreat(owner[k])?.id, 'irn-bru')
   })
 }
+
+test('Photo Treat line changes with age', () => {
+  assert.match(treatLine('irn-bru', 'baby', 'Wee Yin'), /wee jig/)
+  assert.match(treatLine('irn-bru', 'teen', 'Wee Yin'), /national anthem/)
+  assert.match(treatLine('irn-bru', 'elder', 'Wee Yin'), /glass bottles/)
+})
