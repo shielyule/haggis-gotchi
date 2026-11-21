@@ -18,6 +18,7 @@ export type ChildRow = {
   health_xp: number | null
   last_tick_at: string
   asleep_until?: string | null
+  span_ends_at?: string | null
 }
 
 export type Reminder = { key: string; title: string; body: string }
@@ -65,6 +66,18 @@ export function projectedBars(row: ChildRow, nowMs: number) {
   return { hunger: t.hunger, mood: t.mood, energy: t.energy, mess: t.mess }
 }
 
+/** Quiet nights (owner tick box, 22 Nov): nothing from 22:00 to 07:00 local time, at most 6 a day. */
+export const QUIET_START_HOUR = 22
+export const QUIET_END_HOUR = 7
+export const QUIET_DAILY_CAP = 6
+export function isQuietHour(hour: number): boolean {
+  return hour >= QUIET_START_HOUR || hour < QUIET_END_HOUR
+}
+/** reminder_log keys that act as the day's slots: claim slot 1..6, first free one wins. */
+export function dailySlotKeys(carerId: string, date: string): string[] {
+  return Array.from({ length: QUIET_DAILY_CAP }, (_, i) => `cap:${carerId}:${date}:${i + 1}`)
+}
+const TWO_DAYS_MS = 2 * 86_400_000
 export function dueReminders(row: ChildRow, timezone: string, nowMs: number): Reminder[] {
   const out: Reminder[] = []
   const { hour, date } = localClock(timezone, nowMs)
@@ -98,6 +111,15 @@ export function dueReminders(row: ChildRow, timezone: string, nowMs: number): Re
   ]
   for (const [hit, bar, body] of empty) {
     if (hit) out.push({ key: `empty:${row.id}:${bar}:${row.last_tick_at}`, title: `${n} needs you`, body })
+  }
+  // Review 22 Nov: a gentle warning, once, two days before they go to the glen.
+  const end = row.span_ends_at ? Date.parse(row.span_ends_at) : Number.NaN
+  if (Number.isFinite(end) && end > nowMs && end - nowMs <= TWO_DAYS_MS) {
+    out.push({
+      key: `twodays:${row.id}`,
+      title: `${n} has two days left`,
+      body: `${n} is getting slow and sleepy. Two more days for cuddles, a walk and one last Haggis Run.`,
+    })
   }
   return out
 }

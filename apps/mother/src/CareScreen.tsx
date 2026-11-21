@@ -6,7 +6,9 @@ import { getDeviceId } from './lib/device'
 import {
   disableReminders,
   enableReminders,
+  fetchQuietHours,
   reminderState,
+  saveQuietHours,
   type ReminderState,
 } from './lib/push'
 import {
@@ -22,8 +24,9 @@ import {
   nameHagglingSynced,
   photoTreatSynced,
   refreshHomeDevice,
+  renameHagglingSynced,
 } from './lib/syncActions'
-import { addScrap, identityAt, identityLabel, identityMessage, isDemoEgg, isPlayFilmUnlocked, lifeStatus, WEATHER_BUCKETS, WEATHER_LABEL } from './lib/engine'
+import { addScrap, isMisbehaving, mischiefLine, identityAt, identityLabel, identityMessage, isDemoEgg, isPlayFilmUnlocked, lifeStatus, WEATHER_BUCKETS, WEATHER_LABEL } from './lib/engine'
 import {
   applyDemoWeather,
   chooseHomePlace,
@@ -37,6 +40,8 @@ import { loadStore, replaceHaggling, replaceLocalBrood } from './lib/storage'
 import { CareIntro, introSeen } from './CareIntro'
 import { InfoTip } from './InfoTip'
 import { WatchMemories } from './WatchMemories'
+import { HaggisRun } from './HaggisRun'
+import { chirp, setSoundOn, soundOn } from './lib/chirp'
 
 const WEATHER_ICON: Record<string, string> = {
   sunny: '☀️', crisp: '🌤️', frost: '❄️', hot: '🥵', grey: '☁️',
@@ -57,6 +62,11 @@ const ACTIONS: { id: CareAction; label: string; hint: string }[] = [
   { id: 'treat', label: 'Treat', hint: 'Irn-Bru energy, briefly' },
   { id: 'clean', label: 'Clean up', hint: 'The mess will not clean itself' },
 ]
+
+/** Visible poop (owner, 22 Nov): one pile per 25 Mess, up to four. */
+export function poopCount(mess: number): number {
+  return Math.max(0, Math.min(4, Math.floor(mess / 25)))
+}
 
 /** 24 hour options labelled as 12-hour clock. */
 const HOUR_OPTIONS = Array.from({ length: 24 }, (_, hour) => ({
@@ -112,6 +122,10 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const [moveError, setMoveError] = useState('')
   const [reminders, setReminders] = useState<ReminderState>('off')
   const [reminderNote, setReminderNote] = useState('')
+  const [quiet, setQuiet] = useState<boolean | null>(null)
+  const [runOpen, setRunOpen] = useState(false)
+  const [sound, setSound] = useState(() => soundOn())
+  const [newName, setNewName] = useState('')
   const [treatBusy, setTreatBusy] = useState(false)
   const [treatNote, setTreatNote] = useState<{ text: string; good: boolean } | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
@@ -140,6 +154,9 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   useEffect(() => {
     void reminderState().then(setReminders)
   }, [])
+  useEffect(() => {
+    if (reminders === 'on') void fetchQuietHours().then(setQuiet)
+  }, [reminders])
 
   useEffect(() => {
     if (!isHome) return
@@ -313,7 +330,16 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
 
   function act(action: CareAction) {
     if (!isHome) return
+    chirp(action)
     void careActionSynced(egg.id, action, 'phone').then(() => onChange())
+  }
+
+  /** Haggis Run finished: store the score, then the engine applies it (mood up, energy down). */
+  function finishRun(wins: number) {
+    setRunOpen(false)
+    const e = loadStore().eggs.find((x) => x.id === egg.id)
+    if (e?.haggling) replaceHaggling(egg.id, { ...e.haggling, playScore: wins })
+    act('play')
   }
 
   async function pickWeather(kind: 'location' | 'home') {
@@ -404,6 +430,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
     }
     const r = await enableReminders()
     setReminders(await reminderState())
+    if (r.ok && quiet) await saveQuietHours(true)
     setReminderNote(r.ok ? `Reminders on. ${h?.name} will tell you at meal times and when a bar empties.` : (r.error ?? ''))
   }
 
@@ -459,6 +486,8 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
     if (await setShareEnabled(childId, next)) setShare({ ...share, on: next })
   }
 
+  const misbehaving = isMisbehaving(h, temp.id, now)
+  const poops = poopCount(h.mess)
   const hour = new Date(now).getHours()
   const breakfastSoon = nearHour(hour, breakfastHour)
   const dinnerSoon = nearHour(hour, dinnerHour)
@@ -569,6 +598,28 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
               Tell them you love them just the same
             </button>
           </div>
+          <form
+            className="rename-row"
+            onSubmit={(e) => {
+              e.preventDefault()
+              void renameHagglingSynced(egg.id, newName).then((ok) => {
+                if (ok) {
+                  setNewName('')
+                  onChange()
+                }
+              })
+            }}
+          >
+            <label className="field">
+              <span>Would they like a new name? (optional, choose it together)</span>
+              <input value={newName} onChange={(e) => setNewName(e.target.value)} maxLength={30} placeholder={h.name} />
+            </label>
+            {newName.trim() ? (
+              <button type="submit" className="btn btn-ghost">
+                Call them {newName.trim()}
+              </button>
+            ) : null}
+          </form>
         </section>
       ) : null}
 
@@ -628,8 +679,26 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
         </section>
       ) : null}
 
+      {isHome && misbehaving ? (
+        <p className="mischief-banner" role="status">
+          {mischiefLine(h, now)} Tell them off?
+        </p>
+      ) : null}
+
+      {life.daysLeft <= 2 ? (
+        <p className="weather-swing" role="status">
+          {h.name} is getting slow and sleepy. Two more days for cuddles, a walk and one last Haggis Run.
+        </p>
+      ) : null}
       <div className="care-stage">
         <img src={stagePortraitFor(temp.id, life.stage)} alt={`${h.name}, a ${temp.label} Haggling`} />
+        {poops > 0 ? (
+          <span className="poop-row" role="img" aria-label={`${poops} ${poops === 1 ? 'mess' : 'messes'} to clean up`}>
+            {Array.from({ length: poops }, (_, i) => (
+              <span key={i} className="poop">💩</span>
+            ))}
+          </span>
+        ) : null}
         {life.stage !== 'baby' ? <span className="stage-badge">{life.label}</span> : null}
         {asleep ? <span className="sleep-badge">Zzz… asleep until {wakeTime}</span> : null}
       </div>
@@ -695,7 +764,29 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
             <span>{asleep ? `Asleep till ${wakeTime}` : 'Put to bed'}</span>
             <small>{asleep ? 'Feeding, walking or treats now wake them crabbit' : 'A good long sleep, wakes rested, tells you'}</small>
           </button>
+          <button type="button" className="care-action care-action-play" onClick={() => setRunOpen(true)}>
+            <span>Haggis Run</span>
+            <small>Guess which way they run round the hill</small>
+          </button>
+          <button type="button" className="care-action care-action-scold" onClick={() => act('scold')}>
+            <span>Tell off</span>
+            <small>{misbehaving ? 'They are up to mischief: a fair telling-off' : 'Only when they misbehave, or it hurts'}</small>
+          </button>
         </div>
+      ) : null}
+      {runOpen ? <HaggisRun name={h.name} onDone={finishRun} onCancel={() => setRunOpen(false)} /> : null}
+      {isHome ? (
+        <label className="demo-toggle share-toggle">
+          <input
+            type="checkbox"
+            checked={sound}
+            onChange={(e) => {
+              setSoundOn(e.target.checked)
+              setSound(e.target.checked)
+            }}
+          />
+          Sounds
+        </label>
       ) : null}
       <button type="button" className="link-btn" onClick={() => setIntroOpen(true)}>
         How do the buttons work?
@@ -722,6 +813,20 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
               {reminders === 'on' ? 'Turn reminders off' : 'Turn on reminders'}
             </button>
           )}
+          {reminders === 'on' && quiet !== null ? (
+            <label className="demo-toggle share-toggle">
+              <input
+                type="checkbox"
+                checked={quiet}
+                onChange={(e) => {
+                  const v = e.target.checked
+                  void saveQuietHours(v).then((ok) => ok && setQuiet(v))
+                }}
+              />
+              Quiet nights{' '}
+              <InfoTip text="No reminders between 10pm and 7am (your phone's time), and no more than 6 a day." />
+            </label>
+          ) : null}
           {reminderNote ? <p className="care-sub">{reminderNote}</p> : null}
         </section>
       ) : null}
@@ -784,6 +889,9 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           </ul>
         )}
       </section>
+      <p className="care-sub legal-links">
+        <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/privacy#delete">Delete my account</a>
+      </p>
     </div>
   )
 }

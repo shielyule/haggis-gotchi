@@ -199,8 +199,8 @@ export async function syncChildToCloud(egg: EggRecord): Promise<string | null> {
   return childId
 }
 
-/** What happened (public-feed). Weather check-ins never appear in the feed. */
-export type CheckInAction = 'feed' | 'cuddle' | 'walk' | 'treat' | 'clean' | 'weather' | 'sleep'
+/** What happened (public-feed). Weather and scold check-ins never appear in the feed. */
+export type CheckInAction = 'feed' | 'cuddle' | 'walk' | 'treat' | 'clean' | 'weather' | 'sleep' | 'play' | 'scold'
 
 export async function pushCheckIn(
   egg: EggRecord,
@@ -614,4 +614,15 @@ export async function fetchGraveyard(): Promise<Stone[] | null> {
   const { data, error } = await supabase.rpc('public_graveyard')
   if (error) return null
   return (data ?? []) as Stone[]
+}
+/** Privacy (review 22 Nov): delete the signed-in carer's account and everything under it. */
+export async function deleteMyAccount(): Promise<{ ok: boolean; error?: string }> {
+  if (!supabase || !(await requireUserId())) return { ok: false, error: 'Sign in first.' }
+  const { data, error } = await supabase.functions.invoke('delete-account', { body: { confirm: 'DELETE' } })
+  if (error) {
+    const ctx = (error as { context?: Response }).context
+    const body = (await ctx?.json().catch(() => null)) as { error?: string } | null
+    return { ok: false, error: body?.error ?? 'Could not reach the mother.' }
+  }
+  return { ok: Boolean((data as { ok?: boolean })?.ok) }
 }

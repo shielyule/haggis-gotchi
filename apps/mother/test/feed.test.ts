@@ -18,6 +18,7 @@ test('owner examples', () => {
   )
   assert.equal(feedSentence(e('walk')), 'Fred just took Harry for a walk')
   assert.equal(feedSentence(e('sleep')), 'Fred just put Harry to bed')
+  assert.equal(feedSentence(e('play')), 'Fred just played Haggis Run with Harry')
   assert.equal(feedSentence(e('clean')), 'Fred just cleaned up after Harry')
 })
 

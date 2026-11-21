@@ -21,8 +21,7 @@ type Props = {
 }
 
 const TEEN_INFO =
-  'Around the teen stage (about three months in the full product), your gotchi may show signs of gender identity and morph. This opt-in only stores your preference for later — nothing happens during Baby. If you leave it on, the path is not guaranteed to match what you hoped; that is intentional. You can change your mind later in settings when that screen exists.'
-
+  "At the start of the Teen stage (about two weeks in), your Haggling may tell you who they are: still a laddie or lassie, a trans laddie or lassie, non-binary (they/them), or not sure yet. It is random, and every answer is equally good: there is no score and nothing to fix. They settle on who they are when they grow up. This is off unless you tick it."
 const CHAOS_INFO =
   'This slider sets the starting Scots temperament for your egg. It colours the birth story and how wild Baby feels out of the shell. You can still calm or wind them up with care — but Douce and Fair Wud are very different mornings.'
 
@@ -38,6 +37,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
   const [botReset, setBotReset] = useState(0)
   const [busy, setBusy] = useState(false)
   const [showInFeed, setShowInFeed] = useState(false) // off by default (owner, 19 Nov)
+  const [ageOk, setAgeOk] = useState(false) // 13+ (owner, 22 Nov)
   const teenInfoTitleId = useId()
   const chaosInfoTitleId = useId()
   const temperament = temperamentForChaos(answers.chaos)
@@ -62,7 +62,11 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       return
     }
     if (answers.teenIdentityOptIn && !answers.teenDisclaimerAck) {
-      setError('Tick the disclaimer if you want the teen identity path later.')
+      setError('Tick "Your Haggling decides" if you want them to tell you who they are as a teen.')
+      return
+    }
+    if (!ageOk) {
+      setError('Haggis-gotchi is for ages 13 and up. Tick the box to say you are 13 or older.')
       return
     }
     if (supabaseConfigured && !botToken) {
@@ -100,6 +104,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
           <strong>haggisgotchi.com{nestPreview}</strong> (new tab) — never on the
           mother home. Email brings the ready link + code.
         </p>
+        <p className="care-sub">A Haggling lives about six weeks: Baby, Child, Teen, Adult and Old age, then a stone in the mother&rsquo;s graveyard.</p>
       </header>
 
       <label className="field">
@@ -274,7 +279,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
               if (!on) set('teenDisclaimerAck', false)
             }}
           />
-          <span>When they reach teen age, allow identity morphing</span>
+          <span>Let my Haggling tell me who they are when they&rsquo;re a teen</span>
         </label>
         {answers.teenIdentityOptIn ? (
           <label className="check">
@@ -283,7 +288,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
               checked={answers.teenDisclaimerAck}
               onChange={(e) => set('teenDisclaimerAck', e.target.checked)}
             />
-            <span>I understand it may not go the direction I want</span>
+            <span>Your Haggling decides. Every answer is welcome.</span>
           </label>
         ) : null}
       </div>
@@ -356,6 +361,13 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
         <InfoTip text="The mother's page shows the brood's latest moments, like 'Fred just fed Harry'. Only your first name and your Haggling's name appear: never your email or where you live. Change it any time on the care screen." />
       </label>
 
+      <label className="check age-check">
+        <input type="checkbox" checked={ageOk} onChange={(e) => setAgeOk(e.target.checked)} />
+        <span>
+          I am 13 or older, and I agree to the <a href="/terms" target="_blank" rel="noopener">terms</a> and{' '}
+          <a href="/privacy" target="_blank" rel="noopener">privacy notice</a>
+        </span>
+      </label>
       {supabaseConfigured ? (
         <Turnstile onToken={setBotToken} resetKey={botReset} />
       ) : null}

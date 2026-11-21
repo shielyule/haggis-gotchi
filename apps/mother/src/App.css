@@ -1231,3 +1231,35 @@
 .stage-up .info-panel { text-align: center; }
 .stage-up h2 { font-family: var(--font-display); font-size: 2rem; margin: 0.2rem 0; }
 .stage-up-portrait { width: 100%; max-width: 20rem; border-radius: 16px; margin: 0.5rem auto; display: block; }
+/* review fixes (22 Nov): mischief, poop, Haggis Run */
+.mischief-banner {
+  margin: 0 0 0.6rem; padding: 0.55rem 0.75rem; border-radius: 10px;
+  background: rgba(196, 120, 40, 0.18); border: 1px solid var(--gold); font-size: 0.92rem;
+}
+.poop-row { position: absolute; right: 0.6rem; bottom: 0.5rem; display: flex; gap: 0.15rem; font-size: 1.5rem; }
+.poop { animation: poop-wobble 2.4s ease-in-out infinite; }
+.poop:nth-child(2) { animation-delay: 0.4s; }
+.poop:nth-child(3) { animation-delay: 0.8s; }
+@keyframes poop-wobble { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+.care-action-scold small { color: var(--mist); }
+.haggis-run .cta-row { justify-content: center; }
+.run-hill { position: relative; height: 90px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+.run-haggis { position: absolute; font-size: 1.6rem; top: calc(50% - 0.9rem); left: calc(50% - 0.9rem); }
+.run-clockwise .run-haggis { animation: run-cw 0.9s ease-in-out; }
+.run-anticlockwise .run-haggis { animation: run-acw 0.9s ease-in-out; }
+@keyframes run-cw { from { transform: rotate(0deg) translateX(40px) rotate(0deg); } to { transform: rotate(360deg) translateX(40px) rotate(-360deg); } }
+@keyframes run-acw { from { transform: rotate(0deg) translateX(40px) rotate(0deg); } to { transform: rotate(-360deg) translateX(40px) rotate(360deg); } }
+.run-score { font-size: 1.3rem; letter-spacing: 0.2rem; text-align: center; }
+@media (prefers-reduced-motion: reduce) {
+  .poop, .run-haggis { animation: none !important; }
+}
+/* review fixes (22 Nov): legal pages */
+.legal-page { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1.1rem 3rem; line-height: 1.55; }
+.legal-page h1 { font-family: var(--font-display); margin: 0.3rem 0; }
+.legal-page h2 { font-family: var(--font-display); font-size: 1.15rem; margin: 1.4rem 0 0.4rem; }
+.legal-page ul { padding-left: 1.2rem; }
+.legal-page li { margin: 0.35rem 0; }
+.legal-page a, .legal-links a, .age-check a { color: var(--gold); }
+.legal-links { margin-top: 1.5rem; text-align: center; }
+.delete-account { margin-top: 1.5rem; }
+.rename-row { margin-top: 0.75rem; }

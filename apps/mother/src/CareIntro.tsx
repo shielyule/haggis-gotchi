@@ -17,6 +17,8 @@ const ROWS: [string, string][] = [
   ['Clean up', 'Mess -35. Leave mess high for 12 hours and Health XP drops.'],
   ['Photo Treat', 'Snap Irn-Bru, bagpipes, a kilt or tartan, heather or shortbread: every bar full, Mess cleared, big XP boost. Once a day.'],
   ['Put to bed', 'Sleeps (10 hours as a baby or teen, down to 6 in old age): Energy comes back, Hunger slows down, then a wake-up alert. Feed, walk or treat them while asleep and they wake crabbit.'],
+  ['Haggis Run', 'A wee game: guess which way they run round the hill, five times. Mood +4 for every right guess, Energy -8.'],
+  ['Tell off', 'When they are up to mischief (you will see a warning), a telling-off stops it: Mood -5. Tell them off for nothing and it hurts: Mood -15 and Health XP -3.'],
 ]
 
 export function CareIntro({ name, onClose }: { name: string; onClose: () => void }) {

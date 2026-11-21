@@ -40,7 +40,7 @@ supabase functions deploy notify-ready-eggs --no-verify-jwt
 ```
 
 **A5. Re-schedule the job without the service key.** SQL Editor -> New query ->
-paste the whole of `supabase/migrations/20261116_cron_via_vault.sql` -> Run.
+paste the whole of `supabase/migrations/20261116000001_cron_via_vault.sql` -> Run.
 
 **A6. Test it:**
 
@@ -70,7 +70,7 @@ Also delete the old step 3 key paste from `Kiroween/SMTP-DUMMIES.md` history if 
 
 **If curl returns 500 with Logs saying `permission denied for table eggs`:**
 table grants were stripped. In SQL Editor run all of
-`supabase/migrations/20261116_restore_table_grants.sql`, then re-curl.
+`supabase/migrations/20261116000003_restore_table_grants.sql`, then re-curl.
 (RLS still applies; this only restores normal SELECT/INSERT/UPDATE/DELETE.)
 
 ---
@@ -78,7 +78,7 @@ table grants were stripped. In SQL Editor run all of
 ## B. Close the row-security gap (T6) and prove it (T1) — DONE 16 Nov
 
 Applied on live project via CLI:
-1. `20261116_eggs_policies_with_check.sql` — `eggs_update_own` now has `WITH CHECK (auth.uid() = carer_id)` + protect-columns trigger.
+1. `20261116000002_eggs_policies_with_check.sql` — `eggs_update_own` now has `WITH CHECK (auth.uid() = carer_id)` + protect-columns trigger.
 2. `rls_isolation.sql` — ran clean (no `FAIL n`), rolled back, no leftover test rows.
 
 Do not re-run unless policies are changed again.

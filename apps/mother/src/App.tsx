@@ -4,6 +4,7 @@ import { AuthBar } from './AuthBar'
 import { NestApp } from './NestApp'
 import { PhoneApp } from './PhoneApp'
 import { PublicCard, readCardIdFromPath } from './PublicCard'
+import { PrivacyPage, TermsPage } from './Legal'
 import { fetchGraveyard, fetchPublicFeed, type FeedRow, type Stone } from './lib/cloud'
 import { carePortraitFor, ghostPortraitFor, TEMPERAMENTS } from './data/temperaments'
 import { isDesktopLayout } from './lib/device'
@@ -37,6 +38,10 @@ export default function App() {
       </Suspense>
     )
   }
+  // Review 22 Nov: privacy notice (with delete-account) and terms.
+  const path = window.location.pathname.replace(/\/+$/, '')
+  if (path === '/privacy') return <PrivacyPage />
+  if (path === '/terms') return <TermsPage />
   // share-card: public Haggling card, any device, no sign-in.
   const cardId = readCardIdFromPath()
   if (cardId) return <PublicCard id={cardId} />
@@ -320,7 +325,9 @@ function MotherApp() {
 
       <footer className="foot">
         <span>Mother keeps the brood · Hagglings live at /your-name</span>
-        <span>© {new Date().getFullYear()} Shiel Yule</span>
+        <span>
+          <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · © {new Date().getFullYear()} Shiel Yule
+        </span>
       </footer>
     </div>
   )

@@ -1,7 +1,7 @@
 // Spec: .kiro/specs/care-reminders T3
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { dueReminders, localClock, type ChildRow } from './reminders.ts'
+import { dailySlotKeys, dueReminders, isQuietHour, localClock, QUIET_DAILY_CAP, type ChildRow } from './reminders.ts'
 
 const row = (over: Partial<ChildRow> = {}): ChildRow => ({
   id: 'c1', name: 'Wee Yin', temperament_id: 'douce',
@@ -54,4 +54,25 @@ test('asleep: no reminders until the 8 hours are up, then one wake alert', () =>
   assert.equal(dueReminders(bed, 'Europe/London', Date.parse('2026-11-17T08:10:00Z')).length, 0) // breakfast hour, asleep
   const r = dueReminders(bed, 'Europe/London', Date.parse('2026-11-17T16:05:00Z'))
   assert.ok(r.some((x) => x.key === 'wake:c1:2026-11-17T16:00:00Z'))
+})
+
+test('quiet nights: 22:00 to 06:59 is quiet, 07:00 to 21:59 is not; six slots a day', () => {
+  for (const h of [22, 23, 0, 3, 6]) assert.equal(isQuietHour(h), true, `hour ${h}`)
+  for (const h of [7, 8, 12, 21]) assert.equal(isQuietHour(h), false, `hour ${h}`)
+  const slots = dailySlotKeys('carer-1', '2026-11-22')
+  assert.equal(slots.length, QUIET_DAILY_CAP)
+  assert.equal(QUIET_DAILY_CAP, 6)
+  assert.equal(slots[0], 'cap:carer-1:2026-11-22:1')
+  assert.equal(new Set(slots).size, 6)
+})
+test('two days left: once (keyed per Haggling), only inside the last 48 hours', () => {
+  const now = Date.parse('2026-11-17T10:10:00Z')
+  const at = (h: number) => new Date(now + h * 3_600_000).toISOString()
+  const find = (span: string | null) =>
+    dueReminders(row({ span_ends_at: span }), 'Europe/London', now).find((r) => r.key.startsWith('twodays:'))
+  assert.equal(find(at(49)), undefined)
+  assert.equal(find(at(47))?.key, 'twodays:c1')
+  assert.match(find(at(47))?.title ?? '', /two days left/)
+  assert.equal(find(at(-1)), undefined)
+  assert.equal(find(null), undefined)
 })

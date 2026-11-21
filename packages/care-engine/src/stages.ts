@@ -123,7 +123,7 @@ export function identityMessage(name: string, sex: 'male' | 'female' | undefined
     case 'trans':
       return `${name} has something to tell you: "I'm a ${identityLabel(sex, identity).toLowerCase()}."`
     case 'non-binary':
-      return `${name} has something to tell you: "I'm not a laddie or a lassie. I'm just me. Non-binary."`
+      return `${name} has something to tell you: "I'm not a laddie or a lassie. I'm just me. Non-binary, and I go by they/them."`
     case 'questioning':
       return `${name} has something to tell you: "I'm still working out who I am."`
     default:

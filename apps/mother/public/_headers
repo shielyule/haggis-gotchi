@@ -1,0 +1,12 @@
+# Kiro - security headers (review 22 Nov). Cloudflare Pages reads this file.
+# If something stops loading, the browser console says which rule blocked it.
+# Supabase = database + sign-in; Open-Meteo = weather; challenges.cloudflare.com = Turnstile;
+# Google Fonts = lettering.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https://zsiqrfckfjunackmxcpe.supabase.co wss://zsiqrfckfjunackmxcpe.supabase.co https://api.open-meteo.com; frame-src https://challenges.cloudflare.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(self), camera=(self), microphone=(), payment=(), usb=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin

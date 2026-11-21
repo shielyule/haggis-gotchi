@@ -72,3 +72,16 @@ export async function disableReminders(): Promise<void> {
   if (supabase) await supabase.rpc('delete_push_subscription', { p_endpoint: sub.endpoint })
   await sub.unsubscribe()
 }
+/** Quiet nights (owner tick box, 22 Nov): no reminders 22:00-07:00 local time, at most 6 a day. */
+export async function fetchQuietHours(): Promise<boolean | null> {
+  if (!supabase) return null
+  const { data, error } = await supabase.from('push_subscriptions').select('quiet_hours').limit(1)
+  if (error || !data?.length) return null
+  return data[0].quiet_hours === true
+}
+export async function saveQuietHours(on: boolean): Promise<boolean> {
+  if (!supabase) return false
+  const { data, error } = await supabase.rpc('set_quiet_hours', { p_on: on })
+  if (error) console.error('set_quiet_hours', error.message)
+  return data === true
+}

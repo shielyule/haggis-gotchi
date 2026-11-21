@@ -17,7 +17,7 @@ Grok (Cursor), which fixed it in a separate session.
    existing projects stop getting automatic grants for the Data API. The project's
    tables had lost their select/insert/update/delete grants. Every query from the
    Edge Function failed with `permission denied for table eggs`. Grok added
-   `supabase/migrations/20261116_restore_table_grants.sql`.
+   `supabase/migrations/20261116000003_restore_table_grants.sql`.
 2. **Vault secret did not match** the function's `CRON_SECRET`.
 3. **`RESEND_API_KEY` was not set** on the function.
 
@@ -46,7 +46,7 @@ ready email delivered, cron authenticated (`security-hardening` T2, T3 ticked by
 
 ## Follow-up found while reviewing the fix (not yet changed)
 
-`20261116_restore_table_grants.sql` restores the old broad defaults, including
+`20261116000003_restore_table_grants.sql` restores the old broad defaults, including
 `alter default privileges ... grant all on tables to anon, authenticated`. That
 undoes the protection Supabase just added: every future table becomes reachable
 by anyone with the public key unless RLS is enabled on it. The current tables all

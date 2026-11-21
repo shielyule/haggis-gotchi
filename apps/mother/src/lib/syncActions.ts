@@ -8,13 +8,15 @@ import {
   syncEggToCloud,
 } from './cloud'
 import { deviceTimezone, getDeviceId } from './device'
-import { supabaseConfigured } from './supabase'
+import { addScrap } from './engine'
+import { supabase, supabaseConfigured } from './supabase'
 import {
   careAction,
   carePhoneAction,
   loadPhoneStore,
   loadStore,
   nameHaggling,
+  replaceHaggling,
   newEggRecord,
   savePhoneStore,
   saveNewEgg,
@@ -155,4 +157,21 @@ export async function carePhoneActionSynced(
     savePhoneStore({ child: loadPhoneStore().child })
   }
   return loadPhoneStore().child
+}
+
+/** Identity moment (review 22 Nov): the carer may give their Haggling a new name, chosen together. */
+export async function renameHagglingSynced(eggId: string, name: string): Promise<boolean> {
+  const clean = name.trim().slice(0, 30)
+  const egg = loadStore().eggs.find((e) => e.id === eggId)
+  if (!clean || !egg?.haggling) return false
+  const old = egg.haggling.name
+  const next = structuredClone(egg.haggling)
+  next.name = clean
+  addScrap(next, `${old} chose a new name: ${clean}. It suits them.`)
+  replaceHaggling(eggId, next)
+  if (supabase && next.cloudChildId) {
+    const { error } = await supabase.from('children').update({ name: clean }).eq('id', next.cloudChildId)
+    if (error) console.error('rename', error.message)
+  }
+  return true
 }

@@ -9,9 +9,9 @@ import { isDemoEgg, isPlayFilmUnlocked } from '../../../packages/care-engine/src
 import { buildPlayFilmEmail, isPlausibleEmail } from '../_shared/email.ts'
 import { configurePush, sendPush, type PushSub } from '../_shared/push.ts'
 import { sendEmail } from '../_shared/sendEmail.ts'
-import { dueReminders, type ChildRow } from '../_shared/reminders.ts'
+import { dailySlotKeys, dueReminders, isQuietHour, localClock, type ChildRow } from '../_shared/reminders.ts'
 
-type SubRow = PushSub & { id: string; carer_id: string; timezone: string }
+type SubRow = PushSub & { id: string; carer_id: string; timezone: string; quiet_hours?: boolean }
 
 const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
 
     const { data: subsData, error: subErr } = await admin
       .from('push_subscriptions')
-      .select('id, carer_id, endpoint, p256dh, auth, timezone')
+      .select('id, carer_id, endpoint, p256dh, auth, timezone, quiet_hours')
     if (subErr) throw subErr
     const subs = (subsData ?? []) as SubRow[]
 
@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
     const carerIds = [...byCarer.keys()]
 
     // Work out what is due: [carer, key, title, body]
-    const due: { carer: string; key: string; title: string; body: string }[] = []
+    const due: { carer: string; key: string; title: string; body: string; care?: boolean }[] = []
 
     const { data: eggs, error: eggErr } = await admin
       .from('eggs')
@@ -141,22 +141,47 @@ Deno.serve(async (req) => {
 
     const { data: kids, error: kidErr } = await admin
       .from('children')
-      .select('id, carer_id, name, temperament_id, breakfast_hour, dinner_hour, bed_hour, hunger, mood, energy, mess, health_xp, last_tick_at, asleep_until')
+      .select('id, carer_id, name, temperament_id, breakfast_hour, dinner_hour, bed_hour, hunger, mood, energy, mess, health_xp, last_tick_at, asleep_until, span_ends_at')
       .in('carer_id', carerIds)
       .not('home_device_id', 'is', null)
       .is('departed_at', null)
     if (kidErr) throw kidErr
     for (const k of (kids ?? []) as (ChildRow & { carer_id: string })[]) {
       const tz = byCarer.get(k.carer_id)?.[0]?.timezone ?? 'Europe/London'
-      for (const r of dueReminders(k, tz, now)) due.push({ carer: k.carer_id, ...r })
+      for (const r of dueReminders(k, tz, now)) due.push({ carer: k.carer_id, ...r, care: true })
     }
 
     let sent = 0
     let gone = 0
+    let quietSkipped = 0
+    let capped = 0
     for (const d of due) {
+      // Quiet nights (owner tick box): care reminders wait until morning, max 6 a day.
+      // Egg-ready is not held back: the carer has just asked for it.
+      const carerSubs = byCarer.get(d.carer) ?? []
+      const quiet = d.care === true && carerSubs.some((s) => s.quiet_hours === true)
+      const clock = localClock(carerSubs[0]?.timezone ?? 'Europe/London', now)
+      if (quiet && isQuietHour(clock.hour)) {
+        quietSkipped++
+        continue // not claimed, so it can still go out after 7am if it is still due
+      }
       // Claim the key first: a reminder is sent at most once, even if two runs overlap.
       const { error: logErr } = await admin.from('reminder_log').insert({ key: d.key })
       if (logErr) continue // 23505 = already sent
+      if (quiet) {
+        let slot = false
+        for (const k of dailySlotKeys(d.carer, clock.date)) {
+          const { error: slotErr } = await admin.from('reminder_log').insert({ key: k })
+          if (!slotErr) {
+            slot = true
+            break
+          }
+        }
+        if (!slot) {
+          capped++
+          continue
+        }
+      }
       for (const s of byCarer.get(d.carer) ?? []) {
         const outcome = await sendPush(s, { title: d.title, body: d.body, url: '/', tag: d.key.split(':')[0] })
         if (outcome === 'sent') sent++
@@ -166,7 +191,7 @@ Deno.serve(async (req) => {
         }
       }
     }
-    return json(200, { carers: carerIds.length, due: due.length, sent, gone, filmPush, filmEmail })
+    return json(200, { carers: carerIds.length, due: due.length, sent, gone, quietSkipped, capped, filmPush, filmEmail })
   } catch (err) {
     console.error('care-reminders failed:', err instanceof Error ? err.message : err)
     return json(500, { error: 'Internal error' })

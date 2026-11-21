@@ -22,7 +22,9 @@ export function PhoneApp() {
   const [authReady, setAuthReady] = useState(!supabase)
   const [eggs, setEggs] = useState<EggRecord[]>(() => loadStore().eggs)
   const [pulled, setPulled] = useState(false)
-  const [demo, setDemo] = useState(true)
+  // Review fix (22 Nov): real 20 s wait by default; demo toggle only with ?demo=1
+  const demoAllowed = new URLSearchParams(window.location.search).get('demo') === '1'
+  const [demo, setDemo] = useState(demoAllowed)
   // Several Hagglings per carer (owner, 19 Nov): which one is on screen.
   const [selectedId, setSelectedId] = useState<string | null>(() => localStorage.getItem(SELECTED_KEY))
 
@@ -151,10 +153,12 @@ export function PhoneApp() {
     <main className="phone-start">
       {eggs.length ? broodBar : null}
       <p className="brand">Haggis-gotchi</p>
-      <label className="demo-toggle">
-        <input type="checkbox" checked={demo} onChange={(e) => setDemo(e.target.checked)} />
-        Demo wait (10 seconds instead of 20)
-      </label>
+      {demoAllowed && (
+        <label className="demo-toggle">
+          <input type="checkbox" checked={demo} onChange={(e) => setDemo(e.target.checked)} />
+          Demo wait (10 seconds instead of 20)
+        </label>
+      )}
       <SignupForm
         demoCompress={demo}
         presetEmail={email}

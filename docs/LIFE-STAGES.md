@@ -71,7 +71,7 @@ Chosen at naming: "Wee laddie (boy)" or "Wee lassie (girl)". Stored with the Hag
 Sexual orientation is **not** part of the game. Gender identity only; "Furry" dropped.
 
 - **At hatch:** the carer picks wee laddie (boy) or wee lassie (girl).
-- **Who it applies to:** only carers who ticked the sign-up box ("allow identity morphing" with the disclaimer). Everyone else: no change, ever.
+- **Who it applies to:** only carers who ticked the sign-up box ("Let my Haggling tell me who they are when they're a teen", then "Your Haggling decides. Every answer is welcome."). Everyone else: no change, ever.
 - **Start of Teen (day 14):** the Haggling tells the carer who they are, chosen at random (same answer on every device):
 
   | Outcome | Chance (first guess) | Shown as |
@@ -93,6 +93,10 @@ Sexual orientation is **not** part of the game. Gender identity only; "Furry" dr
 - A phone notification ("{name} is a Teen now!") from the lifecycle job.
 - Demo menu (demo eggs): **+1 day**, **Next stage**, **Skip to the end**.
 
+## Level unlocks and seasonal costumes (suggestions, 22 Nov)
+Full list in `docs/GAME-DESIGN.md`: hats, backdrops and badges at levels 2-10, plus
+costumes by date (Halloween, St Andrew's Day, Christmas, Hogmanay, Burns Night).
+Humour line: no swearing; drink jokes only in Adult and Old age lines; the whisky is always the carer's.
 ## Not built yet
 - Stage portraits and stage films: drop the files in (names above) and Kiro wires them into `STAGE_PORTRAITS` / Watch again.
 - Teen "wakes crabbit before 10am" and an old-age nap: left out to keep sleep simple.

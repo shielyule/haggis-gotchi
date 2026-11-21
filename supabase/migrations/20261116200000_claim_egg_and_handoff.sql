@@ -3,7 +3,7 @@
 -- the new site is deployed.
 
 -- 1. Future tables are no longer reachable by the public API roles automatically.
---    (Narrows 20261116_restore_table_grants.sql for FUTURE objects only. Existing
+--    (Narrows 20261116000003_restore_table_grants.sql for FUTURE objects only. Existing
 --    tables keep their grants; RLS still guards rows. Supabase guidance since
 --    30 Oct 2026: grant each role only what it needs, next to the RLS policy.)
 alter default privileges for role postgres in schema public

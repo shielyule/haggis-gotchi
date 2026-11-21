@@ -25,6 +25,8 @@ export function feedSentence(e: FeedEvent): string {
       return `${c} just cleaned up after ${h}`
     case 'sleep':
       return `${c} just put ${h} to bed`
+    case 'play':
+      return `${c} just played Haggis Run with ${h}`
     case 'photo_treat':
       return e.treat_id && TREAT_NAMES[e.treat_id]
         ? `${c} just shared ${TREAT_NAMES[e.treat_id]} with ${h}`
