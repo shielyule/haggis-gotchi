@@ -12,8 +12,8 @@ there and every surface changes. Numbers are first guesses and easy to tune.
 | Baby | 0-7 | `haggling-care-<type>.jpeg` (have) | hatch film + playing film (have) | live |
 | Child | 7-14 | `haggling-child-<type>.jpeg` (**have, 21 Nov**) | `haggling-child-play-<type>.mp4` (**have, 21 Nov**: reading, texting, gaming, dancing, parkour, skateboarding) | live |
 | Teen | 14-24 | `haggling-teen-<type>.jpeg` (**have, 21 Nov**) | `haggling-teen-play-<type>.mp4` (**have, 22 Nov**, re-encoded ~1.4-2 MB each) | live |
-| Adult | 24-36 | `haggling-adult-<type>.jpeg` (**have, 22 Nov**) | `haggling-adult-play-<type>.mp4` | portraits live; films to come |
-| Old age | 36-42 | `haggling-elder-<type>.jpeg` | `haggling-elder-play-<type>.mp4` | to make |
+| Adult | 24-36 | `haggling-adult-<type>.jpeg` (**have, 22 Nov**) | `haggling-adult-play-<type>.mp4` (**4 of 6, 22 Nov**: douce, ill-trickit, radge, fair-wud; skeigh + ree to come) | live |
+| Old age | 36-42 | `haggling-elder-<type>.jpeg` (**have, 22 Nov**) | `haggling-elder-play-<type>.mp4` | portraits live; films to come |
 | Departed | day 42 | `haggling-ghost-<type>.jpeg` (have) | - | live |
 
 `<type>` = douce, skeigh, ill-trickit, ree, radge, fair-wud. Drop files in

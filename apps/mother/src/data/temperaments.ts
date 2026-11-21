@@ -137,6 +137,12 @@ export const STAGE_FILMS: Record<string, Record<string, { src: string; title: st
     radge: { src: '/art/haggling-teen-play-radge.mp4', title: 'Teen: strutting' },
     'fair-wud': { src: '/art/haggling-teen-play-fair-wud.mp4', title: 'Teen: texting' },
   },
+  adult: {
+    douce: { src: '/art/haggling-adult-play-douce.mp4', title: 'Adult: catching up on messages' },
+    'ill-trickit': { src: '/art/haggling-adult-play-ill-trickit.mp4', title: 'Adult: lipstick pout' },
+    radge: { src: '/art/haggling-adult-play-radge.mp4', title: 'Adult: yoga' },
+    'fair-wud': { src: '/art/haggling-adult-play-fair-wud.mp4', title: 'Adult: guitar' },
+  },
 }
 
 const STAGE_ORDER = ['baby', 'child', 'teen', 'adult', 'elder']
@@ -219,6 +225,14 @@ export const STAGE_PORTRAITS: Record<string, Record<string, string>> = {
     'ree': '/art/haggling-adult-ree.jpeg',
     'radge': '/art/haggling-adult-radge.jpeg',
     'fair-wud': '/art/haggling-adult-fair-wud.jpeg',
+  },
+  elder: {
+    'douce': '/art/haggling-elder-douce.jpeg',
+    'skeigh': '/art/haggling-elder-skeigh.jpeg',
+    'ill-trickit': '/art/haggling-elder-ill-trickit.jpeg',
+    'ree': '/art/haggling-elder-ree.jpeg',
+    'radge': '/art/haggling-elder-radge.jpeg',
+    'fair-wud': '/art/haggling-elder-fair-wud.jpeg',
   },
 }
 
