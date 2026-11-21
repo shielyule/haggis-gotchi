@@ -96,6 +96,10 @@ export function TermsPage() {
       <ul>
         <li>Haggis-gotchi is a free game for ages 13 and up.</li>
         <li>It is a hackathon project. It may change, break or close, and your Haggling may be lost. We will try to warn you first.</li>
+        <li>
+          Clean fun: the game never swears. A joke about the carer&rsquo;s whisky only turns up once a Haggling is
+          grown up, and the Haggling sticks to Irn-Bru.
+        </li>
         <li>Be kind. Do not give your Haggling a name meant to hurt someone. We can remove names, stones and accounts that break this.</li>
         <li>Do not try to break, overload or misuse the service.</li>
         <li>
