@@ -129,6 +129,14 @@ export const STAGE_FILMS: Record<string, Record<string, { src: string; title: st
     radge: { src: '/art/haggling-child-play-radge.mp4', title: 'Child: parkour' },
     'fair-wud': { src: '/art/haggling-child-play-fair-wud.mp4', title: 'Child: skateboarding' },
   },
+  teen: {
+    douce: { src: '/art/haggling-teen-play-douce.mp4', title: 'Teen: texting' },
+    skeigh: { src: '/art/haggling-teen-play-skeigh.mp4', title: 'Teen: texting' },
+    'ill-trickit': { src: '/art/haggling-teen-play-ill-trickit.mp4', title: 'Teen: posing' },
+    ree: { src: '/art/haggling-teen-play-ree.mp4', title: 'Teen: texting' },
+    radge: { src: '/art/haggling-teen-play-radge.mp4', title: 'Teen: strutting' },
+    'fair-wud': { src: '/art/haggling-teen-play-fair-wud.mp4', title: 'Teen: texting' },
+  },
 }
 
 const STAGE_ORDER = ['baby', 'child', 'teen', 'adult', 'elder']

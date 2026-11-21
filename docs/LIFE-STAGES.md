@@ -11,7 +11,7 @@ there and every surface changes. Numbers are first guesses and easy to tune.
 | --- | --- | --- | --- | --- |
 | Baby | 0-7 | `haggling-care-<type>.jpeg` (have) | hatch film + playing film (have) | live |
 | Child | 7-14 | `haggling-child-<type>.jpeg` (**have, 21 Nov**) | `haggling-child-play-<type>.mp4` (**have, 21 Nov**: reading, texting, gaming, dancing, parkour, skateboarding) | live |
-| Teen | 14-24 | `haggling-teen-<type>.jpeg` (**have, 21 Nov**) | `haggling-teen-play-<type>.mp4` | portraits live; films to come |
+| Teen | 14-24 | `haggling-teen-<type>.jpeg` (**have, 21 Nov**) | `haggling-teen-play-<type>.mp4` (**have, 22 Nov**, re-encoded ~1.4-2 MB each) | live |
 | Adult | 24-36 | `haggling-adult-<type>.jpeg` | `haggling-adult-play-<type>.mp4` | to make |
 | Old age | 36-42 | `haggling-elder-<type>.jpeg` | `haggling-elder-play-<type>.mp4` | to make |
 | Departed | day 42 | `haggling-ghost-<type>.jpeg` (have) | - | live |
@@ -96,3 +96,7 @@ Sexual orientation is **not** part of the game. Gender identity only; "Furry" dr
 ## Not built yet
 - Stage portraits and stage films: drop the files in (names above) and Kiro wires them into `STAGE_PORTRAITS` / Watch again.
 - Teen "wakes crabbit before 10am" and an old-age nap: left out to keep sleep simple.
+
+## Video settings (for future stage films)
+Re-encode for phones: `ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 26 -profile:v high -pix_fmt yuv420p -c:a aac -b:a 96k -movflags +faststart out.mp4`.
+On the teen films this cut 5.2-6.6 MB to 1.4-2.0 MB (about 75% smaller) at SSIM 0.98 (visually the same), 720p and sound kept.
