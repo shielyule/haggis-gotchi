@@ -212,6 +212,14 @@ export const STAGE_PORTRAITS: Record<string, Record<string, string>> = {
     'radge': '/art/haggling-teen-radge.jpeg',
     'fair-wud': '/art/haggling-teen-fair-wud.jpeg',
   },
+  adult: {
+    'douce': '/art/haggling-adult-douce.jpeg',
+    'skeigh': '/art/haggling-adult-skeigh.jpeg',
+    'ill-trickit': '/art/haggling-adult-ill-trickit.jpeg',
+    'ree': '/art/haggling-adult-ree.jpeg',
+    'radge': '/art/haggling-adult-radge.jpeg',
+    'fair-wud': '/art/haggling-adult-fair-wud.jpeg',
+  },
 }
 
 export function stagePortraitFor(temperamentId: string, stage: string): string {
