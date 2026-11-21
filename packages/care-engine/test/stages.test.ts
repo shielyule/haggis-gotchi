@@ -41,7 +41,7 @@ test('baby rules unchanged when no stage is given', () => {
     applyCare(fresh(), 'treat', ctx('baby')).haggling.mood)
 })
 
-test('identity: only opted in, from day 14 (Teen), same answer every time; questioning settles at day 24 (Adult)', () => {
+test('identity: only opted in, from day 14 (Teen), same answer every time; some stay questioning at Adult', () => {
   assert.equal(identityAt('child-1', false, 30), 'as-hatched')
   assert.equal(identityAt('child-1', true, 13), 'as-hatched')
   const seen = new Set<string>()
@@ -49,9 +49,12 @@ test('identity: only opted in, from day 14 (Teen), same answer every time; quest
     const k = `child-${i}`
     assert.equal(identityAt(k, true, 15), identityAt(k, true, 15))
     seen.add(identityAt(k, true, 15))
-    assert.notEqual(identityAt(k, true, 24), 'questioning')
   }
   assert.deepEqual([...seen].sort(), ['as-hatched', 'non-binary', 'questioning', 'trans'])
+  // Questioning is not a phase: across many Hagglings, some still questioning as adults, some not.
+  const adults = Array.from({ length: 400 }, (_, i) => `child-${i}`).filter((k) => identityAt(k, true, 15) === 'questioning')
+  const stay = adults.filter((k) => identityAt(k, true, 25) === 'questioning').length
+  assert.ok(stay > 0 && stay < adults.length)
 })
 
 test('labels: a trans lassie is a lassie; non-binary and questioning shown as written', () => {

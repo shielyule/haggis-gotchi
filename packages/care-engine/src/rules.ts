@@ -45,7 +45,17 @@ export const RULES = {
   restedMoodBonus: 10,
   /** Woken early by being fed, walked or given a treat: grumpy. */
   grumpyMoodHit: 20,
-  wakesGrumpy: ['feed', 'walk', 'treat'] as readonly string[],
+  wakesGrumpy: ['feed', 'walk', 'treat', 'play'] as readonly string[],
+
+  /** Mischief (owner, 22 Nov): chance per hour of misbehaving, by temperament. */
+  mischiefPerHour: { douce: 5, skeigh: 10, 'ill-trickit': 30, ree: 20, radge: 30, 'fair-wud': 35 } as Record<string, number>,
+  /** Scold: always costs mood; unfair scolding also costs Health XP. Life XP never drops. */
+  scoldMoodHit: 5,
+  unfairScoldMoodHit: 15,
+  unfairScoldHealthHit: 3,
+  /** Haggis Run: mood per correct guess (5 rounds), energy cost. */
+  playMoodPerWin: 4,
+  playEnergyCost: 8,
 
   /** Life XP (photo-care R5). */
   lifeXpPerDayAlive: 10,

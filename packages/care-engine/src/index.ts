@@ -15,6 +15,8 @@ export {
   applyCare,
   applyPhotoTreat,
   clamp,
+  isMisbehaving,
+  mischiefLine,
   dayKey,
   lifeLevel,
   ensureMeals,

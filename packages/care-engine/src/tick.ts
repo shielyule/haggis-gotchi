@@ -51,6 +51,27 @@ export function lifeLevel(xp: number): LifeLevel {
   return { level, xp: value, levelStart: start, nextAt: next }
 }
 
+/** Mischief (owner, 22 Nov): is the Haggling misbehaving this hour? Pure + same on every device. */
+export function isMisbehaving(h: Haggling, temperamentId: string, nowMs: number): boolean {
+  if (h.asleepUntil && nowMs < Date.parse(h.asleepUntil)) return false
+  const hourIndex = Math.floor(nowMs / 3_600_000)
+  if (h.scoldedHour === hourIndex) return false
+  let x = 2166136261
+  for (const ch of `${h.eggId}:${hourIndex}`) x = Math.imul(x ^ ch.charCodeAt(0), 16777619) >>> 0
+  return x % 100 < (RULES.mischiefPerHour[temperamentId] ?? 15)
+}
+
+const MISCHIEF = [
+  '{name} is drawing on the walls with a neep.',
+  '{name} has hidden your car keys in the porridge.',
+  '{name} is howling at the telly for no reason.',
+  '{name} is unrolling the toilet roll, very slowly, maintaining eye contact.',
+]
+
+export function mischiefLine(h: Haggling, nowMs: number): string {
+  return MISCHIEF[Math.floor(nowMs / 3_600_000) % MISCHIEF.length].replace(/\{name\}/g, h.name)
+}
+
 export function nearHour(hour: number, target: number) {
   return Math.abs(hour - target) <= 1 || Math.abs(hour - target) >= 23
 }
@@ -173,6 +194,33 @@ export function applyCare(
       h.lastBedAt = now.toISOString()
       addScrap(h, `${h.name} was tucked in for the night. Wheesht now.`)
       break
+    case 'scold': {
+      // Discipline (owner, 22 Nov): fair when they are misbehaving, unfair otherwise.
+      const fair = isMisbehaving(input, ctx.temperamentId, ctx.nowMs)
+      if (fair) {
+        h.mood = clamp(h.mood - RULES.scoldMoodHit)
+        h.scoldedHour = Math.floor(ctx.nowMs / 3_600_000)
+        addScrap(h, `You told ${h.name} off. A sulk, then they stopped. Lesson learned.`)
+      } else {
+        h.mood = clamp(h.mood - RULES.unfairScoldMoodHit)
+        h.healthXp -= RULES.unfairScoldHealthHit
+        if (h.healthXp < 0) h.sick = true
+        addScrap(h, `You told ${h.name} off for nothing. Big wobbly lip. That stung.`)
+      }
+      break
+    }
+    case 'play': {
+      const wins = Math.max(0, Math.min(5, Math.round(h.playScore ?? 0)))
+      h.playScore = undefined
+      h.mood = clamp(h.mood + wins * RULES.playMoodPerWin)
+      h.energy = clamp(h.energy - RULES.playEnergyCost)
+      addScrap(h, wins >= 4
+        ? `Haggis Run! You guessed ${wins} of 5 and ${h.name} is chuffed to bits.`
+        : wins >= 2
+          ? `Haggis Run: ${wins} of 5. ${h.name} says best of three next time.`
+          : `Haggis Run: ${wins} of 5. ${h.name} ran rings round you, literally.`)
+      break
+    }
     case 'feed':
       h.hunger = clamp(h.hunger + 28)
       h.mood = clamp(h.mood + (nearFeed ? 14 : 6))

@@ -12,12 +12,13 @@ insert into public.eggs (id, carer_id, ready_at, status, answers, email) values
 insert into public.children (id, egg_id, carer_id, name, temperament_id, breakfast_hour, dinner_hour, bed_hour) values
   ('aaaaaaaa-2222-0000-0000-000000000001', 'aaaaaaaa-1111-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-00000000000a', 'Harry', 'douce', 8, 18, 22),
   ('bbbbbbbb-2222-0000-0000-000000000002', 'bbbbbbbb-1111-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-00000000000b', 'Twinkle', 'ree', 8, 18, 22);
--- events: Fred fed Harry twice within 5 min (collapse), Sally cuddled Twinkle, a weather check-in (hidden)
+-- events dated just after now so live data never pushes them out of the top 10:
+-- Fred fed Harry twice within 5 min (collapse), Sally cuddled Twinkle, a weather check-in (hidden)
 insert into public.check_ins (child_id, carer_id, surface, hunger, mood, energy, mess, action, at) values
-  ('aaaaaaaa-2222-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-00000000000a', 'phone', 50, 50, 50, 10, 'feed', now() - interval '20 minutes'),
-  ('aaaaaaaa-2222-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-00000000000a', 'phone', 60, 50, 50, 10, 'feed', now() - interval '15 minutes'),
-  ('bbbbbbbb-2222-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-00000000000b', 'phone', 50, 60, 50, 10, 'cuddle', now() - interval '5 minutes'),
-  ('bbbbbbbb-2222-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-00000000000b', 'phone', 50, 60, 50, 10, 'weather', now() - interval '4 minutes');
+  ('aaaaaaaa-2222-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-00000000000a', 'phone', 50, 50, 50, 10, 'feed', now() + interval '1 minute'),
+  ('aaaaaaaa-2222-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-00000000000a', 'phone', 60, 50, 50, 10, 'feed', now() + interval '6 minutes'),
+  ('bbbbbbbb-2222-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-00000000000b', 'phone', 50, 60, 50, 10, 'cuddle', now() + interval '20 minutes'),
+  ('bbbbbbbb-2222-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-00000000000b', 'phone', 50, 60, 50, 10, 'weather', now() + interval '21 minutes');
 
 do $$
 declare n int; t text;

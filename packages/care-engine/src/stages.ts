@@ -102,8 +102,9 @@ export function identityAt(childKey: string, optedIn: boolean, day: number): Ide
   const r = hash(`${childKey}:teen`) % 100
   const teen: Identity = r < 40 ? 'as-hatched' : r < 65 ? 'trans' : r < 85 ? 'non-binary' : 'questioning'
   if (teen !== 'questioning' || day < IDENTITY_DAY_ADULT) return teen
-  const a = hash(`${childKey}:adult`) % 3
-  return a === 0 ? 'as-hatched' : a === 1 ? 'trans' : 'non-binary'
+  // Review 22 Nov: questioning is not a phase. Some stay questioning; the rest find their answer.
+  const a = hash(`${childKey}:adult`) % 4
+  return a === 0 ? 'questioning' : a === 1 ? 'as-hatched' : a === 2 ? 'trans' : 'non-binary'
 }
 
 /** What the care screen shows. A trans Haggling is simply the other one: a trans lassie is a lassie. */
