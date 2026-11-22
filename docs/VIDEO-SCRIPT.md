@@ -50,7 +50,7 @@ Screen-record Kiro in `haggis-gotchi-app`:
 - `.kiro/steering/`: product, Scottish folklore tone, security, **owner-instructions** (born from a real failure).
 - `.kiro/hooks/`: secret-guard blocking a key-shaped string; domain-language guard; schema reminder.
 - **MCP:** our own `haggis-weather` MCP server answering a live weather call, and the AWS documentation MCP server.
-- Shared care engine: one set of rules on phone, nest and server; 116 tests and GitHub CI. (Say "property tests" only if fast-check tests are added.)
+- Shared care engine: one set of rules on phone, nest and server; 161 tests incl. 45 property-based tests written from the specs, which caught the "bars freeze while the app is open" bug; GitHub CI.
 - `docs/PIVOT-2026-11-17-phone-first.md` and the incident record: "Kiro got it wrong once, we wrote it down, and changed the rules."
 - Voice: "Every feature went spec, design, tasks, code, and the commits say which task."
 

@@ -6,5 +6,8 @@
   "scripts": {
     "test": "node --test \"supabase/functions/_shared/*.test.ts\" \"packages/care-engine/test/*.test.ts\" \"apps/mother/functions/_lib/*.test.ts\" \"apps/mother/test/*.test.ts\"",
     "docs:weather": "node tools/gen-weather-doc.ts"
+  },
+  "devDependencies": {
+    "fast-check": "^4.11.0"
   }
 }

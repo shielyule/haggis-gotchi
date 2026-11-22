@@ -19,11 +19,15 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: apps/mother/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            apps/mother/package-lock.json
+      - name: Install test tools (fast-check for property-based tests)
+        run: npm ci
       - name: Install app dependencies
         working-directory: apps/mother
         run: npm ci
-      - name: Tests (care engine, shared server code, app)
+      - name: Tests (care engine, shared server code, app; includes property-based tests)
         run: npm test
       - name: Type check and build the app
         working-directory: apps/mother

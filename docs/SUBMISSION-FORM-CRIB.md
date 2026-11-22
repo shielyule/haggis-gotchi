@@ -47,8 +47,8 @@ The rules ask about each Kiro feature. Kiro will draft it; these are the true fa
 | Hooks | secret-guard (blocks key-shaped strings), domain-language guard, schema-regen reminder | `.kiro/hooks/` |
 | MCP | Our own `haggis-weather` MCP server (weather -> temperament reaction); AWS documentation MCP for Rekognition | `.kiro/settings/mcp.json`, `tools/weather-mcp/` |
 | Kiro IDE vs others | IDE for building; a second Kiro session in a git worktree built the 3D graveyard in parallel | `docs/GRAVEYARD-3D-HANDOFF.md` |
-| Testing | 116 tests on a shared care engine used by phone and server; DB tests in rolled-back transactions; CI on GitHub | `packages/care-engine/test/`, `supabase/tests/`, `.github/workflows/ci.yml` |
-| Property-based testing | **Not done with a PBT library yet.** Either say so, or ask Kiro to add fast-check tests to the care engine (about an hour) | |
+| Testing | 161 tests (incl. 45 property-based) on a shared care engine used by phone and server; DB tests in rolled-back transactions; CI on GitHub | `packages/care-engine/test/`, `supabase/tests/`, `.github/workflows/ci.yml` |
+| Property-based testing | 45 fast-check properties written from the EARS requirements; 7 found real bugs (biggest: bars froze while the app was open) | `docs/PBT-FINDINGS.md`, `*/properties*.test.ts` |
 | Custom agents, Powers, Crew | Not used so far. Say so honestly, or try one before the deadline | |
 | Vibe vs spec | The phone-first pivot and the incident record show where spec helped and where it did not | `docs/PIVOT-2026-11-17-phone-first.md` |
 
