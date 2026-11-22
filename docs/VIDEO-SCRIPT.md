@@ -8,11 +8,11 @@ Kiro adds to this file as features land. Times are targets.
 
 | Want to show | How |
 | --- | --- |
-| Birth without a 30-minute wait | Tick **Demo wait (10 seconds)** on the claim form (real eggs take 20 seconds); the still egg shows, then the hatch film plays by itself |
+| Birth without a 30-minute wait | Open `haggisgotchi.com/?demo=1&new=1`, then tick **Demo wait (10 seconds)** (the box only shows with `?demo=1`; real eggs take 20 seconds); the still egg shows, then the hatch film plays by itself |
 | A weather reaction on demand | Add `?weather=storm` to the address (also `rain`, `hot`, `snow`, `frost`, `windy`, `sunny`, `crisp`, `grey`, `humid`). Applies once per kind of weather per day |
 | Different temperaments reacting | See `docs/WEATHER-REACTIONS.md`; e.g. Douce + rain = big smile, Radge + hot = big sulk, Fair Wud + storm = delight |
 | A notification right now | Tell Kiro "test reminder" (sends one to your phone) |
-| Photo Treat | Real recognition: Irn-Bru can (point at the words), bagpipes, kilt/tartan, heather, shortbread. A Coke can is refused: film that too! Once a day per Haggling |
+| Photo Treat | Film with **shortbread, heather, tartan or bagpipes**. Do not show an Irn-Bru or Coke can on video (trademarks, see `docs/SUBMISSION-VIDEO-CRIB.md`); a plain mug is refused instead. Once a day per Haggling |
 | The playing film | Demo eggs unlock it 3 minutes after hatching: notification + "New film in Watch again" |
 | Mist / haar love | Demo menu: Mist and fog (+8 Mood for all), Haar (+10) |
 | Public scrapbook | Mother page on the Mac shows "Fred just fed Harry · 2 min ago" as you care on the phone |
@@ -38,6 +38,7 @@ again to hide it.
 
 ### 3. The care loop (0:50-1:25)
 - Feed, Cuddle, Walk: bars move, scrapbook lines in Scots voice, Life XP and Level bar.
+- **Haggis Run** (guess which way they run round the hill) and **Tell off** when the mischief banner shows. Poop on the portrait, then Clean up. Chirps on (record media sounds).
 - **Weather:** the chip ("Rain · 6°C · your area"). Then `?weather=storm`: the **morning-swing banner** and the scrapbook line ("met the thunder head-on and had to be talked down off the dresser").
 - Voice: "Every temperament feels weather differently. Douce loves rain. Skeigh hides from thunder. Fair Wud loves any change at all."
 - **Photo Treat:** camera, snap, every bar fills, +50 Life XP.
@@ -49,7 +50,7 @@ Screen-record Kiro in `haggis-gotchi-app`:
 - `.kiro/steering/`: product, Scottish folklore tone, security, **owner-instructions** (born from a real failure).
 - `.kiro/hooks/`: secret-guard blocking a key-shaped string; domain-language guard; schema reminder.
 - **MCP:** our own `haggis-weather` MCP server answering a live weather call, and the AWS documentation MCP server.
-- Shared care engine: one set of rules on phone, nest and server; property tests.
+- Shared care engine: one set of rules on phone, nest and server; 116 tests and GitHub CI. (Say "property tests" only if fast-check tests are added.)
 - `docs/PIVOT-2026-11-17-phone-first.md` and the incident record: "Kiro got it wrong once, we wrote it down, and changed the rules."
 - Voice: "Every feature went spec, design, tasks, code, and the commits say which task."
 
@@ -67,6 +68,6 @@ Screen-record Kiro in `haggis-gotchi-app`:
 - Demo egg's playing film notification after 3 minutes, then play it in Watch again.
 
 ### AWS shots
-- Photo Treat on a real Irn-Bru can: "Firecracker spotted the Irn-Bru and did a wee jig", every bar full, and the Mac feed says "... shared a can of Irn-Bru with Firecracker".
-- Then a Coke can: "squints... not a Scottish treat".
+- Photo Treat on shortbread: every bar full, and the Mac feed says "... shared some shortbread with Firecracker". (No Irn-Bru or Coke cans on screen: trademarks.)
+- Then a plain mug: "squints... not a Scottish treat".
 - Kiro: the fixtures file of real Rekognition answers and the 15 photo tests.
