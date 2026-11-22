@@ -46,7 +46,7 @@ const STAGE_TREAT_LINES: Record<string, Partial<Record<TreatId, string>>> = {
 }
 
 export function treatLine(id: TreatId, stage: string | undefined, name: string): string {
-  return (STAGE_TREAT_LINES[stage ?? '']?.[id] ?? TREATS[id].line).replace(/\{name\}/g, name)
+  return (STAGE_TREAT_LINES[stage ?? '']?.[id] ?? TREATS[id].line).replace(/\{name\}/g, () => name)
 }
 
 /** Thresholds from the evidence: Irn-Bru logo text is read at ~80% (girder photo 79.8). */

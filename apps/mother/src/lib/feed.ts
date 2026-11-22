@@ -43,5 +43,8 @@ export function timeAgo(iso: string, nowMs: number): string {
   const m = Math.round(s / 60)
   if (m < 60) return `${m} min ago`
   const h = Math.round(m / 60)
-  return h === 1 ? '1 hour ago' : `${h} hours ago`
+  if (h < 24) return h === 1 ? '1 hour ago' : `${h} hours ago`
+  // PBT finding F6: days, not "30 hours ago".
+  const d = Math.round(h / 24)
+  return d <= 1 ? 'yesterday' : `${d} days ago`
 }

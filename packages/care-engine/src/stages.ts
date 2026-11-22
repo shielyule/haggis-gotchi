@@ -80,7 +80,7 @@ export function stageRule(stage: StageId | undefined): StageRule {
 export function stageLine(stage: StageId | undefined, action: CareAction, name: string, nowMs: number): string | null {
   const list = stageRule(stage).lines[action]
   if (!list?.length) return null
-  return list[Math.floor(nowMs / 60_000) % list.length].replace(/\{name\}/g, name)
+  return list[Math.floor(nowMs / 60_000) % list.length].replace(/\{name\}/g, () => name)
 }
 
 // ---------------------------------------------------------------------------

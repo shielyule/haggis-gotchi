@@ -18,6 +18,8 @@ export {
   isMisbehaving,
   mischiefLine,
   dayKey,
+  localTime,
+  wholeBars,
   lifeLevel,
   ensureMeals,
   nearHour,

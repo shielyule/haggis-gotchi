@@ -18,7 +18,7 @@ down. Health XP stays the separate "how well is it" meter.
 ### R1 Photo Treat button
 1. WHILE on the home device, THE SYSTEM SHALL show a "Photo Treat" button with the care actions.
 2. WHEN pressed, THE SYSTEM SHALL open the rear camera (`capture="environment"`), or a file picker where there is no camera.
-3. THE SYSTEM SHALL shrink the photo on the device (long side <= 1280 px, JPEG) before upload.
+3. THE SYSTEM SHALL shrink the photo on the device (long side <= 1600 px, JPEG; *updated 22 Nov 2026: was 1280 px, raised so can lettering stays readable*) before upload.
 
 ### R2 Reward (server decides)
 1. WHEN a treat is accepted, THE SYSTEM SHALL set Hunger, Mood, Energy to 100 and Mess to 0, add 20 Health XP (max 100) and 50 Life XP.

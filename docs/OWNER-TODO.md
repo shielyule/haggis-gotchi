@@ -26,7 +26,7 @@ Last updated 22 Nov 2026.
 - [ ] Edit, upload to YouTube as **Public**.
 - [ ] Kiro drafts the description and "How Kiro was used" write-up; you edit.
 - [x] Property-based tests added (45; findings in `docs/PBT-FINDINGS.md`).
-- [ ] Decide which PBT findings to fix (F1 bars freeze is the big one; F3 needs your choice).
+- [x] PBT findings F1-F7 fixed (22 Nov). Android check: leave the care screen open 10 minutes, bars should creep down.
 - [ ] Make the repo public (Kiro checks for secrets first).
 - [ ] Fill the Devpost form: `docs/SUBMISSION-FORM-CRIB.md`.
 - [ ] On submission day: blog post + social post starting `#KiroweenHackathon26` (own words).

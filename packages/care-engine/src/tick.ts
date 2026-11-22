@@ -16,18 +16,58 @@ export type EngineContext = {
   nowMs: number
   /** Life stage (docs/LIFE-STAGES.md). Missing = baby (the original rules). */
   stage?: StageId
+  /** Carer's IANA time zone (PBT finding F2). Missing = the clock of the device running the engine. */
+  timezone?: string
 }
 
 export function clamp(n: number) {
   return Math.max(0, Math.min(100, Math.round(n)))
 }
 
-/** Local calendar date for a moment, e.g. "2026-11-17". */
-export function dayKey(nowMs: number): string {
+/** 0-100 without rounding: time passing keeps exact fractions (PBT finding F1). */
+function clampExact(n: number) {
+  return Math.max(0, Math.min(100, n))
+}
+
+/** Bars as whole numbers, for showing and saving (database columns are integers). */
+export function wholeBars(h: Pick<Haggling, 'hunger' | 'mood' | 'energy' | 'mess'>) {
+  return { hunger: clamp(h.hunger), mood: clamp(h.mood), energy: clamp(h.energy), mess: clamp(h.mess) }
+}
+
+/** Local hour and date in a time zone (or this device's clock when none is given). */
+export function localTime(nowMs: number, timezone?: string): { hour: number; date: string } {
+  if (timezone) {
+    try {
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23',
+      }).formatToParts(new Date(nowMs))
+      const get = (t: string) => parts.find((x) => x.type === t)?.value ?? '00'
+      return { hour: Number(get('hour')) % 24, date: `${get('year')}-${get('month')}-${get('day')}` }
+    } catch {
+      // Unknown zone name: fall through to the device clock.
+    }
+  }
   const d = new Date(nowMs)
   const mm = String(d.getMonth() + 1).padStart(2, '0')
   const dd = String(d.getDate()).padStart(2, '0')
-  return `${d.getFullYear()}-${mm}-${dd}`
+  return { hour: d.getHours(), date: `${d.getFullYear()}-${mm}-${dd}` }
+}
+
+/** Local calendar date for a moment, e.g. "2026-11-17". */
+export function dayKey(nowMs: number, timezone?: string): string {
+  return localTime(nowMs, timezone).date
+}
+
+/** When (ms) the local clock first reaches `targetHour`:00 after `fromMs`, if not after `toMs`. 15-minute steps. */
+function firstLocalHour(fromMs: number, toMs: number, targetHour: number, timezone?: string): number | null {
+  const step = 15 * 60_000
+  let prev = localTime(fromMs, timezone).hour
+  for (let t = Math.floor(fromMs / step) * step + step; t <= toMs; t += step) {
+    const hr = localTime(t, timezone).hour
+    if (hr !== prev && hr === targetHour) return t
+    prev = hr
+  }
+  return null
 }
 
 export type LifeLevel = { level: number; xp: number; levelStart: number; nextAt: number }
@@ -69,7 +109,7 @@ const MISCHIEF = [
 ]
 
 export function mischiefLine(h: Haggling, nowMs: number): string {
-  return MISCHIEF[Math.floor(nowMs / 3_600_000) % MISCHIEF.length].replace(/\{name\}/g, h.name)
+  return MISCHIEF[Math.floor(nowMs / 3_600_000) % MISCHIEF.length].replace(/\{name\}/g, () => h.name)
 }
 
 export function nearHour(hour: number, target: number) {
@@ -88,62 +128,68 @@ export function ensureMeals(h: Haggling) {
 
 function tickInPlace(h: Haggling, notices: Notice[], ctx: EngineContext) {
   ensureMeals(h)
-  const last = new Date(h.lastTickAt).getTime()
+  const last = Date.parse(h.lastTickAt)
+  // PBT finding F5: an unreadable save time would turn every bar into NaN. Treat it as "now".
+  if (!Number.isFinite(last)) {
+    h.lastTickAt = new Date(ctx.nowMs).toISOString()
+    return
+  }
   const hours = Math.max(0, (ctx.nowMs - last) / (1000 * 60 * 60))
   if (hours < RULES.minTickHours) return
-
   const wild = RULES.wildTemperaments.includes(ctx.temperamentId) ? RULES.wildFactor : 1
   const calm = ctx.temperamentId === RULES.calmTemperament ? RULES.calmFactor : 1
   const d = RULES.decayPerHour
   const sr = stageRule(ctx.stage)
-
   // Sleep: split the gap into asleep and awake hours.
   const sleepEnd = h.asleepUntil ? Date.parse(h.asleepUntil) : Number.NaN
   const asleepH = Number.isFinite(sleepEnd) ? Math.min(hours, Math.max(0, (sleepEnd - last) / 3_600_000)) : 0
   const awakeH = hours - asleepH
   const wasAsleep = asleepH > 0
-
-  h.hunger = clamp(h.hunger - (awakeH + asleepH * RULES.sleepHungerFactor) * d.hunger * wild * sr.decay)
-  h.energy = clamp(h.energy - awakeH * d.energy * calm * sr.decay + asleepH * RULES.sleepEnergyPerHour)
-  h.mess = clamp(h.mess + hours * d.mess * wild * sr.messGrowth)
-  h.mood = clamp(h.mood - awakeH * d.mood * sr.decay)
-
+  // PBT finding F1: exact fractions (no rounding) so a 30-second check loses nothing.
+  const start = { hunger: h.hunger, energy: h.energy, mess: h.mess }
+  h.hunger = clampExact(h.hunger - (awakeH + asleepH * RULES.sleepHungerFactor) * d.hunger * wild * sr.decay)
+  h.energy = clampExact(h.energy - awakeH * d.energy * calm * sr.decay + asleepH * RULES.sleepEnergyPerHour)
+  h.mess = clampExact(h.mess + hours * d.mess * wild * sr.messGrowth)
+  h.mood = clampExact(h.mood - awakeH * d.mood * sr.decay)
+  /** A bar's value part-way through the gap (straight line from start to end). */
+  const at = (key: 'hunger' | 'energy', ms: number) =>
+    start[key] + (h[key] - start[key]) * ((ms - last) / Math.max(1, ctx.nowMs - last))
   // Natural wake-up after the full sleep: bright-eyed.
   if (Number.isFinite(sleepEnd) && ctx.nowMs >= sleepEnd) {
     h.asleepUntil = undefined
-    h.mood = clamp(h.mood + RULES.restedMoodBonus)
+    h.mood = clampExact(h.mood + RULES.restedMoodBonus)
     addScrap(h, `${h.name} woke up bright-eyed after a long sleep. Ready for porridge.`, new Date(sleepEnd).toISOString())
   }
-
   // Life XP grows with age, never down.
   h.lifeXp = (h.lifeXp ?? 0) + (hours * RULES.lifeXpPerDayAlive) / 24
-
-  // Missed breakfast / dinner / bed windows since the last tick.
-  const startHour = new Date(last).getHours()
-  const endHour = new Date(ctx.nowMs).getHours()
-  const crossed = (target: number) => {
-    if (hours >= 24) return true
-    if (startHour === endHour && hours < 1) return false
-    if (startHour < endHour) return target > startHour && target <= endHour
-    return target > startHour || target <= endHour
-  }
-
-  if (crossed(h.breakfastHour) && h.hunger < RULES.missedMealHungerBelow) {
-    h.mood = clamp(h.mood - RULES.missedMealMoodHit)
+  // Missed breakfast / dinner / bed since the last tick, judged at the moment the carer's
+  // clock reached that hour (PBT findings F1, F2), not at the end of the gap.
+  const missedAt = (target: number): number | null =>
+    hours >= 24 ? ctx.nowMs : firstLocalHour(last, ctx.nowMs, target, ctx.timezone)
+  const breakfastAt = missedAt(h.breakfastHour)
+  if (breakfastAt !== null && at('hunger', breakfastAt) < RULES.missedMealHungerBelow) {
+    h.mood = clampExact(h.mood - RULES.missedMealMoodHit)
     penaliseMissedSchedule(h, notices, 'breakfast')
   }
-  if (crossed(h.dinnerHour) && h.hunger < RULES.missedMealHungerBelow) {
-    h.mood = clamp(h.mood - RULES.missedMealMoodHit)
+  const dinnerAt = missedAt(h.dinnerHour)
+  if (dinnerAt !== null && at('hunger', dinnerAt) < RULES.missedMealHungerBelow) {
+    h.mood = clampExact(h.mood - RULES.missedMealMoodHit)
     penaliseMissedSchedule(h, notices, 'dinner')
   }
-  if (!wasAsleep && crossed(h.bedHour) && h.energy < RULES.missedBedEnergyBelow) {
-    h.mood = clamp(h.mood - RULES.missedBedMoodHit)
+  const bedAt = missedAt(h.bedHour)
+  if (!wasAsleep && bedAt !== null && at('energy', bedAt) < RULES.missedBedEnergyBelow) {
+    h.mood = clampExact(h.mood - RULES.missedBedMoodHit)
     penaliseMissedSchedule(h, notices, 'bedtime')
   }
-
-  if (h.hunger < RULES.lowHungerBelow) h.mood = clamp(h.mood - RULES.lowHungerMoodHit)
-  if (h.mess > RULES.highMessAbove) h.mood = clamp(h.mood - RULES.highMessMoodHit)
-
+  // Hungry and messy cost Mood per awake hour spent that way (was per check: PBT finding F1).
+  const hoursWhere = (a: number, b: number, isBad: (v: number) => boolean, line: number) => {
+    if (isBad(a) && isBad(b)) return awakeH
+    if (!isBad(a) && !isBad(b)) return 0
+    const f = (line - a) / (b - a) // where the straight line crosses the threshold
+    return awakeH * (isBad(b) ? 1 - f : f)
+  }
+  h.mood = clampExact(h.mood - hoursWhere(start.hunger, h.hunger, (v) => v < RULES.lowHungerBelow, RULES.lowHungerBelow) * RULES.lowHungerMoodHit)
+  h.mood = clampExact(h.mood - hoursWhere(start.mess, h.mess, (v) => v > RULES.highMessAbove, RULES.highMessAbove) * RULES.highMessMoodHit)
   applyHealthRules(h, notices, ctx.nowMs)
   h.lastTickAt = new Date(ctx.nowMs).toISOString()
 }
@@ -167,7 +213,7 @@ export function applyCare(
   tickInPlace(h, notices, ctx)
 
   const now = new Date(ctx.nowMs)
-  const hour = now.getHours()
+  const hour = localTime(ctx.nowMs, ctx.timezone).hour
   const nearBreakfast = nearHour(hour, h.breakfastHour)
   const nearDinner = nearHour(hour, h.dinnerHour)
   const nearFeed = nearBreakfast || nearDinner
@@ -266,7 +312,7 @@ export function applyCare(
   }
 
   // Life XP for care, capped per day so button-mashing does not level up.
-  const today = dayKey(ctx.nowMs)
+  const today = dayKey(ctx.nowMs, ctx.timezone)
   if (h.careXpDay !== today) {
     h.careXpDay = today
     h.careXpToday = 0
@@ -317,7 +363,7 @@ export function applyPhotoTreat(
   const h = structuredClone(input)
   const notices: Notice[] = []
   tickInPlace(h, notices, ctx)
-  const today = dayKey(ctx.nowMs)
+  const today = dayKey(ctx.nowMs, ctx.timezone)
   if (h.lastTreatDay === today) {
     return { accepted: false, reason: 'already-today', haggling: h, notices }
   }

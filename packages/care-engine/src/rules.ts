@@ -19,6 +19,7 @@ export const RULES = {
   missedBedEnergyBelow: 45,
   missedMealMoodHit: 12,
   missedBedMoodHit: 10,
+  /** Mood lost per awake hour spent hungry (Hunger below 25) or in a mess (Mess above 70). */
   lowHungerBelow: 25,
   lowHungerMoodHit: 3,
   highMessAbove: 70,

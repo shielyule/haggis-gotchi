@@ -15,9 +15,23 @@ hostile ones, random time zones) and shrinks any failure to the smallest example
 | `supabase/functions/_shared/properties.test.ts` | claim validation, email and link-preview escaping, slugs, cron secret, reminders, quiet nights, photo recognition | S1-S14 |
 | `apps/mother/test/properties.test.ts` | public scrapbook lines, "time ago" | A1-A3 |
 
-Result: **45 properties, 38 hold, 7 found real problems** (marked `todo` with their finding
-number, so CI stays green until each is fixed; a fix turns its `todo` back into a normal test).
-They run with `npm test` and in GitHub CI.
+Result on the first run: **45 properties, 38 held, 7 found real problems.**
+A second random run caught one more case of F4 (property P25) and one bug in a test itself (S11).
+
+**Status 22 Nov 2026: all fixed. 45 of 45 hold** (161 tests in total), across 11 back-to-back random
+runs. The owner chose option (a) for F3. They run with `npm test` and in GitHub CI on every push.
+
+| Finding | Fix | Where |
+|---|---|---|
+| F1 bars froze while open | Exact fractions inside the engine, rounded only on screen and when saved (`wholeBars`); hungry/messy Mood cost per awake hour; meal and bed checks use the bar *at* that hour | `packages/care-engine/src/tick.ts`, `CareScreen.tsx` Meter, `lib/cloud.ts`, `photo-treat` |
+| F2 UTC on the server | `EngineContext.timezone`; `localTime()` for hours and dates; Photo Treat and reminders pass the carer's zone | `tick.ts`, `photo-treat`, `_shared/reminders.ts` (both deployed) |
+| F3 teen weather | Spec now says limits x1.3 for teens, x0.7 in old age | `.kiro/specs/weather-mood/requirements.md` R4.2 |
+| F4 `$` in names | Replacement functions in all 5 templates | `tick.ts`, `life.ts`, `stages.ts`, `weather.ts`, `photoMatch.ts` |
+| F5 damaged save | Unreadable time treated as "now" and repaired | `tick.ts` |
+| F6 "30 hours ago" | "yesterday", "3 days ago" | `lib/feed.ts` |
+| F7 spec drift | Three requirements updated with date and reason | care-sleep R1, photo-care R1.3, public-feed R5 |
+
+Measured after the fix (same cases as below): app open and app closed now agree to within 1 point.
 
 ## Findings, most important first
 

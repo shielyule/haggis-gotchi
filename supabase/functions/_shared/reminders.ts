@@ -2,7 +2,7 @@
  * Which reminders are due right now. Pure: tested under node, used by care-reminders.
  * Spec: .kiro/specs/care-reminders (R2-R5)
  */
-import { tick, type Haggling } from '../../../packages/care-engine/src/index.ts'
+import { tick, wholeBars, type Haggling } from '../../../packages/care-engine/src/index.ts'
 
 export type ChildRow = {
   id: string
@@ -45,7 +45,7 @@ export function localClock(timezone: string, nowMs: number): { hour: number; dat
 }
 
 /** Meters projected to now with the shared care engine (same rules as the phone). */
-export function projectedBars(row: ChildRow, nowMs: number) {
+export function projectedBars(row: ChildRow, nowMs: number, timezone?: string) {
   const h: Haggling = {
     eggId: '',
     name: row.name,
@@ -62,8 +62,8 @@ export function projectedBars(row: ChildRow, nowMs: number) {
     scrapbook: [],
     livingOn: 'phone',
   }
-  const t = tick(h, { temperamentId: row.temperament_id, nowMs }).haggling
-  return { hunger: t.hunger, mood: t.mood, energy: t.energy, mess: t.mess }
+  const t = tick(h, { temperamentId: row.temperament_id, nowMs, timezone }).haggling
+  return wholeBars(t)
 }
 
 /** Quiet nights (owner tick box, 22 Nov): nothing from 22:00 to 07:00 local time, at most 6 a day. */
@@ -102,7 +102,7 @@ export function dueReminders(row: ChildRow, timezone: string, nowMs: number): Re
   }
 
   // Re-armed by care: any care action changes last_tick_at, which changes the key.
-  const bars = projectedBars(row, nowMs)
+  const bars = projectedBars(row, nowMs, timezone)
   const empty: [boolean, string, string][] = [
     [bars.hunger <= 0, 'hunger', `${n} is starving. Feed them before it costs Health XP.`],
     [bars.mood <= 0, 'mood', `${n} is in a right huff. A cuddle would help.`],

@@ -83,7 +83,8 @@ function trafficStyle(value: number) {
   return { width: `${v}%`, backgroundSize: v > 0 ? `${10000 / v}% 100%` : undefined }
 }
 
-function Meter({ label, value, bad = false }: { label: string; value: number; bad?: boolean }) {
+function Meter({ label, value: raw, bad = false }: { label: string; value: number; bad?: boolean }) {
+  const value = Math.round(raw) // the engine keeps fractions (PBT finding F1)
   return (
     <div className="meter">
       <div className="meter-top">

@@ -10,7 +10,7 @@
  * (checks the user's token itself)
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
-import { applyPhotoTreat, lifeStatus, type Haggling } from '../../../packages/care-engine/src/index.ts'
+import { applyPhotoTreat, lifeStatus, wholeBars, type Haggling } from '../../../packages/care-engine/src/index.ts'
 import { matchTreat, seenSummary, treatLine, type TreatId } from '../_shared/photoMatch.ts'
 import { detect, rekognitionConfigured } from '../_shared/rekognition.ts'
 import { localClock } from '../_shared/reminders.ts'
@@ -166,16 +166,13 @@ Deno.serve(async (req) => {
       livingOn: 'phone',
     }
     const stage = lifeStatus(row.born_at ?? row.created_at, row.span_ends_at ?? undefined, Date.now()).stage
-    const result = applyPhotoTreat(h, treatName, { temperamentId: row.temperament_id, nowMs: Date.now(), stage })
+    const result = applyPhotoTreat(h, treatName, { temperamentId: row.temperament_id, nowMs: Date.now(), stage, timezone })
     if (!result.accepted) {
       return json(200, { ok: false, error: `${row.name} has had today's treat already.` })
     }
     const t = result.haggling
     const update = {
-      hunger: t.hunger,
-      mood: t.mood,
-      energy: t.energy,
-      mess: t.mess,
+      ...wholeBars(t),
       health_xp: Math.max(-100, Math.min(100, Math.round(t.healthXp))),
       life_xp: Math.round((t.lifeXp ?? 0) * 100) / 100,
       last_treat_day: today,
@@ -196,10 +193,7 @@ Deno.serve(async (req) => {
       child_id: row.id,
       carer_id: auth.user.id,
       surface: 'phone',
-      hunger: t.hunger,
-      mood: t.mood,
-      energy: t.energy,
-      mess: t.mess,
+      ...wholeBars(t),
       action: 'photo_treat',
       treat_id: treatId,
     })

@@ -161,7 +161,7 @@ const TEMPERAMENT_LINES: Partial<Record<string, Partial<Record<WeatherBucket, st
 
 export function weatherLine(name: string, bucket: WeatherBucket, temperamentId: string): string {
   const t = TEMPERAMENT_LINES[temperamentId]?.[bucket] ?? LINES[bucket]
-  return t.replace(/\{name\}/g, name)
+  return t.replace(/\{name\}/g, () => name)
 }
 
 export type WeatherApplied = {

@@ -166,7 +166,7 @@ test('S10 reminders: never crash, never repeat a key in one run, nothing while a
 
 test('S11 quiet nights: every hour is either quiet or not, quiet is exactly 22:00-06:59, six distinct slots a day', () => {
   fc.assert(
-    fc.property(fc.integer({ min: 0, max: 23 }), fc.uuid(), fc.date({ min: new Date(T0), max: new Date(T0 + 400 * 24 * HOUR) }), (h, carer, d) => {
+    fc.property(fc.integer({ min: 0, max: 23 }), fc.uuid(), fc.date({ min: new Date(T0), max: new Date(T0 + 400 * 24 * HOUR), noInvalidDate: true }), (h, carer, d) => {
       assert.equal(isQuietHour(h), h >= 22 || h < 7)
       const slots = dailySlotKeys(carer, d.toISOString().slice(0, 10))
       assert.equal(new Set(slots).size, 6)
@@ -202,7 +202,7 @@ test('S13 adding unrelated things to a photo (a dog, a car, a person) never chan
   )
 })
 
-test('S14 a treat line always names the Haggling, at every stage', { todo: 'finding F4, docs/PBT-FINDINGS.md' }, () => {
+test('S14 a treat line always names the Haggling, at every stage', () => {
   fc.assert(
     fc.property(fc.constantFrom(...(Object.keys(TREATS) as TreatId[])), fc.constantFrom(undefined, 'baby', 'child', 'teen', 'adult', 'elder'), fc.string({ minLength: 1, maxLength: 20 }), (id, st, n) => {
       const line = treatLine(id, st, n)

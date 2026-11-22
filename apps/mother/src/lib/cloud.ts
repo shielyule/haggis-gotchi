@@ -1,5 +1,6 @@
 import { temperamentForChaos } from '../data/temperaments'
 import { supabase, supabaseConfigured } from './supabase'
+import { wholeBars } from './engine'
 import type {
   EggRecord,
   Haggling,
@@ -153,10 +154,7 @@ export async function syncChildToCloud(egg: EggRecord): Promise<string | null> {
     breakfast_hour: h.breakfastHour,
     dinner_hour: h.dinnerHour,
     bed_hour: h.bedHour,
-    hunger: h.hunger,
-    mood: h.mood,
-    energy: h.energy,
-    mess: h.mess,
+    ...wholeBars(h),
     last_tick_at: h.lastTickAt,
     ...xpColumns(h),
     // living_on, home_device_id, last_treat_day: server-only (RPCs / photo-treat)
@@ -214,10 +212,7 @@ export async function pushCheckIn(
     child_id: h.cloudChildId,
     carer_id: userId,
     surface,
-    hunger: h.hunger,
-    mood: h.mood,
-    energy: h.energy,
-    mess: h.mess,
+    ...wholeBars(h),
     action: action ?? null,
   })
   if (error) console.error('pushCheckIn', error.message)
@@ -225,10 +220,7 @@ export async function pushCheckIn(
   await supabase
     .from('children')
     .update({
-      hunger: h.hunger,
-      mood: h.mood,
-      energy: h.energy,
-      mess: h.mess,
+      ...wholeBars(h),
       last_tick_at: h.lastTickAt,
       ...xpColumns(h),
     })

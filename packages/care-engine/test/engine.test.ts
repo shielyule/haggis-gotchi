@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { careAlertFor, healthLabel } from '../src/health.ts'
-import { applyCare, tick } from '../src/tick.ts'
+import { applyCare, tick, wholeBars } from '../src/tick.ts'
 import type { Haggling } from '../src/types.ts'
 
 // Midday local time so no meal or bed window is crossed in the first hours.
@@ -37,8 +37,11 @@ test('decay numbers match the original rules (1 hour, ordinary temperament)', ()
 test('wild temperaments decay faster, douce loses energy slower', () => {
   const wild = tick(fresh(), { temperamentId: 'fair-wud', nowMs: hoursLater(1) }).haggling
   const calm = tick(fresh(), { temperamentId: 'douce', nowMs: hoursLater(1) }).haggling
-  assert.equal(wild.hunger, 62) // 72 - 9*1.15 = 61.65
-  assert.equal(calm.energy, 65) // 70 - 6*0.85 = 64.9
+  // Exact fractions inside the engine since 22 Nov (PBT finding F1); shown rounded.
+  assert.ok(Math.abs(wild.hunger - 61.65) < 1e-9) // 72 - 9*1.15
+  assert.ok(Math.abs(calm.energy - 64.9) < 1e-9) // 70 - 6*0.85
+  assert.equal(wholeBars(wild).hunger, 62)
+  assert.equal(wholeBars(calm).energy, 65)
 })
 
 test('under 0.02 hours does nothing', () => {

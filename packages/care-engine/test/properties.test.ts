@@ -31,6 +31,7 @@ import {
   type Haggling,
   type StageId,
   type WeatherBucket,
+  wholeBars,
 } from '../src/index.ts'
 
 const RUNS = { numRuns: 300 }
@@ -113,12 +114,14 @@ const world = fc.tuple(time, temperament, stage).chain(([at, temp, st]) =>
 
 // ---------------------------------------------------------------- bars and XP
 
-test('P1 bars always stay whole numbers from 0 to 100, whatever the carer does (R4.2 weather-mood, care engine clamp)', () => {
+test('P1 bars always stay between 0 and 100, and show and save as whole numbers, whatever the carer does', () => {
   fc.assert(
     fc.property(world, ([at, temp, st, h, steps]) => {
       run(h, temp, st, steps, at, (_p, n) => {
+        const whole = wholeBars(n)
         for (const b of BARS) {
-          assert.ok(Number.isInteger(n[b]) && n[b] >= 0 && n[b] <= 100, `${b}=${n[b]}`)
+          assert.ok(Number.isFinite(n[b]) && n[b] >= 0 && n[b] <= 100, `${b}=${n[b]}`)
+          assert.ok(Number.isInteger(whole[b]) && Math.abs(whole[b] - n[b]) <= 0.5, `${b} shown as ${whole[b]}`)
         }
       })
     }),
@@ -161,7 +164,7 @@ test('P4 care earns at most 30 Life XP a day, however many buttons are pressed (
   )
 })
 
-test('P5 checking often or rarely gives about the same bars (one tick of 6 h vs many small ticks)', { todo: 'finding F1, docs/PBT-FINDINGS.md' }, () => {
+test('P5 checking often or rarely gives about the same bars (one tick of 6 h vs many small ticks)', () => {
   // The phone ticks every 30-60 s while open; the server projects once. They should agree.
   fc.assert(
     fc.property(time, temperament, stage, fc.integer({ min: 2, max: 60 }), (at, temp, st, pieces) => {
@@ -295,14 +298,14 @@ test('P13 a weather slot changes a Haggling at most once, even with other slots 
   )
 })
 
-test('P14 one weather slot moves Mood at most 12, Energy at most 6, Hunger between -6 and 0, at every life stage (weather-mood R4.2)', { todo: 'finding F3, docs/PBT-FINDINGS.md' }, () => {
+test('P14 one weather slot moves Mood at most 12 and Energy at most 6 (x1.3 for teens, x0.7 in old age), Hunger -6 to 0 (weather-mood R4.2)', () => {
   const swing = { baby: 1, child: 1, teen: 1.3, adult: 1, elder: 0.7 }
   fc.assert(
     fc.property(temperament, bucket, fc.option(bucket, { nil: undefined }), stage, (temp, b, prev, st) => {
       const h: Haggling = { eggId: 'e', name: 'N', breakfastHour: 8, dinnerHour: 18, bedHour: 21, hunger: 50, mood: 50, energy: 50, mess: 10, healthXp: 50, lifeXp: 0, lastTickAt: new Date(T0).toISOString(), weatherBucket: prev, scrapbook: [], livingOn: 'phone' }
       const r = applyWeather(h, b, '2026-11-17-am', temp, new Date(T0).toISOString(), undefined, swing[st])
-      assert.ok(Math.abs(r.delta.mood) <= 12, `mood ${r.delta.mood} (${temp}, ${prev}->${b}, ${st})`)
-      assert.ok(Math.abs(r.delta.energy) <= 6, `energy ${r.delta.energy} (${temp}, ${prev}->${b}, ${st})`)
+      assert.ok(Math.abs(r.delta.mood) <= Math.round(12 * swing[st]), `mood ${r.delta.mood} (${temp}, ${prev}->${b}, ${st})`)
+      assert.ok(Math.abs(r.delta.energy) <= Math.round(6 * swing[st]), `energy ${r.delta.energy} (${temp}, ${prev}->${b}, ${st})`)
       assert.ok(r.delta.hunger <= 0 && r.delta.hunger >= -6, `hunger ${r.delta.hunger}`)
     }),
     RUNS,
@@ -460,7 +463,7 @@ test('P25 no template ever leaks "{name}", "{days}" or "undefined" into what the
   )
 })
 
-test('P26 names with $ signs survive templates unchanged (String.replace special patterns)', { todo: 'finding F4, docs/PBT-FINDINGS.md' }, () => {
+test('P26 names with $ signs survive templates unchanged (String.replace special patterns)', () => {
   fc.assert(
     fc.property(fc.constantFrom('$&', "$'", '$`', '$$', 'Mo$&lly', '$1'), bucket, temperament, (n, b, temp) => {
       assert.ok(weatherLine(n, b, temp).includes(n), `weatherLine mangled ${n}`)
@@ -473,7 +476,7 @@ test('P26 names with $ signs survive templates unchanged (String.replace special
 
 // ---------------------------------------------------------------- Robustness
 
-test('P27 a damaged save (bad timestamps) never turns bars into NaN', { todo: 'finding F5, docs/PBT-FINDINGS.md' }, () => {
+test('P27 a damaged save (bad timestamps) never turns bars into NaN', () => {
   fc.assert(
     fc.property(temperament, stage, fc.constantFrom('', 'not a date', '2026-13-45T99:99:99Z'), action, (temp, st, badTime, a) => {
       const h: Haggling = { eggId: 'e', name: 'N', breakfastHour: 8, dinnerHour: 18, bedHour: 21, hunger: 50, mood: 50, energy: 50, mess: 10, healthXp: 50, lifeXp: 10, lastTickAt: badTime, scrapbook: [], livingOn: 'phone' }

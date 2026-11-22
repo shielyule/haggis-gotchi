@@ -29,7 +29,7 @@ test('A2 "how long ago" always reads sensibly: never negative, never NaN, and gr
   )
 })
 
-test('A3 lines older than a day say days, not "30 hours ago"', { todo: 'finding F6, docs/PBT-FINDINGS.md' }, () => {
+test('A3 lines older than a day say days, not "30 hours ago"', () => {
   fc.assert(
     fc.property(fc.integer({ min: 25, max: 24 * 30 }), (hours) => {
       const s = timeAgo(new Date(1_800_000_000_000 - hours * 3_600_000).toISOString(), 1_800_000_000_000)

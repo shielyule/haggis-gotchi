@@ -68,5 +68,5 @@ export function epitaph(name: string, tone: Tone, daysLived: number): string {
   const list = EPITAPHS[tone]
   let h = 0
   for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0
-  return list[h % list.length].replace(/\{name\}/g, name).replace(/\{days\}/g, String(daysLived))
+  return list[h % list.length].replace(/\{name\}/g, () => name).replace(/\{days\}/g, () => String(daysLived))
 }

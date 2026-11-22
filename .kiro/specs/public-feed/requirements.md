@@ -12,7 +12,7 @@ things carers did, one line each. "Fred just fed Harry." "Sally just cuddled Twi
 2. Each line SHALL use only the carer's display name (what the mother calls them), the Haggling's name, the action and how long ago ("2 min ago").
 3. THE SYSTEM SHALL NOT show emails, nest slugs, locations, weather places or any signup answer except the display name.
 4. WHEN a carer has untucked "Show my Haggling in the mother's public scrapbook", THE SYSTEM SHALL leave their events out (past and future).
-5. THE tick box SHALL be on the claim form (ticked by default) and on the care screen.
+5. THE tick box SHALL be on the claim form (off by default; *updated 22 Nov 2026: owner decision of 19 Nov*) and on the care screen.
 6. WHEN the same carer does the same action to the same Haggling within 10 minutes, THE SYSTEM SHALL show one line.
 7. Lines: feed "fed", cuddle "cuddled", walk "took {h} for a walk", treat "gave {h} a treat", clean "cleaned up after", Photo Treat "shared a Photo Treat with" (later the treat name, e.g. "shared a can of Irn-Bru with").
 8. IF a name contains a blocked word, THEN THE SYSTEM SHALL hide that line.

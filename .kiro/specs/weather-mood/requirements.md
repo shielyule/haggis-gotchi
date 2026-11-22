@@ -30,7 +30,7 @@ changes Health XP directly.
 
 ### R4 Temperament reaction
 1. WHEN a slot is applied, THE SYSTEM SHALL change mood, energy and hunger using a base effect for the bucket plus the temperament's loves/sulks.
-2. THE change per slot SHALL be clamped to mood +/-12, energy +/-6, hunger -6..0.
+2. THE base change per slot SHALL be clamped to mood +/-12, energy +/-6, hunger -6..0, THEN scaled by the life-stage swing (Teen x1.3, Old age x0.7, others x1; LIFE-STAGES 20 Nov). So a teen slot moves at most mood +/-16, energy +/-8. *(Updated 22 Nov 2026: property P14 found the teen swing broke the old limit; owner kept teens moodier.)*
 3. A slot SHALL be applied at most once per Haggling (idempotent by slot id `YYYY-MM-DD-am|pm|eve`).
 4. WHEN the carer was away, THE SYSTEM SHALL apply at most the 3 most recent missed slots.
 5. Weather SHALL NOT change Health XP and SHALL NOT end a life.
