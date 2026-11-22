@@ -139,6 +139,8 @@ export const STAGE_FILMS: Record<string, Record<string, { src: string; title: st
   },
   adult: {
     douce: { src: '/art/haggling-adult-play-douce.mp4', title: 'Adult: catching up on messages' },
+    skeigh: { src: '/art/haggling-adult-play-skeigh.mp4', title: 'Adult: drummer' },
+    ree: { src: '/art/haggling-adult-play-ree.mp4', title: 'Adult: drummer' },
     'ill-trickit': { src: '/art/haggling-adult-play-ill-trickit.mp4', title: 'Adult: lipstick pout' },
     radge: { src: '/art/haggling-adult-play-radge.mp4', title: 'Adult: yoga' },
     'fair-wud': { src: '/art/haggling-adult-play-fair-wud.mp4', title: 'Adult: guitar' },
