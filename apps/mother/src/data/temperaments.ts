@@ -145,6 +145,10 @@ export const STAGE_FILMS: Record<string, Record<string, { src: string; title: st
     radge: { src: '/art/haggling-adult-play-radge.mp4', title: 'Adult: yoga' },
     'fair-wud': { src: '/art/haggling-adult-play-fair-wud.mp4', title: 'Adult: guitar' },
   },
+  elder: {
+    douce: { src: '/art/haggling-elder-play-douce.mp4', title: 'Old age: a word with the walking stick' },
+    skeigh: { src: '/art/haggling-elder-play-skeigh.mp4', title: 'Old age: walking stick and a smile' },
+  },
 }
 
 const STAGE_ORDER = ['baby', 'child', 'teen', 'adult', 'elder']
