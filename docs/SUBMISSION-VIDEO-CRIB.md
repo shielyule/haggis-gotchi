@@ -18,8 +18,8 @@
   Film the Photo Treat with **shortbread, heather, a kilt or tartan, or bagpipes** instead.
   You can still *say* "Irn-Bru" in the voice-over.
 - **Coke can refusal:** also a trademark. Use a plain mug or a banana for the "not a Scottish treat" shot.
-- **Graveyard music** ("Flowers of the Forest"): the tune is traditional, but the *recording* must be
-  yours or licensed. If you are not sure who recorded it, mute it in the video.
+- **Graveyard music** ("Flowers of the Forest"): traditional tune, old out-of-copyright recording (owner,
+  23 Nov). Fine to use. Keep a note of where it came from in case YouTube's checker asks.
 - **Background music:** use YouTube Audio Library (free to use) or none. No chart music.
 - **Kiro, Cloudflare, Supabase, AWS names on screen:** fine, they are the tools you are describing.
 - **Your email** on screen: use a throwaway or blur it. Never show `.env` files or the Supabase keys page.

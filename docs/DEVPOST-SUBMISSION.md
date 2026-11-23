@@ -143,15 +143,15 @@ web-audio-api, fast-check, model-context-protocol, resend, github-actions, ffmpe
 
 | Field | Answer |
 |---|---|
-| Sponsor / Special Prizes | **Bonus Blog Prize** and **Social Blitz Prize**, only if you publish them (see below). Add **Best Ghost of Kiroween Past** only if you registered for Kiroween 2025. Leave Startup, Crew and Student unticked |
-| Submitter country of residence | **[OWNER]** e.g. United Kingdom |
+| Sponsor / Special Prizes | **Bonus Blog Prize** and **Social Blitz Prize** (tick once each post is live). Nothing else: no Kiroween 2025, not a startup, student or Crew app. Best Demo needs no tick |
+| Submitter country of residence | United Kingdom |
 | Age of majority | **[OWNER]** tick if you are 18 or over |
-| Eligible jurisdiction | **[OWNER]** tick (the UK is not excluded) |
+| Eligible jurisdiction | Tick (the UK is not excluded) |
 | Category | **Frankenstein** |
 | Public GitHub repo URL | `https://github.com/shielyule/haggis-gotchi` (make public first; MIT licence is in `LICENSE`; `/.kiro` is tracked) |
 | Working demo URL | `https://haggisgotchi.com` |
-| Were you registered for Kiroween 2025? | **[OWNER]** |
-| Submitter type | **[OWNER]** probably "Individual" |
+| Were you registered for Kiroween 2025? | No |
+| Submitter type | Individual |
 | Organisation name | leave blank if Individual |
 | Employee of AWS? | **[OWNER]** No (a Yes disqualifies) |
 | Skills / likely to use Kiro again | **[OWNER]** your own view |
@@ -214,9 +214,9 @@ Built in Kiro IDE, spec-first, from 16 Nov 2026 (see "pre-existing work").
 - 16 Nov: one fix in a Cursor/Grok session (restored table grants after a Supabase
   platform change): supabase/migrations/20261116000003_restore_table_grants.sql.
   Cursor was used after that only as a second-opinion reviewer.
-- Art and films: made by the owner for this project with [OWNER: name the AI image and
-  video tools you used].
-- Graveyard music, "Flowers of the Forest" (traditional tune): [OWNER: who made this recording].
+- Art and films: made by the owner for this project, from the owner's own sketches,
+  with Google Gemini and Leonardo.Ai.
+- Graveyard music: "Flowers of the Forest" (traditional tune), an old out-of-copyright recording.
 - Open-source libraries: React, Vite, supabase-js, qrcode, fast-check; weather data from
   Open-Meteo (CC BY 4.0).
 - All new for Kiroween 2026: no starter kit or template beyond the Vite React starter.
