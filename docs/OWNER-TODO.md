@@ -19,7 +19,7 @@ Last updated 22 Nov 2026.
 - [x] Old-age films: Douce, Skeigh (22 Nov), Ill-trickit, Radge (23 Nov).
 - [ ] **Old-age films** still to make: Ree, Fair Wud (owner: mid-afternoon 23 Nov).
 - [x] Halloween Child costumes live (15 Oct - 1 Nov). Android check: on a Child, demo menu -> Costume preview: Halloween.
-- [ ] Christmas costume images + dates, then St Andrew's Day, Burns Night, Easter (give dates with each set). Drop them in the
+- [x] All five seasons live for Child (23 Nov). Android check: demo menu -> each Costume preview. Drop them in the
   *Haggis images* folder and tell Kiro: it re-encodes and wires them into Watch again.
 - [ ] (Optional) costume art if you want level unlocks built (`docs/GAME-DESIGN.md`).
 

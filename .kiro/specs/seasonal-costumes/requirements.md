@@ -9,10 +9,10 @@ life stages and temperaments that have costume art; everyone else keeps their us
 | Season | Dates (inclusive, carer's local date) | Art so far |
 |---|---|---|
 | Halloween | 15 Oct - 1 Nov | Child, all six temperaments |
-| St Andrew's Day | to come | - |
-| Christmas | to come (next art set) | - |
-| Burns Night | to come | - |
-| Easter | to come (moves each year: dates per year) | - |
+| St Andrew's Day | 28 Nov - 1 Dec | Child, all six |
+| Christmas | 10 Dec - 1 Jan (over New Year) | Child, all six |
+| Burns Night | 20 Jan - 27 Jan | Child, all six |
+| Easter | 24 Mar - 1 Apr, the same every year (owner, 23 Nov) | Child, all six |
 
 ## Requirements (EARS)
 ### R1 When the costume shows

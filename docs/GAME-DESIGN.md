@@ -71,11 +71,13 @@ A carer who checks in most days reaches about level 6; a very keen one about lev
 ### Seasonal costumes (BUILDING, owner's list 23 Nov; spec `.kiro/specs/seasonal-costumes`)
 | Season | Dates | Art | Status |
 |---|---|---|---|
-| Halloween | 15 Oct - 1 Nov | Child x6 | **Live** (demo menu: Costume preview) |
-| St Andrew's Day | owner to give | - | waiting for art |
-| Christmas | owner to give | next art set | waiting for art |
-| Burns Night | owner to give | - | waiting for art |
-| Easter | owner to give (moves each year) | - | waiting for art |
+| Halloween 🎃 | 15 Oct - 1 Nov | Child x6 | **Live** |
+| St Andrew's Day 🏴 | 28 Nov - 1 Dec | Child x6 | **Live** (first real costume days: from 28 Nov) |
+| Christmas 🎄 | 10 Dec - 1 Jan | Child x6 | **Live** (during judging) |
+| Burns Night 🌹 | 20 Jan - 27 Jan | Child x6 | **Live** (during judging) |
+| Easter 🐣 | 24 Mar - 1 Apr (fixed, owner) | Child x6 | **Live** |
+
+Any season on any date: demo menu -> Costume preview.
 
 Costumes replace the portrait for the stages and temperaments that have art; everyone else keeps their picture.
 Add a season: drop the images in, give the dates, Kiro adds one row to `SEASONS` in `apps/mother/src/data/costumes.ts`.

@@ -5,4 +5,5 @@
 - [x] T4 Care screen, start-up screen, public card use `portraitFor`; badge; final page and Growing-up keep stage portrait (R1.5, R2.1)
 - [x] T5 Demo menu "Costume preview" + `?costume=` (R3)
 - [ ] T6 Owner: check on Android (demo menu -> Costume preview: Halloween, on a Child)
-- [ ] T7 Christmas art + dates; St Andrew's Day, Burns Night, Easter dates when the art lands
+- [x] T7 St Andrew's Day, Christmas, Burns Night, Easter: art (24 images optimised) and dates (23 Nov)
+- [ ] T8 Costumes for other life stages, if the owner makes them (add `art.teen` etc.)

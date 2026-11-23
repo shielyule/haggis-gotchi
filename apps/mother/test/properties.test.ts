@@ -86,8 +86,23 @@ test('A6 at most one season is active on any day of the year (R1.4)', () => {
     const active = SEASONS.filter((s) => inWindow(md, s.from, s.to))
     assert.ok(active.length <= 1, `${md.day}/${md.month}: ${active.map((s) => s.id).join(', ')}`)
   }
-  assert.ok(inWindow({ month: 10, day: 15 }, SEASONS[0].from, SEASONS[0].to) && inWindow({ month: 11, day: 1 }, SEASONS[0].from, SEASONS[0].to), 'Halloween is 15 Oct - 1 Nov inclusive')
-  assert.ok(!inWindow({ month: 10, day: 14 }, SEASONS[0].from, SEASONS[0].to) && !inWindow({ month: 11, day: 2 }, SEASONS[0].from, SEASONS[0].to))
+  // The owner's dates (23 Nov), first and last day inclusive, and the days either side.
+  const owner: [string, MonthDay, MonthDay][] = [
+    ['halloween', { month: 10, day: 15 }, { month: 11, day: 1 }],
+    ['st-andrews', { month: 11, day: 28 }, { month: 12, day: 1 }],
+    ['christmas', { month: 12, day: 10 }, { month: 1, day: 1 }],
+    ['burns-night', { month: 1, day: 20 }, { month: 1, day: 27 }],
+    ['easter', { month: 3, day: 24 }, { month: 4, day: 1 }],
+  ]
+  for (const [id, first, last] of owner) {
+    const before = YEAR[(idx(first) - 1 + YEAR.length) % YEAR.length]
+    const after = YEAR[(idx(last) + 1) % YEAR.length]
+    assert.equal(seasonFor(first)?.id, id, `${id} first day`)
+    assert.equal(seasonFor(last)?.id, id, `${id} last day`)
+    assert.notEqual(seasonFor(before)?.id, id, `${id} day before`)
+    assert.notEqual(seasonFor(after)?.id, id, `${id} day after`)
+  }
+  assert.equal(seasonFor({ month: 12, day: 31 })?.id, 'christmas', 'Christmas runs over New Year')
 })
 
 test('A7 a demo preview shows the costume on any date where art exists, never where it does not (R3.2)', () => {

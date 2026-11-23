@@ -20,7 +20,7 @@ const TEMPS = ['douce', 'skeigh', 'ill-trickit', 'ree', 'radge', 'fair-wud']
 const artFor = (stage: string, season: string) =>
   Object.fromEntries(TEMPS.map((t) => [t, `/art/haggling-${stage}-${season}-${t}.jpeg`]))
 
-/** Add St Andrew's Day, Christmas, Burns Night and Easter here when the art and dates land. */
+/** Dates from the owner (23 Nov 2026). Easter is fixed at 24 Mar - 1 Apr every year (owner). */
 export const SEASONS: Season[] = [
   {
     id: 'halloween',
@@ -29,6 +29,38 @@ export const SEASONS: Season[] = [
     from: { month: 10, day: 15 },
     to: { month: 11, day: 1 },
     art: { child: artFor('child', 'halloween') },
+  },
+  {
+    id: 'st-andrews',
+    label: "St Andrew's Day",
+    emoji: '\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}', // Scotland flag
+    from: { month: 11, day: 28 },
+    to: { month: 12, day: 1 },
+    art: { child: artFor('child', 'st-andrews') },
+  },
+  {
+    id: 'christmas',
+    label: 'Christmas',
+    emoji: '🎄',
+    from: { month: 12, day: 10 },
+    to: { month: 1, day: 1 }, // runs over New Year
+    art: { child: artFor('child', 'christmas') },
+  },
+  {
+    id: 'burns-night',
+    label: 'Burns Night',
+    emoji: '🌹', // "My love is like a red, red rose"
+    from: { month: 1, day: 20 },
+    to: { month: 1, day: 27 },
+    art: { child: artFor('child', 'burns-night') },
+  },
+  {
+    id: 'easter',
+    label: 'Easter',
+    emoji: '🐣',
+    from: { month: 3, day: 24 },
+    to: { month: 4, day: 1 },
+    art: { child: artFor('child', 'easter') },
   },
 ]
 
