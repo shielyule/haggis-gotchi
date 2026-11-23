@@ -48,10 +48,10 @@ again to hide it.
 ### 4. How Kiro built it (1:25-2:25), the longest section
 Screen-record Kiro in `haggis-gotchi-app`:
 - `.kiro/specs/`: open one spec (weather-mood): requirements (EARS) -> design -> tasks with honest ticks.
-- `.kiro/steering/`: product, Scottish folklore tone, security, **owner-instructions** (born from a real failure).
-- `.kiro/hooks/`: secret-guard blocking a key-shaped string; domain-language guard; schema reminder.
+- `.kiro/steering/`: product, Scottish folklore tone, security, **owner-instructions** (born from a real failure), **property-tests**.
+- `.kiro/hooks/`: secret-guard blocking a key-shaped string; domain-language guard; schema reminder; properties-follow-requirements (edit a requirement, watch Kiro update the property and test).
 - **MCP:** our own `haggis-weather` MCP server answering a live weather call, and the AWS documentation MCP server.
-- Shared care engine: one set of rules on phone, nest and server; 161 tests incl. 45 property-based tests written from the specs, which caught the "bars freeze while the app is open" bug; GitHub CI.
+- Shared care engine: one set of rules on phone, nest and server; 166 tests incl. 50 property-based tests written from the specs, which caught the "bars freeze while the app is open" bug. Show a property test failing then passing, and the Cloudflare build running the tests before deploy.
 - `docs/PIVOT-2026-11-17-phone-first.md` and the incident record: "Kiro got it wrong once, we wrote it down, and changed the rules."
 - Voice: "Every feature went spec, design, tasks, code, and the commits say which task."
 
