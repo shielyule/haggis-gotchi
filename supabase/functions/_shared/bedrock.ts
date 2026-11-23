@@ -10,7 +10,7 @@ import { AwsClient } from 'npm:aws4fetch@1.0.20'
 import type { SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 
 export const DAILY_AI_CAP = 400
-const TIMEOUT_MS = 10_000
+const TIMEOUT_MS = Number(Deno.env.get('AI_TIMEOUT_MS') ?? 10_000)
 
 export function modelId(): string {
   return Deno.env.get('BEDROCK_MODEL') ?? 'amazon.nova-lite-v1:0'
@@ -25,15 +25,23 @@ export function aiConfigured(): string[] {
   ].filter(Boolean) as string[]
 }
 
+/** Why the last call failed (status + AWS error type, never content). */
+export let lastFailure = ''
+
 /** One Converse call. Returns the text, or null on any failure (logged by status and AWS error type only). */
 export async function converse(system: string, prompt: string, maxTokens = 200, temperature = 0.8): Promise<string | null> {
-  if (aiConfigured().length) return null
+  lastFailure = ''
+  if (aiConfigured().length) {
+    lastFailure = `not configured: ${aiConfigured().join(', ')}`
+    return null
+  }
   const region = Deno.env.get('AWS_REGION') ?? 'eu-west-2'
   const aws = new AwsClient({
     accessKeyId: Deno.env.get('AWS_ACCESS_KEY_ID')!,
     secretAccessKey: Deno.env.get('AWS_SECRET_ACCESS_KEY')!,
     region,
     service: 'bedrock',
+    retries: 0, // a refusal (e.g. a daily quota) must fail fast and use the written line
   })
   const ctrl = new AbortController()
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS)
@@ -51,14 +59,16 @@ export async function converse(system: string, prompt: string, maxTokens = 200, 
     if (!res.ok) {
       const body = (await res.json().catch(() => ({}))) as { message?: string }
       const type = res.headers.get('x-amzn-errortype') ?? ''
-      console.error(`bedrock: ${res.status} ${type.split(':')[0]} ${String(body.message ?? '').slice(0, 120)}`)
+      lastFailure = `${res.status} ${type.split(':')[0]} ${String(body.message ?? '').slice(0, 80)}`.trim()
+      console.error(`bedrock: ${lastFailure}`)
       return null
     }
     const j = (await res.json()) as { output?: { message?: { content?: { text?: string }[] } } }
     const text = j.output?.message?.content?.map((c) => c.text ?? '').join('').trim()
     return text || null
   } catch (e) {
-    console.error('bedrock: call failed', e instanceof Error ? e.name : 'error')
+    lastFailure = `call failed: ${e instanceof Error ? e.name : 'error'}`
+    console.error(`bedrock: ${lastFailure}`)
     return null
   } finally {
     clearTimeout(timer)
@@ -88,7 +98,7 @@ export async function aiLine(
   if (aiConfigured().length || !(await underCap(admin))) return { text: fallback(), source: 'fallback' }
   const raw = await converse(opts.system, opts.prompt, opts.maxTokens ?? 200, opts.temperature ?? 0.8)
   const good = raw ? clean(raw) : null
-  await admin.from('ai_calls').insert({ kind, ok: Boolean(good) })
+  await admin.from('ai_calls').insert({ kind, ok: Boolean(good), reason: good ? null : (raw ? 'rejected by checks' : lastFailure || 'no text').slice(0, 120) })
   if (!good && raw) console.log(`ai ${kind}: rejected by checks, used fallback`)
   return good ? { text: good, source: 'ai' } : { text: fallback(), source: 'fallback' }
 }
