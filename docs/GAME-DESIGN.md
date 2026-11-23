@@ -53,6 +53,13 @@ Life XP only ever goes up and sets the level.
 - Non-binary Hagglings say "I go by they/them". All game text uses "they/them" for every Haggling.
 - Questioning is not a phase: 1 in 4 stay questioning as adults.
 
+### AI words (23 Nov, spec `.kiro/specs/ai-haggling`)
+- **Nightly diary** at the carer's 21:00: Amazon Nova Lite writes from today's weather and town, care, stage, season.
+- **"What's that?"**: any non-treat photo gets an in-character reaction (labels only; bars unchanged).
+- **Folklore riddle** (second game): one a day for everyone, three answers, Mood +8 right / +2 for a go.
+- **Scrapbook book** at `/scrapbook`: every page ever, tabs All / Diary / Photos & riddles / Week 1-6.
+- No news on purpose: unsafe for 13+, can't be checked, often sad, and licensing. The weather and calendar do the job.
+
 ## Level unlocks (suggestions, not built)
 Levels from Life XP: 2 at 100, 3 at 300, 4 at 600, 5 at 1000, then every 500.
 A carer who checks in most days reaches about level 6; a very keen one about level 10.

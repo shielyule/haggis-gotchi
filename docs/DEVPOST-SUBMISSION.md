@@ -36,6 +36,13 @@ copied, only moved.
 - **Who they are is theirs to decide.** If the carer opts in, at Teen the Haggling may tell them
   who they are: still a laddie or lassie, trans, non-binary (they/them) or not sure yet. It is
   random on purpose and every answer scores the same. The carer's only job is to support them.
+- **It keeps a diary.** Every night Amazon Nova writes a page in the Haggling's own voice from what
+  really happened: the weather in your town, the care it got, its life stage, the season. On a stormy
+  day it's all about the storm. Every page ever is kept in an ornate scrapbook book, with tabs by week.
+- **Show it anything.** Photograph something that isn't a treat and it reacts in character ("A dog!
+  Wee Yin is up the curtains"). Only the object labels go to the AI, never the photo, never people.
+- **A second game:** a daily Scottish folklore riddle (kelpies, selkies, the Callanish Stones...),
+  the same for everyone, one guess a day.
 - **It reminds you** (push notifications) at meal times and bedtime, with a quiet-nights setting.
 - **Life ends.** After about six weeks it goes to the glen: an epitaph written from how it was
   treated, a stone in the mother's graveyard, and an optional wee ghost.
@@ -56,7 +63,9 @@ and the commits name the spec and task. There are 16 specs in `.kiro/specs`.
 - **Stack:** React + Vite PWA on Cloudflare Pages (with a Pages Function for share-card previews),
   Supabase Postgres with row-level security, Edge Functions and pg_cron (reminders every 15 minutes,
   weather three times a day, lifecycle every 5 minutes), Supabase Vault for secrets, Web Push (VAPID),
-  Resend for email, Cloudflare Turnstile, Open-Meteo, Amazon Rekognition.
+  Resend for email, Cloudflare Turnstile, Open-Meteo, Amazon Rekognition, and Amazon Bedrock
+  (Amazon Nova Lite) for the diary, photo reactions and riddles. Every AI line is checked by our own
+  rules and has a written fallback, so the game never depends on the AI.
 - **Steering** keeps Kiro on our rules: Scottish folklore voice, security, tech choices, how to
   write instructions for a non-specialist owner, and property-based tests on every feature.
 - **Hooks:** a secret guard blocks key-shaped strings before they are written; a domain-language
@@ -126,7 +135,7 @@ and the commits name the spec and task. There are 16 specs in `.kiro/specs`.
 kiro, typescript, react, vite, node.js, deno, supabase, postgresql, pg-cron,
 supabase-edge-functions, cloudflare-pages, cloudflare-pages-functions, cloudflare-turnstile,
 amazon-web-services, amazon-rekognition, open-meteo, web-push, pwa, service-workers,
-web-audio-api, fast-check, model-context-protocol, resend, github-actions, ffmpeg
+web-audio-api, fast-check, model-context-protocol, resend, github-actions, amazon-bedrock
 ```
 
 ## "Try it out" links

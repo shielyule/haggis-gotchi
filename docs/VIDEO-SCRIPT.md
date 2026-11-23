@@ -20,6 +20,9 @@ Kiro adds to this file as features land. Times are targets.
 | Put to bed | Tap **Put to bed** (Zzz badge), then demo menu **Wake up now**: rested wake-up line. Or feed it while asleep: "crabbit" |
 | Life stages + graveyard | Demo egg: demo menu -> **Next stage** (Baby -> Child -> Teen -> Adult -> Old age) or **Skip to the end** -> final page, epitaph, ghost choice; Mac mother page shows the new stone |
 | Seasonal costumes (any date) | On a Child: demo menu -> **Costume preview** (Halloween, St Andrew's Day, Christmas, Burns Night, Easter); "Costume preview off" to undo. Real dates: St Andrew's from 28 Nov |
+| AI diary (now) | Demo egg, demo menu -> **Write tonight's diary now** (says whether Amazon Nova wrote it). Then **📖 Open the scrapbook** |
+| Folklore riddle | **Folklore riddle** button (one guess a day per Haggling) |
+| "What's that?" | Photo Treat on anything that is not a treat: a dog, a plant, a mug |
 | Share card | Share on social -> WhatsApp shows "{name} the {temperament} Haggling" with the portrait |
 
 **Hidden demo menu (works in the installed app):** tap the Haggling's name **5 times
