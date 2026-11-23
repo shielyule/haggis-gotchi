@@ -16,8 +16,9 @@ Last updated 22 Nov 2026.
   - [ ] Sign-up: the 13+ box must be ticked; "six weeks" line shows; new identity wording.
 
 ## Art still to come
-- [x] Old-age films: Douce and Skeigh (live 22 Nov).
-- [ ] **Old-age films** still to make: Ill-trickit, Ree, Radge, Fair Wud. Drop them in the
+- [x] Old-age films: Douce, Skeigh (22 Nov), Ill-trickit, Radge (23 Nov).
+- [ ] **Old-age films** still to make: Ree, Fair Wud (owner: mid-afternoon 23 Nov).
+- [ ] **Seasonal costume images** (owner: this afternoon). Kiro then builds the date triggers (`docs/GAME-DESIGN.md`). Drop them in the
   *Haggis images* folder and tell Kiro: it re-encodes and wires them into Watch again.
 - [ ] (Optional) costume art if you want level unlocks built (`docs/GAME-DESIGN.md`).
 

@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Properties follow requirements",
+      "description": "When a spec's requirements change, keep its correctness properties and property tests in step (steering: property-tests.md).",
+      "trigger": "PostFileSave",
+      "matcher": "\\.kiro/specs/.+/requirements\\.md$",
+      "action": {
+        "type": "agent",
+        "prompt": "A spec's requirements.md was just changed. Follow .kiro/steering/property-tests.md: 1) List which requirements were added or changed. 2) For each testable one, add or update a plain-English property in that spec's design.md 'Correctness properties' section, with the requirement id. 3) Add or update the matching fast-check test in the right properties*.test.ts file (pure code only), or add a task for it in tasks.md if the code does not exist yet. 4) Run npm test and report any property that fails, with the shrunk counterexample, before changing code. Never weaken a property to make it pass."
+      }
+    }
+  ]
+}

@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run test:repo && tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:repo": "cd ../.. && npm ci --no-audit --no-fund && npm test",
+    "build:only": "tsc -b && vite build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",
