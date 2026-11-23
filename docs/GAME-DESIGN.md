@@ -68,17 +68,17 @@ A carer who checks in most days reaches about level 6; a very keen one about lev
 | 8 | Golden porridge bowl | Feed gives +2 Mood |
 | 10 | "Chieftain o' the Puddin-race" badge | Burns' line, on the stone too |
 
-### Seasonal costumes (unlock by date, any level)
-| When | Costume |
-|---|---|
-| 31 Oct, Halloween (Samhain) | Neep lantern head, wee ghost sheet |
-| 30 Nov, St Andrew's Day | Saltire scarf (falls in the judging window) |
-| 25 Dec, Christmas | Knitted jumper with a thistle |
-| 31 Dec, Hogmanay | First-footer with a lump of coal |
-| 25 Jan, Burns Night | Bow tie; "Address to a Haggis" scrapbook page |
+### Seasonal costumes (BUILDING, owner's list 23 Nov; spec `.kiro/specs/seasonal-costumes`)
+| Season | Dates | Art | Status |
+|---|---|---|---|
+| Halloween | 15 Oct - 1 Nov | Child x6 | **Live** (demo menu: Costume preview) |
+| St Andrew's Day | owner to give | - | waiting for art |
+| Christmas | owner to give | next art set | waiting for art |
+| Burns Night | owner to give | - | waiting for art |
+| Easter | owner to give (moves each year) | - | waiting for art |
 
-Needs: costume art from the owner (transparent PNG overlays per stage), a
-`unlocks` list in the engine, and a "Wardrobe" row on the care screen.
+Costumes replace the portrait for the stages and temperaments that have art; everyone else keeps their picture.
+Add a season: drop the images in, give the dates, Kiro adds one row to `SEASONS` in `apps/mother/src/data/costumes.ts`.
 
 ## Humour line (agreed 22 Nov)
 - **No swearing**, anywhere, including Scots words that read as swearing.

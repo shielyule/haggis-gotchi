@@ -40,6 +40,7 @@ import { loadStore, replaceHaggling, replaceLocalBrood } from './lib/storage'
 import { CareIntro, introSeen } from './CareIntro'
 import { InfoTip } from './InfoTip'
 import { WatchMemories } from './WatchMemories'
+import { costumeFor, costumePreview, monthDayOf, SEASONS, setCostumePreview } from './data/costumes'
 import { HaggisRun } from './HaggisRun'
 import { chirp, setSoundOn, soundOn } from './lib/chirp'
 
@@ -127,6 +128,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const [runOpen, setRunOpen] = useState(false)
   const [sound, setSound] = useState(() => soundOn())
   const [newName, setNewName] = useState('')
+  const [preview, setPreview] = useState<string | null>(() => costumePreview())
   const [treatBusy, setTreatBusy] = useState(false)
   const [treatNote, setTreatNote] = useState<{ text: string; good: boolean } | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
@@ -487,6 +489,8 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
     if (await setShareEnabled(childId, next)) setShare({ ...share, on: next })
   }
 
+  // Seasonal costumes (spec seasonal-costumes R1-R3).
+  const costume = costumeFor(temp.id, life.stage, monthDayOf(now), preview)
   const misbehaving = isMisbehaving(h, temp.id, now)
   const poops = poopCount(h.mess)
   const hour = new Date(now).getHours()
@@ -541,6 +545,33 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           <button type="button" className="btn btn-ghost" onClick={demoWake}>
             Wake up now (skip the sleep)
           </button>
+          <div className="cta-row">
+            {SEASONS.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => {
+                  setCostumePreview(s.id)
+                  setPreview(s.id)
+                  setDemoNote(costumeFor(temp.id, life.stage, monthDayOf(Date.now()), s.id) ? `Costume preview: ${s.label}` : `No ${s.label} costume for a ${life.label} yet`)
+                }}
+              >
+                Costume preview: {s.emoji} {s.label}
+              </button>
+            ))}
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => {
+                setCostumePreview(null)
+                setPreview(null)
+                setDemoNote('Costume preview off (costumes follow the calendar)')
+              }}
+            >
+              Costume preview off
+            </button>
+          </div>
           {isDemo ? (
             <div className="cta-row">
               <button type="button" className="btn btn-ghost" onClick={() => void demoLife('day')}>
@@ -692,7 +723,15 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
         </p>
       ) : null}
       <div className="care-stage">
-        <img src={stagePortraitFor(temp.id, life.stage)} alt={`${h.name}, a ${temp.label} Haggling`} />
+        <img
+          src={costume?.src ?? stagePortraitFor(temp.id, life.stage)}
+          alt={costume ? `${h.name} dressed up for ${costume.season.label}` : `${h.name}, a ${temp.label} Haggling`}
+        />
+        {costume ? (
+          <span className="costume-badge">
+            {costume.season.emoji} {costume.season.label}
+          </span>
+        ) : null}
         {poops > 0 ? (
           <span className="poop-row" role="img" aria-label={`${poops} ${poops === 1 ? 'mess' : 'messes'} to clean up`}>
             {Array.from({ length: poops }, (_, i) => (

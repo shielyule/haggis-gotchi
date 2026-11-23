@@ -6,6 +6,7 @@ import { SignupForm } from './SignupForm'
 import { pullBroodFromCloud } from './lib/cloud'
 import { installSkipped, isInstalled, skipInstall } from './lib/device'
 import { stagePortraitFor, temperamentForChaos } from './data/temperaments'
+import { costumePreview, monthDayOf, portraitFor } from './data/costumes'
 import { lifeStatus } from './lib/engine'
 import { eggSlug, loadStore, replaceLocalBrood, savePhoneStore, type EggRecord } from './lib/storage'
 import { supabase } from './lib/supabase'
@@ -90,10 +91,11 @@ export function PhoneApp() {
         {known ? (
           <div className="care-stage">
             <img
-              src={stagePortraitFor(
-                temperamentForChaos(known.answers.chaos).id,
-                lifeStatus(known.haggling?.bornAt ?? known.haggling?.hatchedAt, known.haggling?.spanEndsAt, Date.now()).stage,
-              )}
+              src={(() => {
+                const t = temperamentForChaos(known.answers.chaos).id
+                const st = lifeStatus(known.haggling?.bornAt ?? known.haggling?.hatchedAt, known.haggling?.spanEndsAt, Date.now()).stage
+                return portraitFor(t, st, monthDayOf(Date.now()), costumePreview(), stagePortraitFor(t, st))
+              })()}
               alt={known.haggling?.name ?? 'Your Haggling'}
             />
           </div>

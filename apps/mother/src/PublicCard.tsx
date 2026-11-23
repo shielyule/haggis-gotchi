@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { carePortraitFor, ghostPortraitFor, hatchFilmFor, stagePortraitFor, TEMPERAMENTS } from './data/temperaments'
+import { monthDayOf, portraitFor } from './data/costumes'
 import { lifeLevel, lifeStatus } from './lib/engine'
 import { supabase } from './lib/supabase'
 
@@ -125,7 +126,11 @@ export function PublicCard({ id }: { id: string }) {
       </p>
       <div className="care-stage">
         <img
-          src={stagePortraitFor(card.temperament_id, lifeStatus(card.hatched_at ?? undefined, undefined, Date.now()).stage)}
+          src={(() => {
+            // Seasonal costume by date only (no demo preview for visitors).
+            const st = lifeStatus(card.hatched_at ?? undefined, undefined, Date.now()).stage
+            return portraitFor(card.temperament_id, st, monthDayOf(Date.now()), null, stagePortraitFor(card.temperament_id, st))
+          })()}
           alt={`${card.name}, a ${temp?.label ?? ''} Haggling`}
         />
       </div>

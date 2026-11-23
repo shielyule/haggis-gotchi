@@ -19,6 +19,7 @@ Kiro adds to this file as features land. Times are targets.
 | Growing up + identity | Opted-in demo egg: demo menu **Next stage** (or **+1 day**) to Teen: the "Growing up" pop-up with the teen picture; a teen pushes a cuddle away ("Really?!"), and the Haggling tells you who they are; tap **Give them a big hug** |
 | Put to bed | Tap **Put to bed** (Zzz badge), then demo menu **Wake up now**: rested wake-up line. Or feed it while asleep: "crabbit" |
 | Life stages + graveyard | Demo egg: demo menu -> **Next stage** (Baby -> Child -> Teen -> Adult -> Old age) or **Skip to the end** -> final page, epitaph, ghost choice; Mac mother page shows the new stone |
+| Halloween costume (any date) | On a Child: demo menu -> **Costume preview: 🎃 Halloween** ("Costume preview off" to undo) |
 | Share card | Share on social -> WhatsApp shows "{name} the {temperament} Haggling" with the portrait |
 
 **Hidden demo menu (works in the installed app):** tap the Haggling's name **5 times
