@@ -1271,41 +1271,49 @@
 /* ai-haggling (23 Nov): the scrapbook book and the riddle */
 .book-page { max-width: 46rem; margin: 0 auto; padding: 1rem 0.9rem 3rem; }
 .book-picker { max-width: 20rem; }
-.book-cover {
-  position: relative; display: block; width: min(100%, 26rem); aspect-ratio: 3 / 4; margin: 1rem auto; padding: 0;
-  border: 0; border-radius: 6px 14px 14px 6px; cursor: pointer; overflow: hidden;
-  background: linear-gradient(135deg, #5a2a1e 0%, #3b1a12 60%, #2a120c 100%);
-  box-shadow: inset 10px 0 18px rgba(0,0,0,0.45), 0 14px 30px rgba(0,0,0,0.45);
-}
-.book-cover::before { content: ''; position: absolute; inset: 14px; border: 3px double var(--gold); border-radius: 4px 10px 10px 4px; pointer-events: none; }
-.book-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.book-cover-title { position: absolute; inset: auto 0 18% 0; display: grid; gap: 0.35rem; text-align: center; color: var(--gold); font-family: var(--font-display); text-shadow: 0 2px 6px rgba(0,0,0,0.7); }
-.book-cover-kicker { font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase; }
-.book-cover-name { font-size: 2.2rem; font-weight: 700; }
-.book-cover-hint { font-size: 0.85rem; color: var(--cream); font-family: var(--font-body); }
+/* Owner's book art (23 Nov): closed book, opening film, two-page spread (one page on a phone). */
+.book-closed { display: grid; justify-items: center; gap: 0.5rem; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; color: var(--cream); }
+.book-closed img { width: min(100%, 30rem); height: auto; filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.45)); transition: transform 0.25s ease; }
+.book-closed:hover img, .book-closed:focus-visible img { transform: scale(1.02) rotate(-1deg); }
+.book-closed-label { display: grid; gap: 0.15rem; text-align: center; font-family: var(--font-display); }
+.book-closed-label strong { font-size: 1.5rem; color: var(--gold); }
+.book-closed-label span { font: 0.9rem var(--font-body); color: var(--mist); }
+.book-film { position: relative; }
+.book-film video { display: block; width: 100%; border-radius: 10px; background: #000; }
+.book-skip { position: absolute; right: 0.6rem; bottom: 0.6rem; background: rgba(20, 20, 20, 0.65); }
 .book-open { display: grid; gap: 0.75rem; }
 .book-tabs { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .book-tab { border: 1px solid var(--gold); background: transparent; color: var(--cream); border-radius: 8px 8px 0 0; padding: 0.35rem 0.7rem; font: 600 0.85rem var(--font-body); cursor: pointer; }
 .book-tab-on { background: var(--gold); color: var(--peat); }
-.book-leaf {
-  background: #f4ead3; color: #2c2118; border-radius: 4px; padding: 1.1rem 1.2rem 0.9rem;
-  box-shadow: inset 18px 0 24px -18px rgba(0,0,0,0.45), 0 8px 22px rgba(0,0,0,0.35);
-  background-image: repeating-linear-gradient(transparent 0 1.9rem, rgba(120, 90, 60, 0.12) 1.9rem 1.95rem);
-}
-.book-leaf-title { font-family: var(--font-display); margin: 0 0 0.6rem; font-size: 1.5rem; display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
-.book-leaf-title span { font-size: 0.9rem; color: #7a4e6d; }
-.book-entries { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.8rem; }
-.book-entry time { display: block; font-size: 0.75rem; color: #7a6a55; text-transform: uppercase; letter-spacing: 0.05em; }
-.book-entry p { margin: 0.15rem 0 0; line-height: 1.5; }
-.book-entry-diary p { font-family: var(--font-display); font-style: italic; font-size: 1.05rem; }
+/* The art is one 2400 x 1792 spread: each side shows its half. */
+.book-spread { display: grid; grid-template-columns: 1fr 1fr; filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4)); }
+.book-spread-one { grid-template-columns: 1fr; max-width: 30rem; margin: 0 auto; width: 100%; }
+.book-side { position: relative; aspect-ratio: 1200 / 1792; background-size: 200% 100%; background-repeat: no-repeat; }
+.book-side-left { background-position: 0 0; }
+.book-side-right { background-position: 100% 0; }
+.book-ink { position: absolute; top: 9%; bottom: 15%; overflow-y: auto; color: #3a2a1c; font-family: var(--font-display); font-size: clamp(0.8rem, 2.4vw, 0.95rem); line-height: 1.45; }
+.book-side-left .book-ink { left: 18%; right: 9%; }
+.book-side-right .book-ink { left: 8%; right: 25%; }
+.book-title-block { margin-top: 32%; text-align: center; display: grid; gap: 0.6rem; }
+.book-title-block p { margin: 0; font-style: italic; }
+.book-title-name { font-size: 1.8em; font-style: normal !important; font-weight: 700; color: #5a2a1e; }
+.book-hint { color: #7a4e6d; }
+.book-entries { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.book-entry time { display: block; font: 0.7rem var(--font-body); color: #7a6a55; text-transform: uppercase; letter-spacing: 0.05em; }
+.book-entry p { margin: 0.1rem 0 0; }
+.book-entry-diary p { font-style: italic; font-size: 1.05em; }
 .book-entry-milestone p { font-weight: 700; }
-.book-empty { font-style: italic; color: #7a6a55; }
-.book-turn { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
-.book-turn .btn { color: #2c2118; border-color: #7a6a55; }
-.book-turn .care-sub { color: #7a6a55; }
+.book-empty { font-style: italic; color: #7a6a55; margin-top: 30%; text-align: center; }
+.book-turn { display: flex; justify-content: space-between; align-items: center; }
 .book-link { display: inline-block; margin: 0 0 0.6rem; text-decoration: none; }
 .riddle-question { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.4; }
 .riddle-options { display: grid; gap: 0.5rem; margin: 0.8rem 0; }
 .riddle-option { text-align: left; }
 .riddle-right { border-color: #4f9a5a !important; background: rgba(79, 154, 90, 0.25) !important; }
 .riddle-wrong { border-color: var(--tartan-red) !important; background: rgba(139, 46, 46, 0.25) !important; }
+/* Games get their own colour, like Photo Treat and Put to bed (owner, 23 Nov). Dark text for contrast. */
+.care-action-play { background: linear-gradient(135deg, #f2c14e, #e08a2c); color: #2c2118; }
+.care-action-play small { color: #3a2a1c; }
+.care-action-riddle { background: linear-gradient(135deg, #f7d774, #e9a23b); color: #2c2118; }
+.care-action-riddle small { color: #3a2a1c; }
+.book-mother { margin: 0 0 1rem; }

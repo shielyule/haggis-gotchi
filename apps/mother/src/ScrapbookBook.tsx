@@ -1,11 +1,37 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { fetchBook, fetchMyChildren } from './lib/cloud'
+import { soundOn } from './lib/chirp'
 import { entriesFor, KIND_ICON, paginate, scrapKind, TABS, type BookEntry } from './lib/scrapbook'
 import { supabase } from './lib/supabase'
 
-/** The scrapbook book (spec ai-haggling R2): every page ever, in its own tab. */
-const COVER_SRC = '/art/scrapbook-cover.jpeg'
-const PER_PAGE = 6
+/**
+ * The scrapbook book (spec ai-haggling R2): every page ever, in its own tab.
+ * Owner's art (23 Nov): closed book -> opening film -> title pages -> written pages.
+ * A computer shows the two-page spread; a phone shows one page at a time.
+ */
+const ART = {
+  cover: '/art/scrapbook-cover.jpeg',
+  film: '/art/scrapbook-opening.mp4',
+  poster: '/art/scrapbook-opening-poster.jpeg',
+  title: '/art/scrapbook-open-title.jpeg',
+  blank: '/art/scrapbook-open-blank.jpeg',
+}
+const PER_SIDE = 4
+const SEEN_KEY = 'haggis-gotchi:book-film-seen'
+
+function useNarrow(): boolean {
+  const q = '(max-width: 700px)'
+  const [narrow, setNarrow] = useState(() => window.matchMedia(q).matches)
+  useEffect(() => {
+    const m = window.matchMedia(q)
+    const on = () => setNarrow(m.matches)
+    m.addEventListener('change', on)
+    return () => m.removeEventListener('change', on)
+  }, [])
+  return narrow
+}
+
+type Side = { kind: 'title-left' } | { kind: 'title-right' } | { kind: 'entries'; entries: BookEntry[] }
 
 export default function ScrapbookBook() {
   const params = new URLSearchParams(window.location.search)
@@ -13,10 +39,11 @@ export default function ScrapbookBook() {
   const [signedIn, setSignedIn] = useState<boolean | null>(null)
   const [kids, setKids] = useState<{ id: string; name: string; departed_at: string | null }[]>([])
   const [book, setBook] = useState<Awaited<ReturnType<typeof fetchBook>> | null>(null)
-  const [open, setOpen] = useState(false)
+  const [stage, setStage] = useState<'closed' | 'film' | 'open'>('closed')
   const [tab, setTab] = useState('all')
-  const [page, setPage] = useState(0)
-  const [coverArt, setCoverArt] = useState(true)
+  const [at, setAt] = useState(0) // first side shown
+  const narrow = useNarrow()
+  const film = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     if (!supabase) return setSignedIn(false)
@@ -37,15 +64,29 @@ export default function ScrapbookBook() {
 
   const born = book?.child?.born_at ?? book?.child?.created_at ?? new Date().toISOString()
   const list = useMemo(() => (book ? entriesFor(tab, book.entries, born) : []), [book, tab, born])
-  const pages = paginate(list, PER_PAGE)
-  const current = pages[Math.min(page, pages.length - 1)] ?? []
   const name = book?.child?.name ?? 'your Haggling'
+  const sides: Side[] = [{ kind: 'title-left' }, { kind: 'title-right' }, ...paginate(list, PER_SIDE).map((entries) => ({ kind: 'entries' as const, entries }))]
+  const step = narrow ? 1 : 2
+  const last = Math.max(0, sides.length - 1)
+  const start = narrow ? Math.min(at, last) : Math.min(at - (at % 2), last - (last % 2))
+  const shown = sides.slice(start, start + step)
+
+  function openBook() {
+    // The opening film once per device; after that straight to the pages (it can be replayed).
+    if (localStorage.getItem(SEEN_KEY)) return setStage('open')
+    setStage('film')
+  }
+  function filmDone() {
+    localStorage.setItem(SEEN_KEY, '1')
+    setStage('open')
+  }
 
   if (signedIn === false) {
     return (
       <main className="book-page">
         <p className="care-sub">
-          The scrapbook is private. Open <a href="/">Haggis-gotchi</a> on this device and sign in, then come back.
+          The scrapbook is private. Sign in first: on a phone, open <a href="/">Haggis-gotchi</a>; on a computer, open the{' '}
+          <a href="/mother">mother page</a> and use <strong>Retrieve my Haggling</strong>. Then come back to this tab and refresh.
         </p>
       </main>
     )
@@ -63,7 +104,7 @@ export default function ScrapbookBook() {
             value={childId}
             onChange={(e) => {
               setChildId(e.target.value)
-              setPage(0)
+              setAt(0)
             }}
           >
             {kids.map((k) => (
@@ -76,16 +117,26 @@ export default function ScrapbookBook() {
         </label>
       ) : null}
 
-      {!open ? (
-        <button type="button" className="book-cover" onClick={() => setOpen(true)} aria-label={`Open ${name}'s scrapbook`}>
-          {coverArt ? <img src={COVER_SRC} alt="" onError={() => setCoverArt(false)} /> : null}
-          <span className="book-cover-title">
-            <span className="book-cover-kicker">The Scrapbook of</span>
-            <span className="book-cover-name">{name}</span>
-            <span className="book-cover-hint">{book ? `${book.entries.length} pages · tap to open` : 'Fetching the pages…'}</span>
+      {stage === 'closed' ? (
+        <button type="button" className="book-closed" onClick={openBook} aria-label={`Open ${name}'s scrapbook`}>
+          <img src={ART.cover} alt="" />
+          <span className="book-closed-label">
+            <strong>{name}&rsquo;s scrapbook</strong>
+            <span>{book ? `${book.entries.length} pages · tap to open` : 'Fetching the pages…'}</span>
           </span>
         </button>
-      ) : (
+      ) : null}
+
+      {stage === 'film' ? (
+        <div className="book-film">
+          <video ref={film} src={ART.film} poster={ART.poster} autoPlay playsInline muted={!soundOn()} onEnded={filmDone} onError={filmDone} />
+          <button type="button" className="btn btn-ghost book-skip" onClick={filmDone}>
+            Skip ›
+          </button>
+        </div>
+      ) : null}
+
+      {stage === 'open' ? (
         <section className="book-open" aria-label={`${name}'s scrapbook`}>
           <nav className="book-tabs" aria-label="Scrapbook sections">
             {TABS.map((t) => (
@@ -95,7 +146,7 @@ export default function ScrapbookBook() {
                 className={`book-tab${t.id === tab ? ' book-tab-on' : ''}`}
                 onClick={() => {
                   setTab(t.id)
-                  setPage(0)
+                  setAt(t.id === 'all' ? 0 : 2) // straight to the written pages
                 }}
                 aria-pressed={t.id === tab}
               >
@@ -103,48 +154,83 @@ export default function ScrapbookBook() {
               </button>
             ))}
           </nav>
-          <div className="book-leaf">
-            <h1 className="book-leaf-title">
-              {name}
-              <span>{TABS.find((t) => t.id === tab)?.label}</span>
-            </h1>
-            {current.length === 0 ? (
-              <p className="book-empty">Nothing on these pages yet.</p>
-            ) : (
-              <ul className="book-entries">
-                {current.map((e: BookEntry) => {
-                  const kind = scrapKind(e)
-                  return (
-                    <li key={e.id} className={`book-entry book-entry-${kind}`}>
-                      <time dateTime={e.at}>
-                        {new Date(e.at).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}
-                      </time>
-                      <p>
-                        <span aria-hidden="true">{KIND_ICON[kind]} </span>
-                        {e.text}
-                      </p>
-                    </li>
-                  )
-                })}
-              </ul>
-            )}
-            <div className="book-turn">
-              <button type="button" className="btn btn-ghost" disabled={page <= 0} onClick={() => setPage((p) => Math.max(0, p - 1))}>
-                ‹ Back
-              </button>
-              <span className="care-sub">
-                Page {Math.min(page, pages.length - 1) + 1} of {pages.length}
-              </span>
-              <button type="button" className="btn btn-ghost" disabled={page >= pages.length - 1} onClick={() => setPage((p) => Math.min(pages.length - 1, p + 1))}>
-                Next ›
-              </button>
-            </div>
+          <div className={`book-spread${narrow ? ' book-spread-one' : ''}`}>
+            {shown.map((side, i) => {
+              const index = start + i
+              const half = index % 2 === 0 ? 'left' : 'right'
+              const bg = index < 2 ? ART.title : ART.blank
+              return (
+                <div
+                  key={index}
+                  className={`book-side book-side-${half}`}
+                  style={{ backgroundImage: `url(${bg})` }}
+                  aria-label={`Page ${index + 1}`}
+                >
+                  <div className="book-ink">
+                    {side.kind === 'title-left' ? (
+                      <div className="book-title-block">
+                        <p className="book-title-name">{name}</p>
+                        <p>A Haggling&rsquo;s life, in their own words and yours.</p>
+                      </div>
+                    ) : side.kind === 'title-right' ? (
+                      <div className="book-title-block">
+                        <p>{book ? `${book.entries.length} pages` : 'Fetching the pages…'}</p>
+                        <p>{TABS.find((t) => t.id === tab)?.label}</p>
+                        <p className="book-hint">Turn the page ›</p>
+                      </div>
+                    ) : side.entries.length === 0 ? (
+                      <p className="book-empty">Nothing on these pages yet.</p>
+                    ) : (
+                      <ul className="book-entries">
+                        {side.entries.map((e) => {
+                          const kind = scrapKind(e)
+                          return (
+                            <li key={e.id} className={`book-entry book-entry-${kind}`}>
+                              <time dateTime={e.at}>
+                                {new Date(e.at).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}
+                              </time>
+                              <p>
+                                <span aria-hidden="true">{KIND_ICON[kind]} </span>
+                                {e.text}
+                              </p>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
           </div>
-          <button type="button" className="link-btn" onClick={() => setOpen(false)}>
-            Close the book
-          </button>
+          <div className="book-turn">
+            <button type="button" className="btn btn-ghost" disabled={start <= 0} onClick={() => setAt(Math.max(0, start - step))}>
+              ‹ Back
+            </button>
+            <span className="care-sub">
+              {narrow ? `Page ${start + 1} of ${sides.length}` : `Pages ${start + 1}-${Math.min(start + 2, sides.length)} of ${sides.length}`}
+            </span>
+            <button type="button" className="btn btn-ghost" disabled={start + step > last} onClick={() => setAt(start + step)}>
+              Next ›
+            </button>
+          </div>
+          <div className="cta-row">
+            <button type="button" className="link-btn" onClick={() => setStage('closed')}>
+              Close the book
+            </button>
+            <button
+              type="button"
+              className="link-btn"
+              onClick={() => {
+                localStorage.removeItem(SEEN_KEY)
+                setStage('film')
+              }}
+            >
+              Watch it open again
+            </button>
+          </div>
         </section>
-      )}
+      ) : null}
     </main>
   )
 }

@@ -225,6 +225,14 @@ function MotherApp() {
             ? 'Empty for now. Claim an egg on your phone (scan the code above).'
             : `${broodEggs.length} with the mother. Tap one to watch it in a new tab.`}
         </p>
+        <p className="book-mother">
+          <a className="btn btn-ghost" href="/scrapbook" target="_blank" rel="noopener">
+            📖 Open the scrapbook
+          </a>
+          <span className="care-sub">
+            {carerEmail ? ' Every page your Hagglings ever wrote.' : ' Sign in first (Retrieve my Haggling, below).'}
+          </span>
+        </p>
 
         {broodEggs.length === 0 ? (
           <div className="brood-empty">
