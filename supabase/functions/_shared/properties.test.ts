@@ -211,3 +211,148 @@ test('S14 a treat line always names the Haggling, at every stage', () => {
     RUNS,
   )
 })
+
+// ---------------------------------------------------------------- AI words (.kiro/specs/ai-haggling)
+import { BLOCKED, checkLine, cleanAiLine, diaryFacts, diaryPrompt, fallbackDiary, fallbackReaction, FAR_AWAY, nearestTown, reactionPrompt, safeLabels, safeName, TOWNS, type DiaryInput } from './aiText.ts'
+import { arrange, isValidRiddle, parseRiddle, RIDDLE_BANK, riddleFor, topicFor, TOPICS } from './riddles.ts'
+
+const BUCKETS = ['sunny', 'crisp', 'frost', 'hot', 'grey', 'rain', 'storm', 'snow', 'windy', 'humid', 'fog', 'haar']
+const hagName = fc.string({ minLength: 1, maxLength: 40 })
+const diaryInput = fc.record({
+  name: hagName,
+  temperament: fc.constantFrom('Douce', 'Skeigh', 'Ill-trickit', 'Ree', 'Radge', 'Fair Wud'),
+  temperamentNote: fc.constantFrom('gentle', 'jumpy', 'mischievous', 'lively', 'fiery', 'wild'),
+  stage: fc.constantFrom('Baby', 'Child', 'Teen', 'Adult', 'Old age'),
+  day: fc.integer({ min: 0, max: 41 }),
+  daysLeft: fc.integer({ min: 0, max: 42 }),
+  place: fc.constantFrom('', 'Oban', 'Glasgow', FAR_AWAY),
+  weather: fc.array(fc.record({ slot: fc.constantFrom('am' as const, 'pm' as const, 'eve' as const), bucket: fc.constantFrom(...BUCKETS), tempC: fc.option(fc.integer({ min: -15, max: 35 }), { nil: null }) }), { maxLength: 3 }),
+  care: fc.dictionary(fc.constantFrom('feed', 'cuddle', 'walk', 'treat', 'clean', 'play', 'scold', 'sleep'), fc.integer({ min: 0, max: 9 })),
+  mood: fc.integer({ min: 0, max: 100 }),
+  season: fc.option(fc.constantFrom('Halloween', 'Christmas'), { nil: null }),
+  milestone: fc.option(fc.constantFrom('became a Teen today', 'grew up today'), { nil: null }),
+}) as fc.Arbitrary<DiaryInput>
+
+/** An independent re-statement of R3.6, so checkLine is tested against the rule, not itself. */
+function obeysRules(t: string, name: string, max: number): boolean {
+  const lower = t.toLowerCase().split(name.toLowerCase()).join(' ')
+  const words = lower.split(/[^a-z']+/)
+  return t.length <= max && t.toLowerCase().includes(name.toLowerCase()) && !BLOCKED.some((b) => words.includes(b)) && !/https?:|www\.|@/.test(t.toLowerCase()) && !/\d{5,}/.test(t)
+}
+
+test('S15 checkLine only lets through lines that obey every rule (ai-haggling R3.6, R4.3)', () => {
+  const pieces = fc.oneof(fc.string({ maxLength: 40 }), fc.constantFrom(' shit ', ' whisky ', ' http://x.co ', ' a@b.com ', ' 123456 ', ' {name} ', '. ', '! ', ' wee ', ' dreich ', ' drama '))
+  fc.assert(
+    fc.property(safeLabelName(), fc.array(pieces, { maxLength: 12 }), (name, parts) => {
+      const text = cleanAiLine(`${name} ${parts.join('')}`)
+      if (checkLine(text, name, 300)) assert.ok(obeysRules(text, name, 300), text)
+    }),
+    RUNS,
+  )
+  assert.ok(checkLine('Dear diary, Wee Yin watched the rain all day. Braw.', 'Wee Yin', 300))
+  assert.ok(!checkLine('Dear diary, the rain was braw.', 'Wee Yin', 300), 'must name the Haggling')
+  assert.ok(!checkLine('Wee Yin had a wee dram by the fire.', 'Wee Yin', 300), 'no drink')
+  assert.ok(checkLine('Wee Yin loved the drama of the storm.', 'Wee Yin', 300), 'drama is fine')
+})
+function safeLabelName() {
+  return hagName.map(safeName)
+}
+
+test('S16 the written diary and reactions always pass the same checks (R3.7, R4.3, R4.4)', () => {
+  fc.assert(
+    fc.property(diaryInput, (d) => {
+      const line = fallbackDiary(d)
+      assert.ok(checkLine(line, safeName(d.name), 300), line)
+    }),
+    RUNS,
+  )
+  fc.assert(
+    fc.property(hagName, fc.array(fc.record({ name: fc.string({ maxLength: 40 }), confidence: fc.integer({ min: 0, max: 100 }) }), { maxLength: 8 }), (n, labels) => {
+      const line = fallbackReaction(n, safeLabels(labels))
+      assert.ok(checkLine(line, safeName(n), 200), line)
+    }),
+    RUNS,
+  )
+})
+
+test('S17 prompts never carry an email, a carer name or coordinates (R6.2)', () => {
+  fc.assert(
+    // Stored areas are rounded to 0.1 degree, e.g. 55.9, -4.3 (weather-mood R1.2).
+    fc.property(diaryInput, fc.emailAddress(), fc.integer({ min: 491, max: 609 }), fc.integer({ min: -79, max: 19 }), (d, email, lat10, lon10) => {
+      fc.pre(lat10 % 10 !== 0 && lon10 % 10 !== 0)
+      const lat = (lat10 / 10).toFixed(1)
+      const lon = (lon10 / 10).toFixed(1)
+      const withCarer = { ...d, carerName: 'Shiel', email, lat: Number(lat), lon: Number(lon) } as DiaryInput
+      const p = diaryPrompt(withCarer)
+      assert.ok(!p.includes(email) && !p.includes('Shiel') && !p.includes(lat) && !p.includes(lon), p)
+      assert.ok(!/@/.test(p))
+      const r = reactionPrompt(d.name, d.temperament, ['Dog', 'Ball'])
+      assert.ok(!/@/.test(r))
+    }),
+    RUNS,
+  )
+})
+
+test('S18 the place is always a listed town or "far from the glens", never coordinates (R3.3)', () => {
+  const names = new Set([...TOWNS.map((t) => t.name), FAR_AWAY])
+  fc.assert(
+    fc.property(fc.double({ min: -90, max: 90, noNaN: true }), fc.double({ min: -180, max: 180, noNaN: true }), (lat, lon) => {
+      const t = nearestTown(Math.round(lat * 10) / 10, Math.round(lon * 10) / 10)
+      assert.ok(names.has(t), t)
+      if (Math.abs(lat - 56) > 8 && Math.abs(lat - 53) > 8) assert.equal(t, FAR_AWAY)
+    }),
+    RUNS,
+  )
+  assert.equal(nearestTown(56.4, -5.5), 'Oban')
+  assert.equal(nearestTown(40.7, -74.0), FAR_AWAY, 'New York judges are far from the glens')
+})
+
+test('S19 a stormy day puts the storm first, and the written diary is about the storm (R3.5)', () => {
+  fc.assert(
+    fc.property(diaryInput, (d) => {
+      const stormy = { ...d, weather: [...d.weather, { slot: 'pm' as const, bucket: 'storm', tempC: 8 }] }
+      assert.match(diaryFacts(stormy)[0], /storm/i)
+      assert.match(fallbackDiary(stormy), /storm/i)
+    }),
+    RUNS,
+  )
+})
+
+test('S20 riddles: every bank riddle is valid, parseRiddle accepts only valid riddles, any day gets a valid riddle (R5.3, R5.4)', () => {
+  for (const r of RIDDLE_BANK) assert.ok(isValidRiddle(r), r.question)
+  assert.ok(RIDDLE_BANK.length >= 20)
+  fc.assert(
+    fc.property(fc.date({ min: new Date('2026-01-01'), max: new Date('2030-12-31'), noInvalidDate: true }), (d) => {
+      const day = d.toISOString().slice(0, 10)
+      const r = riddleFor(day)
+      assert.ok(isValidRiddle(r))
+      assert.deepEqual(riddleFor(day), r, 'same riddle all day')
+    }),
+    RUNS,
+  )
+  const anyJson = fc.record({ question: fc.string({ maxLength: 320 }), options: fc.array(fc.string({ maxLength: 45 }), { maxLength: 4 }), answer: fc.oneof(fc.integer({ min: -1, max: 3 }), fc.constant('0')), explain: fc.string({ maxLength: 220 }) })
+  fc.assert(
+    fc.property(anyJson, fc.constantFrom('', 'Sure! ', '```json\n'), (j, prefix) => {
+      const r = parseRiddle(prefix + JSON.stringify(j), 'the kelpie')
+      if (r) assert.ok(isValidRiddle(r))
+    }),
+    RUNS,
+  )
+  assert.equal(parseRiddle('not json at all', 'x'), null)
+})
+
+test('S21 the day\'s topic is fixed for the day and cycles through every topic; shuffling keeps the right answer (R5.2)', () => {
+  const start = Date.parse('2026-12-01T12:00:00Z')
+  const seen = new Set<string>()
+  for (let i = 0; i < TOPICS.length; i++) seen.add(topicFor(new Date(start + i * 86_400_000).toISOString().slice(0, 10)))
+  assert.equal(seen.size, TOPICS.length)
+  fc.assert(
+    fc.property(fc.constantFrom(...RIDDLE_BANK), fc.date({ min: new Date('2026-01-01'), max: new Date('2030-12-31'), noInvalidDate: true }), (r, d) => {
+      const day = d.toISOString().slice(0, 10)
+      const a = arrange(r, day)
+      assert.equal(a.options[a.answer], r.options[r.answer])
+      assert.deepEqual([...a.options].sort(), [...r.options].sort())
+    }),
+    RUNS,
+  )
+})

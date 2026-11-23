@@ -202,7 +202,7 @@ export function applyWeather(
   h.weatherApplied = [...new Set([...(h.weatherApplied ?? []), slot])].sort().slice(-12)
   const flipped = Boolean(previous && previous !== bucket)
   const swing = Math.abs(delta.mood) >= 8 || (flipped && slot.endsWith('-am'))
-  if (Math.abs(delta.mood) >= 8 || flipped) addScrap(h, line, at)
+  if (Math.abs(delta.mood) >= 8 || flipped) addScrap(h, line, at, 'weather')
   h.weatherBucket = bucket
   h.weatherSlot = slot
   h.weatherLine = line

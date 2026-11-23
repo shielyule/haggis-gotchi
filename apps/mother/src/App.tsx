@@ -24,6 +24,8 @@ import './App.css'
 
 /** graveyard-3d: its own chunk, so the phone app never downloads it. */
 const GraveyardPage = lazy(() => import('./graveyard/GraveyardPage'))
+/** ai-haggling R2: the scrapbook book, its own tab and chunk. */
+const ScrapbookBook = lazy(() => import('./ScrapbookBook'))
 
 /**
  * phone-home R1: one site, two faces. Phones get the Haggling; desktops get the mother.
@@ -41,6 +43,13 @@ export default function App() {
   // Review 22 Nov: privacy notice (with delete-account) and terms.
   const path = window.location.pathname.replace(/\/+$/, '')
   if (path === '/privacy') return <PrivacyPage />
+  if (path === '/scrapbook') {
+    return (
+      <Suspense fallback={<p style={{ padding: '2rem' }}>Dusting off the scrapbook…</p>}>
+        <ScrapbookBook />
+      </Suspense>
+    )
+  }
   if (path === '/terms') return <TermsPage />
   // share-card: public Haggling card, any device, no sign-in.
   const cardId = readCardIdFromPath()

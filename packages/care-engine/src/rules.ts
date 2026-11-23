@@ -57,6 +57,9 @@ export const RULES = {
   /** Haggis Run: mood per correct guess (5 rounds), energy cost. */
   playMoodPerWin: 4,
   playEnergyCost: 8,
+  /** Folklore riddle (ai-haggling R5.5): Mood for a right guess, and for having a go. */
+  riddleMoodRight: 8,
+  riddleMoodWrong: 2,
 
   /** Life XP (photo-care R5). */
   lifeXpPerDayAlive: 10,

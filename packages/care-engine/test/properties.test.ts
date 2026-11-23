@@ -489,3 +489,22 @@ test('P27 a damaged save (bad timestamps) never turns bars into NaN', () => {
     { numRuns: 60 },
   )
 })
+
+// ---------------------------------------------------------------- Riddle (.kiro/specs/ai-haggling)
+
+test('P29 a riddle guess changes Mood by +8 (right) or +2 (wrong), never Health XP, and only once a day (ai-haggling R5.5, R6.4)', () => {
+  fc.assert(
+    fc.property(time, temperament, stage, fc.boolean(), fc.integer({ min: 0, max: 90 }), fc.integer({ min: -50, max: 100 }), fc.integer({ min: 1, max: 600 }), (at, temp, st, right, mood, healthXp, laterMins) => {
+      const noon = Math.floor(at / DAY) * DAY + 11 * HOUR
+      const h: Haggling = { eggId: 'e', name: 'N', breakfastHour: 8, dinnerHour: 18, bedHour: 21, hunger: 80, mood, energy: 80, mess: 10, healthXp, lifeXp: 0, lastTickAt: new Date(noon).toISOString(), riddleCorrect: right, scrapbook: [], livingOn: 'phone' }
+      const ctx = { temperamentId: temp, nowMs: noon, stage: st, timezone: 'Europe/London' }
+      const once = applyCare(h, 'riddle', ctx).haggling
+      assert.equal(once.mood, Math.min(100, mood + (right ? RULES.riddleMoodRight : RULES.riddleMoodWrong)))
+      assert.equal(once.healthXp, healthXp + 0, 'riddle never touches Health XP')
+      assert.equal(once.riddleCorrect, undefined)
+      const again = applyCare({ ...once, riddleCorrect: true }, 'riddle', { ...ctx, nowMs: noon + Math.min(laterMins, 11 * 60) * 60_000 }).haggling
+      assert.ok(again.mood <= once.mood, 'a second guess the same day gives nothing')
+    }),
+    RUNS,
+  )
+})

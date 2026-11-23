@@ -7,9 +7,11 @@ export type ScrapEntry = {
   id: string
   at: string
   text: string
+  /** ai-haggling R1.3: care, diary, photo, riddle, weather, milestone. Missing = care. */
+  kind?: string
 }
 
-export type CareAction = 'feed' | 'cuddle' | 'walk' | 'treat' | 'clean' | 'sleep' | 'play' | 'scold'
+export type CareAction = 'feed' | 'cuddle' | 'walk' | 'treat' | 'clean' | 'sleep' | 'play' | 'scold' | 'riddle'
 
 /** Where the living care surface is right now. Mother keeps the brood record either way. */
 export type LivingSurface = 'mother' | 'phone'
@@ -73,6 +75,10 @@ export type Haggling = {
   scoldedHour?: number
   /** Haggis Run mini-game: wins this round (set by the app before applyCare('play')). */
   playScore?: number
+  /** Folklore riddle (ai-haggling R5.5): the server's verdict, set by the app before applyCare('riddle'). */
+  riddleCorrect?: boolean
+  /** Local date of the last riddle guess (one a day). */
+  lastRiddleDay?: string
   /** Put to bed (owner, 19 Nov): asleep until this time (8 hours). */
   asleepUntil?: string
   /** lifespan-graveyard: server-decided life (born_at, span_ends_at, departed_at). */

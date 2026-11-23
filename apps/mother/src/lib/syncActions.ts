@@ -111,13 +111,17 @@ export async function photoTreatSynced(
   photo: Blob,
 ): Promise<
   | { ok: true; line: string; placeholder: boolean; treat: string; confidence: number | null }
-  | { ok: false; error: string }
+  | { ok: false; error: string; reaction?: string; hint?: string }
 > {
   const egg = loadStore().eggs.find((e) => e.id === eggId)
   const childId = egg?.haggling?.cloudChildId
   if (!childId) return { ok: false, error: 'Sign in first, so the mother knows this Haggling.' }
   const res = await sendPhotoTreat(childId, getDeviceId(), deviceTimezone(), photo)
-  if (!res.ok) return res
+  if (!res.ok) {
+    // ai-haggling R4: "What's that?" The reaction goes in the scrapbook; bars unchanged.
+    if (res.reactionScrap) addScrapLocal(eggId, res.reactionScrap)
+    return res
+  }
   applyTreatLocal(eggId, res.child, res.scrap)
   return {
     ok: true,
@@ -157,6 +161,23 @@ export async function carePhoneActionSynced(
     savePhoneStore({ child: loadPhoneStore().child })
   }
   return loadPhoneStore().child
+}
+
+/** Put a page the server wrote (diary, photo reaction, riddle) into this phone's scrapbook too. */
+export function addScrapLocal(eggId: string, scrap: { id: string; at: string; text: string; kind?: string }): void {
+  const egg = loadStore().eggs.find((e) => e.id === eggId)
+  if (!egg?.haggling || egg.haggling.scrapbook.some((s) => s.id === scrap.id)) return
+  const next = structuredClone(egg.haggling)
+  next.scrapbook = [scrap, ...next.scrapbook].slice(0, 40)
+  replaceHaggling(eggId, next)
+}
+
+/** ai-haggling R5.5: the server marked the guess; the engine gives the Mood. */
+export async function riddleGuessedSynced(eggId: string, correct: boolean, scrap?: { id: string; at: string; text: string; kind?: string }) {
+  if (scrap) addScrapLocal(eggId, scrap)
+  const egg = loadStore().eggs.find((e) => e.id === eggId)
+  if (egg?.haggling) replaceHaggling(eggId, { ...egg.haggling, riddleCorrect: correct })
+  return careActionSynced(eggId, 'riddle', 'phone')
 }
 
 /** Identity moment (review 22 Nov): the carer may give their Haggling a new name, chosen together. */

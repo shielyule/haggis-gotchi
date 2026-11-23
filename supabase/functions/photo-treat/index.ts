@@ -14,6 +14,10 @@ import { applyPhotoTreat, lifeStatus, wholeBars, type Haggling } from '../../../
 import { matchTreat, seenSummary, treatLine, type TreatId } from '../_shared/photoMatch.ts'
 import { detect, rekognitionConfigured } from '../_shared/rekognition.ts'
 import { localClock } from '../_shared/reminders.ts'
+import { checkLine, cleanAiLine, fallbackReaction, reactionPrompt, REACTION_SYSTEM, safeLabels, safeName } from '../_shared/aiText.ts'
+import { aiLine } from '../_shared/bedrock.ts'
+
+const TEMPERAMENT_LABEL: Record<string, string> = { douce: 'Douce', skeigh: 'Skeigh', 'ill-trickit': 'Ill-trickit', ree: 'Ree', radge: 'Radge', 'fair-wud': 'Fair Wud' }
 
 const CHECKS_PER_DAY = 10 // cost cap per carer (about $0.002 a check)
 
@@ -134,10 +138,31 @@ Deno.serve(async (req) => {
           .map((w) => w.text.replace(/[^\p{L}\p{N}'-]/gu, '').slice(0, 20))
           .filter(Boolean)
         console.log(`photo-treat: no match; labels=${seen.join('|')} words=${read.join('|')}`)
+        // ai-haggling R4: "What's that?" A reaction to whatever it saw. Labels only (no photo, no people).
+        // Bars unchanged, today's Photo Treat not used up.
+        const labels = safeLabels(detected.labels)
+        const name = safeName(row.name)
+        const reaction = labels.length
+          ? await aiLine(
+              admin,
+              'reaction',
+              { system: REACTION_SYSTEM, prompt: reactionPrompt(row.name, TEMPERAMENT_LABEL[row.temperament_id] ?? 'wee', labels), maxTokens: 90 },
+              (raw) => {
+                const t = cleanAiLine(raw)
+                return checkLine(t, name, 200) ? t : null
+              },
+              () => fallbackReaction(row.name, labels),
+            )
+          : { text: fallbackReaction(row.name, []), source: 'fallback' as const }
+        const reactionScrap = { id: crypto.randomUUID(), at: new Date().toISOString(), text: reaction.text, kind: 'photo' }
+        await admin.from('scrapbook_entries').insert({ ...reactionScrap, child_id: row.id, carer_id: auth.user.id })
         return json(200, {
           ok: false,
           seen,
           read,
+          reaction: reaction.text,
+          reactionScrap,
+          hint: 'Not a Scottish treat, so the bars stay the same. Try shortbread, heather, tartan, bagpipes or an Irn-Bru can (turn the can so IRN BRU reads left to right).',
           error:
             `${row.name} squints. ${seen.length ? `That looks like ${seen.join(', ').toLowerCase()}, ` : ''}but it is not a Scottish treat. ` +
             (read.length ? `(Could read: ${read.join(' ')}.) ` : '(Could not read any words.) ') +

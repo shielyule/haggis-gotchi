@@ -25,6 +25,7 @@ import {
   photoTreatSynced,
   refreshHomeDevice,
   renameHagglingSynced,
+  riddleGuessedSynced,
 } from './lib/syncActions'
 import { addScrap, isMisbehaving, mischiefLine, identityAt, identityLabel, identityMessage, isDemoEgg, isPlayFilmUnlocked, lifeStatus, WEATHER_BUCKETS, WEATHER_LABEL } from './lib/engine'
 import {
@@ -35,13 +36,14 @@ import {
   weatherChoice,
   type WeatherChip,
 } from './lib/weather'
-import { fetchShareInfo, fetchShowInFeed, lifecycleAction, pullBroodFromCloud, pushCheckIn, saveShowInFeed, setShareEnabled } from './lib/cloud'
+import { fetchShareInfo, fetchShowInFeed, lifecycleAction, pullBroodFromCloud, pushCheckIn, saveShowInFeed, setShareEnabled, writeDiaryNow } from './lib/cloud'
 import { loadStore, replaceHaggling, replaceLocalBrood } from './lib/storage'
 import { CareIntro, introSeen } from './CareIntro'
 import { InfoTip } from './InfoTip'
 import { WatchMemories } from './WatchMemories'
 import { costumeFor, costumePreview, monthDayOf, SEASONS, setCostumePreview } from './data/costumes'
 import { HaggisRun } from './HaggisRun'
+import { RiddleGame } from './RiddleGame'
 import { chirp, setSoundOn, soundOn } from './lib/chirp'
 
 const WEATHER_ICON: Record<string, string> = {
@@ -126,6 +128,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
   const [reminderNote, setReminderNote] = useState('')
   const [quiet, setQuiet] = useState<boolean | null>(null)
   const [runOpen, setRunOpen] = useState(false)
+  const [riddleOpen, setRiddleOpen] = useState(false)
   const [sound, setSound] = useState(() => soundOn())
   const [newName, setNewName] = useState('')
   const [preview, setPreview] = useState<string | null>(() => costumePreview())
@@ -452,7 +455,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
             : `${r.line} Every bar is full! (Saw ${r.treat}${r.confidence ? `, ${r.confidence}% sure` : ''})`,
         })
       } else {
-        setTreatNote({ good: false, text: r.error })
+        setTreatNote(r.reaction ? { good: true, text: `${r.reaction} ${r.hint ?? ''}`.trim() } : { good: false, text: r.error })
       }
       onChange()
     } catch {
@@ -545,6 +548,21 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           <button type="button" className="btn btn-ghost" onClick={demoWake}>
             Wake up now (skip the sleep)
           </button>
+          {isDemo && h.cloudChildId ? (
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => {
+                setDemoNote('Writing in the diary…')
+                void writeDiaryNow(h.cloudChildId!).then(async (r) => {
+                  setDemoNote(r.ok ? `Diary (${r.data.source === 'ai' ? 'written by Amazon Nova' : 'written template'}): ${r.data.text}` : r.error)
+                  await refreshFromCloud()
+                })
+              }}
+            >
+              Write tonight&rsquo;s diary now
+            </button>
+          ) : null}
           <div className="cta-row">
             {SEASONS.map((s) => (
               <button
@@ -808,6 +826,12 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
             <span>Haggis Run</span>
             <small>Guess which way they run round the hill</small>
           </button>
+          {h.cloudChildId ? (
+            <button type="button" className="care-action care-action-riddle" onClick={() => setRiddleOpen(true)}>
+              <span>Folklore riddle</span>
+              <small>A new one every day: one guess</small>
+            </button>
+          ) : null}
           <button type="button" className="care-action care-action-scold" onClick={() => act('scold')}>
             <span>Tell off</span>
             <small>{misbehaving ? 'They are up to mischief: a fair telling-off' : 'Only when they misbehave, or it hurts'}</small>
@@ -815,6 +839,14 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
         </div>
       ) : null}
       {runOpen ? <HaggisRun name={h.name} onDone={finishRun} onCancel={() => setRunOpen(false)} /> : null}
+      {riddleOpen && h.cloudChildId ? (
+        <RiddleGame
+          childId={h.cloudChildId}
+          name={h.name}
+          onGuessed={(correct, scrap) => void riddleGuessedSynced(egg.id, correct, scrap).then(() => onChange())}
+          onClose={() => setRiddleOpen(false)}
+        />
+      ) : null}
       {isHome ? (
         <label className="demo-toggle share-toggle">
           <input
@@ -908,6 +940,11 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
 
       <section className="care-scrap">
         <h3>Scrapbook</h3>
+        {h.cloudChildId ? (
+          <a className="btn btn-ghost book-link" href={`/scrapbook?h=${h.cloudChildId}`} target="_blank" rel="noopener">
+            📖 Open the scrapbook (every page, ever)
+          </a>
+        ) : null}
         {h.scrapbook.length === 0 ? (
           <p className="care-sub">Nothing written yet.</p>
         ) : (

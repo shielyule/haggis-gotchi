@@ -8,11 +8,12 @@ export function newId(): string {
 }
 
 /** Append a scrapbook line (newest first), capped. Mutates the draft. */
-export function addScrap(h: Haggling, text: string, atIso?: string) {
+export function addScrap(h: Haggling, text: string, atIso?: string, kind?: string) {
   const entry: ScrapEntry = {
     id: newId(),
     at: atIso ?? new Date().toISOString(),
     text,
+    ...(kind ? { kind } : {}),
   }
   h.scrapbook.unshift(entry)
   if (h.scrapbook.length > RULES.scrapbookMax) h.scrapbook.length = RULES.scrapbookMax

@@ -128,3 +128,53 @@ test('A8 every costume picture follows the naming rule and the file exists (R4)'
     }
   }
 })
+
+// ---------------------------------------------------------------- The scrapbook book (.kiro/specs/ai-haggling)
+import { entriesFor, KINDS, paginate, scrapKind, TABS, weekOf, type BookEntry } from '../src/lib/scrapbook.ts'
+
+const BORN = Date.parse('2026-11-01T09:00:00Z')
+const entry = fc.record({
+  id: fc.uuid(),
+  at: fc.integer({ min: BORN, max: BORN + 50 * 86_400_000 }).map((t) => new Date(t).toISOString()),
+  text: fc.oneof(fc.string({ maxLength: 60 }), fc.constantFrom('Photo Treat: shortbread!', "Wee Yin solved today's riddle: A kelpie!", 'Wee Yin went to the glen.', 'Fed Wee Yin at breakfast.')),
+  kind: fc.option(fc.constantFrom('care', 'diary', 'photo', 'riddle', 'weather', 'milestone', 'nonsense'), { nil: undefined }),
+}) as fc.Arbitrary<BookEntry>
+
+test('A9 the book\'s tabs: All has every page, Diary only diary pages, Week n exactly that week, newest first (ai-haggling R2.3)', () => {
+  fc.assert(
+    fc.property(fc.array(entry, { maxLength: 60 }), (entries) => {
+      const born = new Date(BORN).toISOString()
+      const all = entriesFor('all', entries, born)
+      assert.equal(all.length, entries.length)
+      for (let i = 1; i < all.length; i++) assert.ok(Date.parse(all[i - 1].at) >= Date.parse(all[i].at), 'newest first')
+      assert.deepEqual(entriesFor('diary', entries, born).map((e) => e.id).sort(), entries.filter((e) => scrapKind(e) === 'diary').map((e) => e.id).sort())
+      const weeks = [1, 2, 3, 4, 5, 6].map((w) => entriesFor(`week-${w}`, entries, born))
+      assert.equal(weeks.reduce((n, w) => n + w.length, 0), entries.length, 'every page is in exactly one week')
+      weeks.forEach((w, i) => w.forEach((e) => assert.equal(weekOf(e.at, born), i + 1)))
+      for (const t of TABS) for (const e of entriesFor(t.id, entries, born)) assert.ok(entries.includes(e))
+    }),
+    { numRuns: 300 },
+  )
+})
+
+test('A10 every page has exactly one known kind; the server\'s kind wins (ai-haggling R1.3)', () => {
+  fc.assert(
+    fc.property(entry, (e) => {
+      const k = scrapKind(e)
+      assert.ok((KINDS as readonly string[]).includes(k))
+      if (e.kind && e.kind !== 'care' && (KINDS as readonly string[]).includes(e.kind)) assert.equal(k, e.kind)
+    }),
+    { numRuns: 300 },
+  )
+})
+
+test('A11 turning pages never loses or repeats a page', () => {
+  fc.assert(
+    fc.property(fc.array(fc.integer(), { maxLength: 100 }), fc.integer({ min: 1, max: 12 }), (items, per) => {
+      const pages = paginate(items, per)
+      assert.deepEqual(pages.flat(), items)
+      assert.ok(pages.every((p) => p.length <= per))
+    }),
+    { numRuns: 300 },
+  )
+})

@@ -3,7 +3,7 @@ import { deleteMyAccount } from './lib/cloud'
 import { supabase } from './lib/supabase'
 
 /** Privacy notice, terms and delete-account (review 22 Nov). Plain words, short. */
-const UPDATED = '22 November 2026'
+const UPDATED = '23 November 2026'
 const CONTACT = 'hello@haggisgotchi.com'
 
 function Shell({ title, children }: { title: string; children: React.ReactNode }) {
@@ -45,6 +45,13 @@ export function PrivacyPage() {
         browser&rsquo;s site data removes it.
       </p>
 
+      <h2>AI</h2>
+      <p>
+        Your Haggling&rsquo;s diary, its reaction to a photo and the daily riddle are written by an AI (Amazon Nova, through
+        Amazon Bedrock). The words are checked before they reach you, and if the AI is not available a written line is used
+        instead. You never chat with the AI.
+      </p>
+
       <h2>Photos</h2>
       <p>
         A Photo Treat photo is shrunk on your phone, sent to Amazon Rekognition to spot what is in it (Irn-Bru,
@@ -63,6 +70,12 @@ export function PrivacyPage() {
         <li><strong>Supabase</strong> (database and sign-in), servers in Frankfurt, Germany.</li>
         <li><strong>Resend</strong> (sends our emails).</li>
         <li><strong>Amazon Web Services: Rekognition</strong> (looks at Photo Treat photos, does not keep them).</li>
+        <li>
+          <strong>Amazon Web Services: Bedrock</strong> (an AI that writes your Haggling&rsquo;s nightly diary, its reaction to
+          a photo, and the daily riddle). It gets only the day&rsquo;s facts: your Haggling&rsquo;s name and type, the weather,
+          the nearest town, and what care it had. Never your name, email, exact location, photos or anything you type.
+          AWS does not use it to train its AI.
+        </li>
         <li><strong>Open-Meteo</strong> (weather forecasts, gets your rounded area only).</li>
         <li><strong>Cloudflare</strong> (hosts the website and runs the &ldquo;I am human&rdquo; check, Turnstile).</li>
         <li><strong>Google Fonts</strong> (the lettering). Your browser fetches the fonts from Google, so Google sees your internet address.</li>

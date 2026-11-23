@@ -267,6 +267,16 @@ export function applyCare(
           : `Haggis Run: ${wins} of 5. ${h.name} ran rings round you, literally.`)
       break
     }
+    case 'riddle': {
+      // ai-haggling R5.5: one guess a day; the server decides right or wrong and writes the page.
+      const today = dayKey(ctx.nowMs, ctx.timezone)
+      if (h.lastRiddleDay !== today) {
+        h.mood = clamp(h.mood + (h.riddleCorrect ? RULES.riddleMoodRight : RULES.riddleMoodWrong))
+        h.lastRiddleDay = today
+      }
+      h.riddleCorrect = undefined
+      break
+    }
     case 'feed':
       h.hunger = clamp(h.hunger + 28)
       h.mood = clamp(h.mood + (nearFeed ? 14 : 6))

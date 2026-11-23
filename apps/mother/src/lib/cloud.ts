@@ -1,6 +1,7 @@
 import { temperamentForChaos } from '../data/temperaments'
 import { supabase, supabaseConfigured } from './supabase'
 import { wholeBars } from './engine'
+import { scrapKind, type BookEntry } from './scrapbook'
 import type {
   EggRecord,
   Haggling,
@@ -73,6 +74,7 @@ type ScrapRow = {
   child_id: string
   at: string
   text: string
+  kind?: string | null
 }
 
 export async function getSessionUserId(): Promise<string | null> {
@@ -180,25 +182,23 @@ export async function syncChildToCloud(egg: EggRecord): Promise<string | null> {
     childId = data.id as string
   }
 
-  // Replace scrapbook for this child (simple v1)
-  await supabase.from('scrapbook_entries').delete().eq('child_id', childId)
-  if (h.scrapbook.length) {
-    const rows = h.scrapbook.slice(0, 40).map((s) => ({
-      id: s.id,
-      child_id: childId,
-      carer_id: userId,
-      at: s.at,
-      text: s.text,
-    }))
-    const { error: scrapErr } = await supabase.from('scrapbook_entries').insert(rows)
-    if (scrapErr) console.error('sync scrapbook', scrapErr.message)
-  }
-
+  await pushScraps(childId, userId, h.scrapbook)
   return childId
 }
 
+/**
+ * ai-haggling R1.1, R1.2 (and sync-conflict R4.1): add any pages the cloud does not have yet.
+ * Never deletes: the scrapbook book keeps every page, ever.
+ */
+export async function pushScraps(childId: string, userId: string, scraps: ScrapEntry[]): Promise<void> {
+  if (!supabase || !scraps.length) return
+  const rows = scraps.map((s) => ({ id: s.id, child_id: childId, carer_id: userId, at: s.at, text: s.text, kind: scrapKind(s) }))
+  const { error } = await supabase.from('scrapbook_entries').upsert(rows, { onConflict: 'id', ignoreDuplicates: true })
+  if (error) console.error('sync scrapbook', error.message)
+}
+
 /** What happened (public-feed). Weather and scold check-ins never appear in the feed. */
-export type CheckInAction = 'feed' | 'cuddle' | 'walk' | 'treat' | 'clean' | 'weather' | 'sleep' | 'play' | 'scold'
+export type CheckInAction = 'feed' | 'cuddle' | 'walk' | 'treat' | 'clean' | 'weather' | 'sleep' | 'play' | 'scold' | 'riddle'
 
 export async function pushCheckIn(
   egg: EggRecord,
@@ -216,6 +216,7 @@ export async function pushCheckIn(
     action: action ?? null,
   })
   if (error) console.error('pushCheckIn', error.message)
+  if (h.cloudChildId) await pushScraps(h.cloudChildId, userId, h.scrapbook)
 
   await supabase
     .from('children')
@@ -307,7 +308,7 @@ export async function pullBroodFromCloud(): Promise<EggRecord[] | null> {
   const scrapsByChild = new Map<string, ScrapEntry[]>()
   for (const s of scrapRows) {
     const list = scrapsByChild.get(s.child_id) ?? []
-    list.push({ id: s.id, at: s.at, text: s.text })
+    list.push({ id: s.id, at: s.at, text: s.text, ...(s.kind && s.kind !== 'care' ? { kind: s.kind } : {}) })
     scrapsByChild.set(s.child_id, list)
   }
 
@@ -427,7 +428,7 @@ export async function claimChildByTransferCode(
       answers: { ...eggRow.answers, email: eggRow.email ?? '' },
       haggling: childToHaggling(
         row,
-        ((scraps ?? []) as ScrapRow[]).map((s) => ({ id: s.id, at: s.at, text: s.text })),
+        ((scraps ?? []) as ScrapRow[]).map((s) => ({ id: s.id, at: s.at, text: s.text, ...(s.kind && s.kind !== 'care' ? { kind: s.kind } : {}) })),
       ),
     },
   }
@@ -477,7 +478,7 @@ export type TreatResponse =
       }
       scrap?: { id: string; at: string; text: string }
     }
-  | { ok: false; error: string }
+  | { ok: false; error: string; reaction?: string; hint?: string; reactionScrap?: ScrapEntry }
 
 /** photo-care R1-R2: send the shrunk photo; the server decides the reward. */
 export async function sendPhotoTreat(
@@ -617,4 +618,56 @@ export async function deleteMyAccount(): Promise<{ ok: boolean; error?: string }
     return { ok: false, error: body?.error ?? 'Could not reach the mother.' }
   }
   return { ok: Boolean((data as { ok?: boolean })?.ok) }
+}
+
+// ---------------------------------------------------------------- ai-haggling (23 Nov)
+
+/** R2: every page ever for one of this carer's Hagglings (row security keeps it to their own). */
+export async function fetchBook(childId: string): Promise<{ child: { id: string; name: string; temperament_id: string; born_at: string | null; created_at: string } | null; entries: BookEntry[] }> {
+  if (!supabase || !(await requireUserId())) return { child: null, entries: [] }
+  const [{ data: child }, { data: rows }] = await Promise.all([
+    supabase.from('children').select('id, name, temperament_id, born_at, created_at').eq('id', childId).maybeSingle(),
+    supabase.from('scrapbook_entries').select('id, at, text, kind').eq('child_id', childId).order('at', { ascending: false }).limit(2000),
+  ])
+  return { child: child ?? null, entries: (rows ?? []) as BookEntry[] }
+}
+
+/** The carer's Hagglings, for the book's picker. */
+export async function fetchMyChildren(): Promise<{ id: string; name: string; departed_at: string | null }[]> {
+  if (!supabase || !(await requireUserId())) return []
+  const { data } = await supabase.from('children').select('id, name, departed_at, created_at').order('created_at', { ascending: false })
+  return (data ?? []) as { id: string; name: string; departed_at: string | null }[]
+}
+
+export type RiddleView = {
+  day: string
+  topic: string
+  question: string
+  options: string[]
+  guess: { choice: number; correct: boolean; answer: number; explain: string } | null
+  scrap?: ScrapEntry
+  already?: boolean
+}
+
+async function invoke<T>(fn: string, body: Record<string, unknown>): Promise<{ ok: true; data: T } | { ok: false; error: string }> {
+  if (!supabase || !(await requireUserId())) return { ok: false, error: 'Sign in first.' }
+  const { data, error } = await supabase.functions.invoke(fn, { body })
+  if (error) {
+    const ctx = (error as { context?: Response }).context
+    const b = (await ctx?.json().catch(() => null)) as { error?: string } | null
+    return { ok: false, error: b?.error ?? 'Could not reach the mother.' }
+  }
+  return { ok: true, data: data as T }
+}
+
+/** R5: today's folklore riddle (and this Haggling's guess, if made). */
+export function fetchRiddle(childId: string) {
+  return invoke<RiddleView>('riddle', { action: 'get', childId })
+}
+export function guessRiddle(childId: string, choice: number) {
+  return invoke<RiddleView>('riddle', { action: 'guess', childId, choice })
+}
+/** R3.9: demo eggs only. */
+export function writeDiaryNow(childId: string) {
+  return invoke<{ ok: boolean; text: string; source: string }>('diary', { childId })
 }
