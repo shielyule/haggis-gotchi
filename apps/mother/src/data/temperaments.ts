@@ -147,7 +147,9 @@ export const STAGE_FILMS: Record<string, Record<string, { src: string; title: st
   },
   elder: {
     douce: { src: '/art/haggling-elder-play-douce.mp4', title: 'Old age: a word with the walking stick' },
-    skeigh: { src: '/art/haggling-elder-play-skeigh.mp4', title: 'Old age: walking stick and a smile' },
+    skeigh: { src: '/art/haggling-elder-play-skeigh.mp4', title: 'Old age: news from the three bairns' },
+    ree: { src: '/art/haggling-elder-play-ree.mp4', title: 'Old age: a good laugh at the phone' },
+    'fair-wud': { src: '/art/haggling-elder-play-fair-wud.mp4', title: 'Old age: walking stick and a smile' },
     'ill-trickit': { src: '/art/haggling-elder-play-ill-trickit.mp4', title: 'Old age: phone, glasses, phone' },
     radge: { src: '/art/haggling-elder-play-radge.mp4', title: 'Old age: a sip, some yoga and a chat' },
   },

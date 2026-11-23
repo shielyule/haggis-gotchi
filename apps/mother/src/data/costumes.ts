@@ -49,7 +49,7 @@ export const SEASONS: Season[] = [
   {
     id: 'burns-night',
     label: 'Burns Night',
-    emoji: '🌹', // "My love is like a red, red rose"
+    emoji: '\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}', // Scotland flag (owner, 23 Nov)
     from: { month: 1, day: 20 },
     to: { month: 1, day: 27 },
     art: { child: artFor('child', 'burns-night') },

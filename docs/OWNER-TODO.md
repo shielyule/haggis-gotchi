@@ -17,7 +17,7 @@ Last updated 22 Nov 2026.
 
 ## Art still to come
 - [x] Old-age films: Douce, Skeigh (22 Nov), Ill-trickit, Radge (23 Nov).
-- [ ] **Old-age films** still to make: Ree, Fair Wud (owner: mid-afternoon 23 Nov).
+- [x] Old-age films: Ree, Fair Wud, and Skeigh replaced (23 Nov). All six stages now have films for every type.
 - [x] Halloween Child costumes live (15 Oct - 1 Nov). Android check: on a Child, demo menu -> Costume preview: Halloween.
 - [x] All five seasons live for Child (23 Nov). Android check: demo menu -> each Costume preview. Drop them in the
   *Haggis images* folder and tell Kiro: it re-encodes and wires them into Watch again.

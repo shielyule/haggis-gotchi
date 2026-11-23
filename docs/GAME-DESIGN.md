@@ -74,7 +74,7 @@ A carer who checks in most days reaches about level 6; a very keen one about lev
 | Halloween 🎃 | 15 Oct - 1 Nov | Child x6 | **Live** |
 | St Andrew's Day 🏴 | 28 Nov - 1 Dec | Child x6 | **Live** (first real costume days: from 28 Nov) |
 | Christmas 🎄 | 10 Dec - 1 Jan | Child x6 | **Live** (during judging) |
-| Burns Night 🌹 | 20 Jan - 27 Jan | Child x6 | **Live** (during judging) |
+| Burns Night 🏴 | 20 Jan - 27 Jan | Child x6 | **Live** (during judging) |
 | Easter 🐣 | 24 Mar - 1 Apr (fixed, owner) | Child x6 | **Live** |
 
 Any season on any date: demo menu -> Costume preview.
