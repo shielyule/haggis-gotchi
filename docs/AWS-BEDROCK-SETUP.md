@@ -65,6 +65,49 @@ Say **"Bedrock done"**. Kiro then:
 **If Kiro sees `AccessDeniedException`:** AWS can take a few minutes to apply a permission. Kiro waits
 5 minutes and tries again. If it still fails, Kiro will ask you for one specific thing on one screen.
 
+## Step 3 - Ask AWS to switch on the daily allowance (found 23 Nov)
+**What Kiro found:** your permission works (AWS answers), but every call is refused with
+`429 ThrottlingException: Too many tokens per day`. New AWS accounts often start with Bedrock's
+daily allowance set to **0**, and only AWS Support can raise it. Many people report the same
+(AWS re:Post, 2026). It is not something you did wrong.
+
+**Not tested by Kiro** (support pages vary by account).
+
+### 3a - Look at the number first (2 minutes)
+1. Top search bar: **Service Quotas** -> open it. Top right region: **Europe (London) eu-west-2**.
+2. **AWS services** -> search **Amazon Bedrock** -> open it.
+3. In the quota search box type **tokens per day for Amazon Nova Lite**.
+
+**You should see:** "Model invocation max tokens per day for Amazon Nova Lite" with an
+**Applied account-level quota value** of **0** (that is the problem).
+- If it has a **Request increase** button: click it, ask for **1,000,000**, submit. Skip 3b.
+- If it says **Not adjustable**: do 3b.
+
+### 3b - Open a support case (5 minutes)
+1. Top right: **?** (Support) -> **Support Center** -> **Create case**.
+2. Choose **Service limit increase** (or "Looking for service limit increases?" -> Create case).
+   If that is not offered, choose **Account and billing** -> **Account** -> **Other account issues**.
+3. Service: **Amazon Bedrock**. Region: **Europe (London)**.
+4. Paste this as the description (edit the bracket):
+```
+New account, first Bedrock use. Every Converse call to amazon.nova-lite-v1:0 and
+amazon.nova-micro-v1:0 in eu-west-2 returns 429 ThrottlingException "Too many tokens per day",
+with zero prior usage. Service Quotas shows "Model invocation max tokens per day for
+Amazon Nova Lite" applied value 0. Please apply the default Bedrock token quotas for
+Amazon Nova Lite and Nova Micro in eu-west-2. Use: a small hobby game for the Kiroween 2026
+hackathon, capped by the app at 400 short calls a day (well under 1,000,000 tokens a day).
+Account ID: [your 12-digit account ID, top right of the console].
+```
+5. Contact: **Web**. Submit.
+
+**You should see:** a case number. Replies come by email; reports say this can take 1-5 days.
+
+**When AWS says it is done:** tell Kiro **"quota done"**. Kiro re-runs the live test.
+
+**If it is not sorted by 1 Dec:** the game already works with the written lines (and the video
+can show the riddle bank and written diary). Kiro can switch to a different AI provider if you want,
+but that needs a new key and a privacy notice change, so ask first.
+
 ## Switching it off again (any time)
 Kiro can switch the AI off without touching AWS (`AI_OFF=1` in Supabase secrets): the game goes back
 to the written lines straight away.

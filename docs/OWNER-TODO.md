@@ -24,8 +24,9 @@ Last updated 22 Nov 2026.
 - [ ] (Optional) costume art if you want level unlocks built (`docs/GAME-DESIGN.md`).
 
 ## AI words (built 23 Nov)
-- [ ] **AWS step:** `docs/AWS-BEDROCK-SETUP.md` (one permission). Then tell Kiro "Bedrock done".
-- [ ] (Optional) Ornate book cover art: save as `scrapbook-cover.jpeg` (portrait, about 900 x 1200) and send it.
+- [x] AWS permission (23 Nov): works.
+- [ ] **AWS daily allowance is 0** (new-account problem): `docs/AWS-BEDROCK-SETUP.md` Step 3. Then tell Kiro "quota done".
+- [x] Book art and opening film (23 Nov): live.
 - [ ] Android check: demo egg -> demo menu -> Write tonight's diary now; Folklore riddle; Photo Treat on a dog or a plant; Open the scrapbook.
 
 ## Submission (by 3 Dec, deadline 4 Dec 2:00pm PT = 10:00pm UK)
