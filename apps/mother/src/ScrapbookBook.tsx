@@ -15,6 +15,8 @@ const ART = {
   poster: '/art/scrapbook-opening-poster.jpeg',
   title: '/art/scrapbook-open-title.jpeg',
   blank: '/art/scrapbook-open-blank.jpeg',
+  /** Owner's single page (24 Nov): the phone shows one whole page at a time. */
+  page: '/art/scrapbook-page.jpeg',
 }
 const PER_SIDE = 4
 const SEEN_KEY = 'haggis-gotchi:book-film-seen'
@@ -31,7 +33,7 @@ function useNarrow(): boolean {
   return narrow
 }
 
-type Side = { kind: 'title-left' } | { kind: 'title-right' } | { kind: 'entries'; entries: BookEntry[] }
+type Side = { kind: 'title-left' } | { kind: 'title-right' } | { kind: 'title-single' } | { kind: 'entries'; entries: BookEntry[] }
 
 export default function ScrapbookBook() {
   const params = new URLSearchParams(window.location.search)
@@ -65,7 +67,8 @@ export default function ScrapbookBook() {
   const born = book?.child?.born_at ?? book?.child?.created_at ?? new Date().toISOString()
   const list = useMemo(() => (book ? entriesFor(tab, book.entries, born) : []), [book, tab, born])
   const name = book?.child?.name ?? 'your Haggling'
-  const sides: Side[] = [{ kind: 'title-left' }, { kind: 'title-right' }, ...paginate(list, PER_SIDE).map((entries) => ({ kind: 'entries' as const, entries }))]
+  const titles: Side[] = narrow ? [{ kind: 'title-single' }] : [{ kind: 'title-left' }, { kind: 'title-right' }]
+  const sides: Side[] = [...titles, ...paginate(list, PER_SIDE).map((entries) => ({ kind: 'entries' as const, entries }))]
   const step = narrow ? 1 : 2
   const last = Math.max(0, sides.length - 1)
   const start = narrow ? Math.min(at, last) : Math.min(at - (at % 2), last - (last % 2))
@@ -146,7 +149,7 @@ export default function ScrapbookBook() {
                 className={`book-tab${t.id === tab ? ' book-tab-on' : ''}`}
                 onClick={() => {
                   setTab(t.id)
-                  setAt(t.id === 'all' ? 0 : 2) // straight to the written pages
+                  setAt(t.id === 'all' ? 0 : titles.length) // straight to the written pages
                 }}
                 aria-pressed={t.id === tab}
               >
@@ -157,8 +160,8 @@ export default function ScrapbookBook() {
           <div className={`book-spread${narrow ? ' book-spread-one' : ''}`}>
             {shown.map((side, i) => {
               const index = start + i
-              const half = index % 2 === 0 ? 'left' : 'right'
-              const bg = index < 2 ? ART.title : ART.blank
+              const half = narrow ? 'single' : index % 2 === 0 ? 'left' : 'right'
+              const bg = narrow ? ART.page : index < 2 ? ART.title : ART.blank
               return (
                 <div
                   key={index}
@@ -167,7 +170,15 @@ export default function ScrapbookBook() {
                   aria-label={`Page ${index + 1}`}
                 >
                   <div className="book-ink">
-                    {side.kind === 'title-left' ? (
+                    {side.kind === 'title-single' ? (
+                      <div className="book-title-block book-title-single">
+                        <p className="book-title-script">Haggisgotchi Scrapbook</p>
+                        <p className="book-title-name">{name}</p>
+                        <p>A Haggling&rsquo;s life, in their own words and yours.</p>
+                        <p>{book ? `${book.entries.length} pages · ${TABS.find((t) => t.id === tab)?.label}` : 'Fetching the pages…'}</p>
+                        <p className="book-hint">Turn the page ›</p>
+                      </div>
+                    ) : side.kind === 'title-left' ? (
                       <div className="book-title-block">
                         <p className="book-title-name">{name}</p>
                         <p>A Haggling&rsquo;s life, in their own words and yours.</p>
