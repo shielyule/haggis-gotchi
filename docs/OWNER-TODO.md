@@ -25,7 +25,8 @@ Last updated 22 Nov 2026.
 
 ## AI words (built 23 Nov)
 - [x] AWS permission (23 Nov): works.
-- [ ] **AWS daily allowance is 0** (new-account problem): `docs/AWS-BEDROCK-SETUP.md` Step 3. Then tell Kiro "quota done".
+- [x] AWS Bedrock: quota 0, not adjustable, support closed automatically. Logged: `docs/INCIDENT-2026-11-23-aws-bedrock-quota.md`.
+- [ ] **Decide:** keep the written lines for the submission, or switch the AI words to another provider (new key + privacy change).
 - [x] Book art and opening film (23 Nov): live.
 - [ ] Android check: demo egg -> demo menu -> Write tonight's diary now; Folklore riddle; Photo Treat on a dog or a plant; Open the scrapbook.
 

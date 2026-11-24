@@ -23,3 +23,8 @@ The owner is not a database or DevOps specialist. Write for that reader.
 - Error logs must name the failing setting (names only, never values) from the first version.
 - New tables: grants and RLS in the same migration, grant only what each role needs (Supabase default changed 30 Oct 2026).
 - Order deploys so nothing breaks in between, and write the order down (e.g. new function live, then site, then revoke the old path).
+
+## Before building on a hosted service (added 24 Nov, Bedrock incident)
+- Make **one real call from the real account on day one**, before building features on it. "Enabled by
+  default" in a vendor's docs is not proof the account can use it (`docs/INCIDENT-2026-11-23-aws-bedrock-quota.md`).
+- Every third-party AI feature keeps a **written fallback** and records why a call failed (names only).
