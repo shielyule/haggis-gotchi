@@ -26,7 +26,7 @@ Last updated 22 Nov 2026.
 ## AI words (built 23 Nov)
 - [x] AWS permission (23 Nov): works.
 - [x] AWS Bedrock: quota 0, not adjustable, support closed automatically. Logged: `docs/INCIDENT-2026-11-23-aws-bedrock-quota.md`.
-- [ ] **Decide:** keep the written lines for the submission, or switch the AI words to another provider (new key + privacy change).
+- [ ] **Decide A, B or C** in `docs/GEMINI-SETUP.md`: Gemini's terms need the app to be **18+** (we are 13+). A = go 18+ and use Gemini; B = keep 13+ and the written lines; C = keep 13+ and Kiro checks another AI company's terms.
 - [x] Book art and opening film (23 Nov): live.
 - [ ] Android check: demo egg -> demo menu -> Write tonight's diary now; Folklore riddle; Photo Treat on a dog or a plant; Open the scrapbook.
 
