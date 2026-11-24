@@ -36,8 +36,9 @@ export function checkLine(text: string, name: string, max: number): boolean {
   const withoutName = lower.split(n).join(' ')
   const words = withoutName.split(/[^a-z']+/)
   if (BLOCKED.some((b) => words.includes(b) || words.some((w) => w.startsWith(b) && b.length >= 4 && !['killie', 'diet', 'drama', 'dramatic', 'deadly'].includes(w)))) return false
-  if (/https?:|www\.|\.com\b|@/.test(lower)) return false
-  if (/\d{5,}/.test(t)) return false
+  // Checked outside the name: a Haggling called "00000" is fine (PBT S16, 24 Nov).
+  if (/https?:|www\.|\.com\b|@/.test(withoutName)) return false
+  if (/\d{5,}/.test(withoutName)) return false
   if (/[{}<>]/.test(t)) return false
   const sentences = t.split(/[.!?]+(\s|$)/).filter((s) => s.trim().length > 2).length
   return sentences >= 1 && sentences <= 3

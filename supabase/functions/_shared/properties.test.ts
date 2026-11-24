@@ -237,7 +237,7 @@ const diaryInput = fc.record({
 function obeysRules(t: string, name: string, max: number): boolean {
   const lower = t.toLowerCase().split(name.toLowerCase()).join(' ')
   const words = lower.split(/[^a-z']+/)
-  return t.length <= max && t.toLowerCase().includes(name.toLowerCase()) && !BLOCKED.some((b) => words.includes(b)) && !/https?:|www\.|@/.test(t.toLowerCase()) && !/\d{5,}/.test(t)
+  return t.length <= max && t.toLowerCase().includes(name.toLowerCase()) && !BLOCKED.some((b) => words.includes(b)) && !/https?:|www\.|@/.test(lower) && !/\d{5,}/.test(lower)
 }
 
 test('S15 checkLine only lets through lines that obey every rule (ai-haggling R3.6, R4.3)', () => {
@@ -253,6 +253,9 @@ test('S15 checkLine only lets through lines that obey every rule (ai-haggling R3
   assert.ok(!checkLine('Dear diary, the rain was braw.', 'Wee Yin', 300), 'must name the Haggling')
   assert.ok(!checkLine('Wee Yin had a wee dram by the fire.', 'Wee Yin', 300), 'no drink')
   assert.ok(checkLine('Wee Yin loved the drama of the storm.', 'Wee Yin', 300), 'drama is fine')
+  // Found by S16 in CI (24 Nov, seed -953072770): a Haggling named with digits.
+  assert.ok(checkLine('Another day in the life of 00000. Hoping for more visits tomorrow.', '00000', 300), 'a numeric name is not a phone number')
+  assert.ok(!checkLine('00000 says call 0131 4960000 now.', '00000', 300), 'other long numbers are still blocked')
 })
 function safeLabelName() {
   return hagName.map(safeName)
