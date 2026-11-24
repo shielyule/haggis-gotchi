@@ -39,12 +39,39 @@ import {
 import { fetchShareInfo, fetchShowInFeed, lifecycleAction, pullBroodFromCloud, pushCheckIn, saveShowInFeed, setShareEnabled, writeDiaryNow } from './lib/cloud'
 import { loadStore, replaceHaggling, replaceLocalBrood } from './lib/storage'
 import { CareIntro, introSeen } from './CareIntro'
-import { InfoTip } from './InfoTip'
 import { WatchMemories } from './WatchMemories'
 import { costumeFor, costumePreview, monthDayOf, SEASONS, setCostumePreview } from './data/costumes'
 import { HaggisRun } from './HaggisRun'
 import { RiddleGame } from './RiddleGame'
+import { Icon } from './Icon'
 import { chirp, setSoundOn, soundOn } from './lib/chirp'
+
+/** Owner's design: icon per weather bucket (emoji stay in the demo menu). */
+const WEATHER_SYMBOL: Record<string, string> = {
+  sunny: 'sunny', crisp: 'partly_cloudy_day', frost: 'ac_unit', hot: 'heat', grey: 'cloud', rain: 'rainy',
+  storm: 'thunderstorm', snow: 'weather_snowy', windy: 'air', humid: 'humidity_percentage', fog: 'foggy', haar: 'foggy',
+}
+
+/** A tap tile that works like a switch (owner's design, 24 Nov). */
+function SwitchTile({ icon, label, on, onToggle, disabled = false, hint }: { icon: string; label: string; on: boolean; onToggle: (next: boolean) => void; disabled?: boolean; hint?: string }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      aria-label={hint ? `${label}. ${hint}` : label}
+      title={hint}
+      disabled={disabled}
+      className={`switch-tile${on ? ' switch-tile-on' : ''}`}
+      onClick={() => onToggle(!on)}
+    >
+      <span className="switch-tile-label">
+        <Icon name={icon} /> {label}
+      </span>
+      <span className="switch-dot" aria-hidden="true" />
+    </button>
+  )
+}
 
 const WEATHER_ICON: Record<string, string> = {
   sunny: '☀️', crisp: '🌤️', frost: '❄️', hot: '🥵', grey: '☁️',
@@ -503,6 +530,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
 
   return (
     <div className={`care phone-shell care-alert-${alert}`}>
+      <div className="care-panel care-main">
       <header className="care-head">
         <button type="button" className="btn btn-ghost care-back" onClick={onBack}>
           Mother
@@ -701,7 +729,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
 
       {isHome && chip ? (
         <p className="weather-chip">
-          <span aria-hidden="true">{WEATHER_ICON[chip.bucket] ?? '🌦️'}</span> {chip.label}
+          <Icon name={WEATHER_SYMBOL[chip.bucket] ?? 'cloud'} className="icon-primary" /> {chip.label}
           {chip.tempC !== null ? ` · ${Math.round(chip.tempC)}°C` : ''} · {chip.place}
           {h.weatherLine && !swing ? <span className="weather-feel">{h.weatherLine}</span> : null}
           <button
@@ -847,102 +875,107 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           onClose={() => setRiddleOpen(false)}
         />
       ) : null}
-      {isHome ? (
-        <label className="demo-toggle share-toggle">
-          <input
-            type="checkbox"
-            checked={sound}
-            onChange={(e) => {
-              setSoundOn(e.target.checked)
-              setSound(e.target.checked)
-            }}
-          />
-          Sounds
-        </label>
-      ) : null}
-      <button type="button" className="link-btn" onClick={() => setIntroOpen(true)}>
-        How do the buttons work?
-      </button>
       {introOpen ? <CareIntro name={h.name} onClose={() => setIntroOpen(false)} /> : null}
       {treatNote ? (
         <p className={treatNote.good ? 'care-sub treat-note' : 'form-error'}>{treatNote.text}</p>
       ) : null}
+      </div>
 
-      {isHome ? (
-        <section className="care-reminders">
-          {reminders === 'unsupported' ? (
-            <p className="care-sub">
-              Reminders need the app on your home screen. Add Haggis-gotchi to your home
-              screen, open it from the icon, then come back here.
-            </p>
-          ) : reminders === 'blocked' ? (
-            <p className="care-sub">
-              Notifications are blocked. Phone Settings, Apps, Haggis-gotchi (or Chrome),
-              Notifications: allow, then reopen.
-            </p>
-          ) : (
-            <button type="button" className="btn btn-ghost" onClick={() => void toggleReminders()}>
-              {reminders === 'on' ? 'Turn reminders off' : 'Turn on reminders'}
-            </button>
-          )}
-          {reminders === 'on' && quiet !== null ? (
-            <label className="demo-toggle share-toggle">
-              <input
-                type="checkbox"
-                checked={quiet}
-                onChange={(e) => {
-                  const v = e.target.checked
-                  void saveQuietHours(v).then((ok) => ok && setQuiet(v))
-                }}
-              />
-              Quiet nights{' '}
-              <InfoTip text="No reminders between 10pm and 7am (your phone's time), and no more than 6 a day." />
-            </label>
+      {/* Quick settings (owner's design, 24 Nov): switch tiles instead of tick boxes. */}
+      <section className="care-panel care-settings" aria-label="Quick settings">
+        <div className="panel-head">
+          <h3>Quick settings</h3>
+          <button type="button" className="link-btn panel-link" onClick={() => setIntroOpen(true)}>
+            How buttons work
+          </button>
+        </div>
+        <div className="tile-grid">
+          {isHome ? (
+            <SwitchTile
+              icon={sound ? 'volume_up' : 'volume_off'}
+              label="Sounds"
+              on={sound}
+              onToggle={(v) => {
+                setSoundOn(v)
+                setSound(v)
+              }}
+            />
           ) : null}
-          {reminderNote ? <p className="care-sub">{reminderNote}</p> : null}
-        </section>
-      ) : null}
-
-      <button type="button" className="btn btn-ghost" onClick={() => void shareOnSocial()}>
-        Share {h.name} on social
-      </button>
-      {share ? (
-        <label className="demo-toggle share-toggle">
-          <input type="checkbox" checked={share.on} onChange={() => void toggleShare()} />
-          Public card for {h.name} ({share.on ? 'on' : 'off'}){' '}
-          <InfoTip text="A read-only page anyone with the link can see: portrait, level, bars and hatching film, with a 'Get your own egg' button. It never shows your name, email or where you live. Share on social sends this link when it is on." />
-          {share.on ? (
+          {isHome ? (
+            <SwitchTile
+              icon="bedtime"
+              label="Quiet nights"
+              on={Boolean(quiet)}
+              disabled={reminders !== 'on' || quiet === null}
+              hint={reminders === 'on' ? "No reminders 10pm-7am (your phone's time), at most 6 a day." : 'Turn reminders on first.'}
+              onToggle={(v) => void saveQuietHours(v).then((ok) => ok && setQuiet(v))}
+            />
+          ) : null}
+          {share ? (
+            <SwitchTile
+              icon="badge"
+              label="Public card"
+              on={share.on}
+              hint="A read-only page anyone with the link can see: portrait, level, bars and hatching film. Never your name, email or where you live."
+              onToggle={() => void toggleShare()}
+            />
+          ) : null}
+          {inFeed !== null && isHome ? (
+            <SwitchTile
+              icon="family_history"
+              label="Brood book"
+              on={inFeed}
+              hint={`Show ${h.name} in the mother's public scrapbook ("Fred just fed Harry"). Only first names appear.`}
+              onToggle={(v) => void saveShowInFeed(v).then((ok) => ok && setInFeed(v))}
+            />
+          ) : null}
+        </div>
+        {share?.on ? (
+          <p className="care-sub tile-note">
+            Public card is on:{' '}
             <a href={`/h/${share.publicId}`} target="_blank" rel="noopener noreferrer">
-              {' '}
               see it
             </a>
+          </p>
+        ) : null}
+        {isHome && reminders === 'unsupported' ? (
+          <p className="care-sub">
+            Reminders need the app on your home screen. Add Haggis-gotchi to your home screen, open it from the icon,
+            then come back here.
+          </p>
+        ) : null}
+        {isHome && reminders === 'blocked' ? (
+          <p className="care-sub">
+            Notifications are blocked. Phone Settings, Apps, Haggis-gotchi (or Chrome), Notifications: allow, then reopen.
+          </p>
+        ) : null}
+        <div className="pair-row">
+          {isHome && reminders !== 'unsupported' && reminders !== 'blocked' ? (
+            <button type="button" className="pill pill-quiet" onClick={() => void toggleReminders()}>
+              <Icon name={reminders === 'on' ? 'notifications_active' : 'notifications_off'} />
+              {reminders === 'on' ? 'Reminders on' : 'Reminders off'}
+            </button>
           ) : null}
-        </label>
-      ) : null}
-      {inFeed !== null && isHome ? (
-        <label className="demo-toggle share-toggle">
-          <input
-            type="checkbox"
-            checked={inFeed}
-            onChange={(e) => {
-              const v = e.target.checked
-              void saveShowInFeed(v).then((ok) => ok && setInFeed(v))
-            }}
-          />
-          Show {h.name} in the mother&rsquo;s public scrapbook{' '}
-          <InfoTip text="The mother's page lists the brood's latest moments, like 'Fred just fed Harry'. Only your first name and your Haggling's name appear." />
-        </label>
-      ) : null}
-      {shareNote ? <p className="care-sub">{shareNote}</p> : null}
+          <button type="button" className="pill pill-brass" onClick={() => void shareOnSocial()}>
+            <Icon name="share" /> Share {h.name}
+          </button>
+        </div>
+        {reminderNote ? <p className="care-sub">{reminderNote}</p> : null}
+        {shareNote ? <p className="care-sub">{shareNote}</p> : null}
+      </section>
 
+      <div className="care-panel care-memories">
       {filmNote ? <p className="weather-swing">{filmNote}</p> : null}
       <WatchMemories temperamentId={temp.id} extras={h.memoryFilms ?? []} playUnlocked={playUnlocked} stage={life.stage} />
 
       <section className="care-scrap">
         <h3>Scrapbook</h3>
         {h.cloudChildId ? (
-          <a className="btn btn-ghost book-link" href={`/scrapbook?h=${h.cloudChildId}`} target="_blank" rel="noopener">
-            📖 Open the scrapbook (every page, ever)
+          <a className="book-link" href={`/scrapbook?h=${h.cloudChildId}`} target="_blank" rel="noopener">
+            <span>
+              <Icon name="menu_book" className="icon-brass" /> Open scrapbook (every page, ever)
+            </span>
+            <Icon name="chevron_right" />
           </a>
         ) : null}
         {h.scrapbook.length === 0 ? (
@@ -966,6 +999,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
           </ul>
         )}
       </section>
+      </div>
       <p className="care-sub legal-links">
         <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/privacy#delete">Delete my account</a>
       </p>

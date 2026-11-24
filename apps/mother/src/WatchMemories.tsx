@@ -5,6 +5,7 @@ import {
   memoryFilmsFor,
   type MemoryFilm,
 } from './data/temperaments'
+import { Icon } from './Icon'
 
 type Props = {
   temperamentId: string
@@ -38,10 +39,13 @@ export function WatchMemories({ temperamentId, extras = [], playUnlocked = false
 
   return (
     <section className="care-watch">
-      <h3>Watch again</h3>
-      <p className="care-sub">
-        Hatch films and growing-up memories live here. Pick one and press play.
-      </p>
+      <div className="panel-head">
+        <div>
+          <h3>Watch again</h3>
+          <p className="care-sub">Hatch films and growing-up memories.</p>
+        </div>
+        <Icon name="theaters" className="icon-brass icon-lg" />
+      </div>
       <div className="watch-row">
         <label className="watch-select">
           <span className="visually-hidden">Choose a film</span>
@@ -61,7 +65,7 @@ export function WatchMemories({ temperamentId, extras = [], playUnlocked = false
         </label>
         <button
           type="button"
-          className="btn btn-ghost"
+          className="pill pill-brass watch-go"
           disabled={!selected}
           onClick={() => {
             if (!selected) return
@@ -69,7 +73,7 @@ export function WatchMemories({ temperamentId, extras = [], playUnlocked = false
             setPlayingId(selected.id)
           }}
         >
-          Watch
+          <Icon name="play_arrow" /> Watch
         </button>
       </div>
 

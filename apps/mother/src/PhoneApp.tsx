@@ -7,6 +7,7 @@ import { pullBroodFromCloud } from './lib/cloud'
 import { installSkipped, isInstalled, skipInstall } from './lib/device'
 import { stagePortraitFor, temperamentForChaos } from './data/temperaments'
 import { costumePreview, monthDayOf, portraitFor } from './data/costumes'
+import { Icon } from './Icon'
 import { lifeStatus } from './lib/engine'
 import { eggSlug, loadStore, replaceLocalBrood, savePhoneStore, type EggRecord } from './lib/storage'
 import { supabase } from './lib/supabase'
@@ -124,22 +125,27 @@ export function PhoneApp() {
   const mine = eggs.find((e) => e.id === selectedId) ?? eggs[0]
   const broodBar = (
     <nav className="brood-bar" aria-label="Your Hagglings">
-      {eggs.map((e) => (
-        <button
-          key={e.id}
-          type="button"
-          className={`brood-chip${e.id === mine?.id && !wantsNew ? ' brood-chip-on' : ''}`}
-          onClick={() => pick(e.id)}
-        >
-          {e.haggling?.name ?? 'Egg'}
+      <div className="brood-switch">
+        {eggs.map((e) => (
+          <button
+            key={e.id}
+            type="button"
+            className={`brood-chip${e.id === mine?.id && !wantsNew ? ' brood-chip-on' : ''}`}
+            onClick={() => pick(e.id)}
+            aria-pressed={e.id === mine?.id && !wantsNew}
+          >
+            {e.haggling?.name ?? 'Egg'}
+          </button>
+        ))}
+      </div>
+      <div className="brood-tools">
+        <a className="brood-new" href="/?new=1">
+          <Icon name="egg" /> New egg
+        </a>
+        <button type="button" className="brood-signout" onClick={() => void signOut()} aria-label="Sign out" title="Sign out">
+          <Icon name="logout" />
         </button>
-      ))}
-      <a className="brood-chip" href="/?new=1">
-        + New egg
-      </a>
-      <button type="button" className="brood-chip brood-signout" onClick={() => void signOut()}>
-        Sign out
-      </button>
+      </div>
     </nav>
   )
   if (mine && !wantsNew) {
