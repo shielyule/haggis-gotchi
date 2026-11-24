@@ -102,6 +102,41 @@ Account ID: [your 12-digit account ID, top right of the console].
 
 **You should see:** a case number. Replies come by email; reports say this can take 1-5 days.
 
+### 3c - What AWS Support asked for (their reply, 23 Nov)
+AWS suggested asking for a different quota and sending three command outputs. You can run the
+commands in **CloudShell**, a command window inside the AWS console (nothing to install).
+
+1. Console top bar: click the **CloudShell** icon (a small `>_` box), or search **CloudShell**.
+   Make sure the region top right is **Europe (London)**.
+2. Wait for the prompt `$`. Paste each line, press Enter, and copy what it prints into a text file:
+```
+aws bedrock get-foundation-model-availability --model-id amazon.nova-lite-v1:0 --region eu-west-2
+aws service-quotas get-service-quota --service-code bedrock --quota-code L-45E0AD92 --region eu-west-2
+aws service-quotas get-aws-default-service-quota --service-code bedrock --quota-code L-45E0AD92 --region eu-west-2
+```
+   **You should see:** JSON text. The second shows `"Value": 0.0`, the third a big default number.
+   **If a line says "Invalid choice" or "NoSuchResourceException":** copy that message as it is; AWS
+   wants to see it too.
+3. **Service Quotas -> Amazon Bedrock**, region Europe (London). Search
+   **Cross-Region InvokeModel tokens per minute for Amazon Nova Lite**. Click it ->
+   **Request increase at account level** -> enter **8000000** -> **Request**.
+4. Reply on your support case with: the error text (`ThrottlingException: Too many tokens per day`),
+   the three outputs, and this:
+```
+Use case: a small hobby game (Haggis-gotchi) for the Kiroween 2026 hackathon. The app caps itself at
+400 short calls a day (well under 1,000,000 tokens a day). Production, very low volume.
+The applied quota L-45E0AD92 is 0, so the "use 90% of your quota first" rule cannot apply.
+```
+5. If the request is auto-declined, reply to the same case with that last sentence again and ask for it
+   to go to the Bedrock team.
+
+**Never paste your access keys** into CloudShell output you share, or into chat. The commands above
+print no keys.
+
+**If AWS grants the Cross-Region quota (not the London one):** tell Kiro. The game then has to call the
+EU cross-region model (`eu.amazon.nova-lite-v1:0`), and the AWS permission needs one more line. Kiro
+will give you the exact JSON.
+
 **When AWS says it is done:** tell Kiro **"quota done"**. Kiro re-runs the live test.
 
 **If it is not sorted by 1 Dec:** the game already works with the written lines (and the video

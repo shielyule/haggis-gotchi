@@ -1,0 +1,406 @@
+<!DOCTYPE html><html lang="en" class="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option B: Tactile Highland Ledger — Haggis-gotchi</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'brass-gold': '#E9C349',
+        'plum-treat': '#7B3F61',
+        'night-slate': '#2C3A4E',
+        'bar-low': '#D9482B',
+        'bar-mid': '#E09F1F',
+        'bar-high': '#76A832',
+        'light-primary': '#24371E',
+        'light-on-primary': '#FFFFFF',
+        'light-primary-container': '#3A4E33',
+        'light-on-primary-container': '#A7BF9C',
+        'light-secondary': '#735C00',
+        'light-on-secondary': '#FFFFFF',
+        'light-secondary-container': '#FED65B',
+        'light-on-secondary-container': '#745C00',
+        'light-tertiary': '#5F1822',
+        'light-on-tertiary': '#FFFFFF',
+        'light-tertiary-container': '#7C2F37',
+        'light-on-tertiary-container': '#FF9CA3',
+        'light-error': '#BA1A1A',
+        'light-on-error': '#FFFFFF',
+        'light-error-container': '#FFDAD6',
+        'light-on-error-container': '#93000A',
+        'light-surface': '#F2FDE8',
+        'light-surface-container-low': '#EDF7E3',
+        'light-surface-container': '#E7F1DD',
+        'light-surface-container-high': '#E1ECD8',
+        'light-surface-container-highest': '#DBE6D2',
+        'light-on-surface': '#151E12',
+        'light-on-surface-variant': '#444840',
+        'light-outline': '#747870',
+        'light-outline-variant': '#C4C8BE',
+        'dark-primary': '#B6CDAA',
+        'dark-on-primary': '#22351C',
+        'dark-primary-container': '#3A4E33',
+        'dark-on-primary-container': '#A7BF9C',
+        'dark-secondary': '#E9C349',
+        'dark-on-secondary': '#3C2F00',
+        'dark-secondary-container': '#AF8D11',
+        'dark-on-secondary-container': '#281E00',
+        'dark-tertiary': '#FFB2B6',
+        'dark-on-tertiary': '#5C1620',
+        'dark-tertiary-container': '#7C2F37',
+        'dark-on-tertiary-container': '#FF9CA3',
+        'dark-error': '#FFB4AB',
+        'dark-on-error': '#690005',
+        'dark-error-container': '#93000A',
+        'dark-on-error-container': '#FFDAD6',
+        'dark-surface': '#0D160A',
+        'dark-surface-container-low': '#151E12',
+        'dark-surface-container': '#192216',
+        'dark-surface-container-high': '#232C1F',
+        'dark-surface-container-highest': '#2E372A',
+        'dark-on-surface': '#DBE6D2',
+        'dark-on-surface-variant': '#C4C8BE',
+        'dark-outline': '#8E9289',
+        'dark-outline-variant': '#444840',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '20px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '12px',
+        'gutter-lg': '16px',
+        'gutter-xl': '24px',
+        'section': '24px',
+        'page-margin': '16px',
+      },
+      fontFamily: {
+        'display': ['"Joan"', 'sans-serif'],
+        'headline': ['"Joan"', 'sans-serif'],
+        'title': ['"Proza Libre"', 'sans-serif'],
+        'body': ['"Proza Libre"', 'sans-serif'],
+        'label': ['"Proza Libre"', 'sans-serif'],
+        'mono': ['"Red Hat Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['36px', { lineHeight: '42px', letterSpacing: '-0.5px', fontWeight: '400' }],
+        'display-lg-mobile': ['28px', { lineHeight: '34px', letterSpacing: '-0.25px', fontWeight: '400' }],
+        'headline-lg': ['26px', { lineHeight: '32px', letterSpacing: '0px', fontWeight: '400' }],
+        'headline-md': ['20px', { lineHeight: '26px', letterSpacing: '0px', fontWeight: '400' }],
+        'title-md': ['16px', { lineHeight: '22px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['12px', { lineHeight: '16px', letterSpacing: '0.1px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '18px', letterSpacing: '0.1px', fontWeight: '600' }],
+        'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0.2px', fontWeight: '500' }],
+        'mono-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '100ms',
+        'surface-enter': '200ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'surface-enter': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'surface-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Joan&amp;family=Proza+Libre:wght@400;500;600;700&amp;family=Red+Hat+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }
+  </style>
+</head>
+<body class="bg-dark-surface text-dark-on-surface font-body antialiased">
+  <div class="min-h-[884px] max-w-md mx-auto flex flex-col gap-gutter-md px-page-margin py-gutter-lg" data-stitch-vh="min-h-[884px]===min-h-screen">
+
+    <!-- Top Switcher & Account Bar -->
+    <header class="flex items-center justify-between gap-gutter-sm">
+      <div class="flex items-center gap-gutter-xs p-gutter-xs rounded-full bg-dark-surface-container border border-dark-outline-variant">
+        <button type="button" class="px-gutter-md py-gutter-xs rounded-full text-dark-on-surface-variant font-label text-label-sm hover:text-dark-on-surface">
+          <span data-design-text-token="label-sm">Bampot</span>
+        </button>
+        <button type="button" class="px-gutter-md py-gutter-xs rounded-full bg-dark-primary text-dark-on-primary font-label text-label-sm">
+          <span data-design-text-token="label-sm">Firecracker</span>
+        </button>
+      </div>
+      <div class="flex items-center gap-gutter-xs">
+        <button type="button" class="inline-flex items-center gap-gutter-xs px-gutter-md py-gutter-xs rounded-full bg-dark-secondary text-dark-on-secondary border-b-2 border-dark-secondary-container font-label text-label-sm">
+          <span class="material-symbols-outlined text-body-sm" aria-hidden="true">egg</span>
+          <span data-design-text-token="label-sm">New egg</span>
+        </button>
+        <button data-component-id="button-icon" data-component-type="button" data-component-variant="icon" type="button" aria-label="Sign out" class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-dark-surface-container-high text-dark-on-surface-variant border border-dark-outline-variant hover:text-dark-on-surface">
+          <span class="material-symbols-outlined text-title-md" aria-hidden="true">logout</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Brand & Brood Header -->
+    <div class="flex items-baseline justify-between gap-gutter-sm px-gutter-xs">
+      <div class="flex items-baseline gap-gutter-sm">
+        <h1 class="font-headline text-display-lg-mobile text-dark-on-surface" data-design-text-token="display-lg-mobile">Haggis-gotchi</h1>
+        <span class="font-mono text-mono-sm text-dark-secondary" data-design-text-token="mono-sm">/shiel4</span>
+      </div>
+      <a href="#brood" class="inline-flex items-center gap-gutter-xs font-label text-label-sm text-dark-primary hover:underline">
+        <span data-design-text-token="label-sm">Mother &amp; brood</span>
+        <span class="material-symbols-outlined text-body-sm" aria-hidden="true">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Main Haggling Enclosure -->
+    <main class="flex flex-col gap-gutter-lg">
+      <section class="p-gutter-lg rounded-lg bg-dark-surface-container border border-dark-outline-variant flex flex-col gap-gutter-md">
+        <div class="flex items-start justify-between gap-gutter-sm">
+          <div class="flex flex-col gap-gutter-xs">
+            <span class="font-label text-label-sm text-dark-secondary uppercase tracking-wider" data-design-text-token="label-sm">Your Haggling</span>
+            <h2 class="font-headline text-headline-lg text-dark-on-surface" data-design-text-token="headline-lg">Firecracker</h2>
+            <p class="font-body text-body-sm text-dark-on-surface-variant" data-design-text-token="body-sm">Child · 32 days left · Ree · Fair chuffed · Bonnie</p>
+          </div>
+          <span class="px-gutter-md py-gutter-xs rounded-full bg-dark-primary-container text-dark-on-primary-container font-label text-label-sm" data-design-text-token="label-sm">Mother</span>
+        </div>
+
+        <!-- Level & Life XP -->
+        <div class="flex flex-col gap-gutter-xs">
+          <div class="flex items-center justify-between">
+            <span class="font-label text-label-sm text-dark-on-surface" data-design-text-token="label-sm">Level 3</span>
+            <span class="font-mono text-mono-sm text-dark-on-surface-variant tabular-nums" data-design-text-token="mono-sm">315 / 600 Life XP</span>
+          </div>
+          <div class="h-2 w-full rounded-full bg-dark-surface-container-highest overflow-hidden">
+            <div class="h-full w-1/2 rounded-full bg-gradient-to-r from-dark-tertiary to-dark-secondary"></div>
+          </div>
+        </div>
+
+        <!-- Weather Strip -->
+        <div class="flex items-center justify-between gap-gutter-sm px-gutter-md py-gutter-sm rounded-md bg-dark-surface-container-low border border-dark-outline-variant">
+          <div class="flex items-center gap-gutter-sm">
+            <span class="material-symbols-outlined text-title-md text-dark-primary" aria-hidden="true">rainy</span>
+            <span class="font-body text-body-sm text-dark-on-surface" data-design-text-token="body-sm">Rain · 3°C · your area</span>
+          </div>
+          <button type="button" class="font-label text-label-sm text-dark-secondary hover:underline">
+            <span data-design-text-token="label-sm">Use home place</span>
+          </button>
+        </div>
+
+        <!-- Creature Portrait -->
+        <div class="relative rounded-md overflow-hidden border border-dark-outline-variant bg-dark-surface-container-low">
+          <img src="https://lh3.googleusercontent.com/aida/ALJJyrCRqUYHzE-BXXWUMEN91c_22KUjV7nkZZTt2jOypYhydRu6FJT-8QOp0FE3oArTY9JhIyVPTr3gBzS8efBU_yENnxDUj1AJsShuF7BXJBhTFMa2c1ORcdiha2ytUiixKrb7qbmfgU4g0tNKZFxCbwStA9ETnqFV_s15v8k1ScSbZ22A7Cs9PJuueDHUIAs4ECthuloIr6_8JH8_W5am74DAzWEL4SSLstbyQZ8IC-oJiIE9Upw2RAgQzz25yw" alt="Firecracker the baby haggis waving" class="w-full h-44 object-cover">
+          <span class="absolute bottom-gutter-sm left-gutter-sm px-gutter-md py-gutter-xs rounded-full bg-plum-treat text-light-on-primary font-label text-label-sm" data-design-text-token="label-sm">Child</span>
+        </div>
+
+        <!-- Stat Bars (Preserved) -->
+        <div class="flex flex-col gap-gutter-sm">
+          <div class="flex flex-col gap-gutter-xs">
+            <div class="flex justify-between text-body-sm">
+              <span class="text-dark-on-surface" data-design-text-token="body-sm">Health XP</span>
+              <span class="font-mono text-mono-sm tabular-nums text-dark-on-surface" data-design-text-token="mono-sm">100</span>
+            </div>
+            <div class="h-2 w-full rounded-full bg-dark-surface-container-highest overflow-hidden">
+              <div class="h-full w-full rounded-full bg-gradient-to-r from-bar-low via-bar-mid to-bar-high"></div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-gutter-xs">
+            <div class="flex justify-between text-body-sm">
+              <span class="text-dark-on-surface" data-design-text-token="body-sm">Hunger</span>
+              <span class="font-mono text-mono-sm tabular-nums text-dark-on-surface" data-design-text-token="mono-sm">71</span>
+            </div>
+            <div class="h-2 w-full rounded-full bg-dark-surface-container-highest overflow-hidden">
+              <div class="h-full w-[71%] rounded-full bg-gradient-to-r from-bar-low via-bar-mid to-bar-high"></div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-gutter-xs">
+            <div class="flex justify-between text-body-sm">
+              <span class="text-dark-on-surface" data-design-text-token="body-sm">Mood</span>
+              <span class="font-mono text-mono-sm tabular-nums text-dark-on-surface" data-design-text-token="mono-sm">89</span>
+            </div>
+            <div class="h-2 w-full rounded-full bg-dark-surface-container-highest overflow-hidden">
+              <div class="h-full w-[89%] rounded-full bg-gradient-to-r from-bar-low via-bar-mid to-bar-high"></div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-gutter-xs">
+            <div class="flex justify-between text-body-sm">
+              <span class="text-dark-on-surface" data-design-text-token="body-sm">Energy</span>
+              <span class="font-mono text-mono-sm tabular-nums text-dark-on-surface" data-design-text-token="mono-sm">83</span>
+            </div>
+            <div class="h-2 w-full rounded-full bg-dark-surface-container-highest overflow-hidden">
+              <div class="h-full w-[83%] rounded-full bg-gradient-to-r from-bar-low via-bar-mid to-bar-high"></div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-gutter-xs">
+            <div class="flex justify-between text-body-sm">
+              <span class="text-dark-on-surface" data-design-text-token="body-sm">Mess</span>
+              <span class="font-mono text-mono-sm tabular-nums text-dark-on-surface" data-design-text-token="mono-sm">24</span>
+            </div>
+            <div class="h-2 w-full rounded-full bg-dark-surface-container-highest overflow-hidden">
+              <div class="h-full w-[24%] rounded-full bg-gradient-to-r from-bar-high to-bar-mid"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Routine Schedule -->
+        <p class="font-body text-body-sm text-dark-on-surface-variant text-center" data-design-text-token="body-sm">
+          Breakfast <strong class="text-dark-on-surface">8:00 AM</strong> · Dinner <strong class="text-dark-on-surface">6:00 PM</strong> · Bed <strong class="text-dark-on-surface">8:00 PM</strong>
+        </p>
+
+        <!-- Care Action Grid (Preserved) -->
+        <div class="grid grid-cols-2 gap-gutter-sm items-stretch">
+          <button type="button" class="h-full p-gutter-md rounded-md bg-dark-surface-container-high border border-dark-outline-variant border-b-2 text-left flex flex-col gap-gutter-xs hover:bg-dark-surface-container-highest">
+            <span class="font-title text-title-md text-dark-on-surface" data-design-text-token="title-md">Feed</span>
+            <span class="font-body text-body-sm text-dark-on-surface-variant" data-design-text-token="body-sm">Best at breakfast or dinner</span>
+          </button>
+          <button type="button" class="h-full p-gutter-md rounded-md bg-dark-surface-container-high border border-dark-outline-variant border-b-2 text-left flex flex-col gap-gutter-xs hover:bg-dark-surface-container-highest">
+            <span class="font-title text-title-md text-dark-on-surface" data-design-text-token="title-md">Cuddle</span>
+            <span class="font-body text-body-sm text-dark-on-surface-variant" data-design-text-token="body-sm">Calms any temperament</span>
+          </button>
+          <button type="button" class="h-full p-gutter-md rounded-md bg-dark-surface-container-high border border-dark-outline-variant border-b-2 text-left flex flex-col gap-gutter-xs hover:bg-dark-surface-container-highest">
+            <span class="font-title text-title-md text-dark-on-surface" data-design-text-token="title-md">Walk</span>
+            <span class="font-body text-body-sm text-dark-on-surface-variant" data-design-text-token="body-sm">Hills in the imagination</span>
+          </button>
+          <button type="button" class="h-full p-gutter-md rounded-md bg-dark-surface-container-high border border-dark-outline-variant border-b-2 text-left flex flex-col gap-gutter-xs hover:bg-dark-surface-container-highest">
+            <span class="font-title text-title-md text-dark-on-surface" data-design-text-token="title-md">Treat</span>
+            <span class="font-body text-body-sm text-dark-on-surface-variant" data-design-text-token="body-sm">Irn-Bru energy, briefly</span>
+          </button>
+          <button type="button" class="h-full p-gutter-md rounded-md bg-dark-surface-container-high border border-dark-outline-variant border-b-2 text-left flex flex-col gap-gutter-xs hover:bg-dark-surface-container-highest">
+            <span class="font-title text-title-md text-dark-on-surface" data-design-text-token="title-md">Clean up</span>
+            <span class="font-body text-body-sm text-dark-on-surface-variant" data-design-text-token="body-sm">The mess will not clean itself</span>
+          </button>
+          <button type="button" class="h-full p-gutter-md rounded-md bg-plum-treat border border-dark-tertiary-container border-b-2 text-left flex flex-col gap-gutter-xs hover:brightness-110">
+            <span class="font-title text-title-md text-light-on-primary" data-design-text-token="title-md">Photo Treat</span>
+            <span class="font-body text-body-sm text-dark-on-surface" data-design-text-token="body-sm">Snap Irn-Bru, bagpipes, or shortbread</span>
+          </button>
+          <button type="button" class="h-full p-gutter-md rounded-md bg-night-slate border border-dark-outline-variant border-b-2 text-left flex flex-col gap-gutter-xs hover:brightness-110">
+            <span class="font-title text-title-md text-light-on-primary" data-design-text-token="title-md">Put to bed</span>
+            <span class="font-body text-body-sm text-dark-on-surface-variant" data-design-text-token="body-sm">A good long sleep, wakes rested</span>
+          </button>
+          <button type="button" class="h-full p-gutter-md rounded-md bg-dark-secondary border border-dark-secondary-container border-b-2 text-left flex flex-col gap-gutter-xs hover:brightness-105">
+            <span class="font-title text-title-md text-dark-on-secondary" data-design-text-token="title-md">Haggis Run</span>
+            <span class="font-body text-body-sm text-dark-on-secondary-container" data-design-text-token="body-sm">Guess which way they run round the hill</span>
+          </button>
+          <button type="button" class="h-full p-gutter-md rounded-md bg-dark-secondary border border-dark-secondary-container border-b-2 text-left flex flex-col gap-gutter-xs hover:brightness-105">
+            <span class="font-title text-title-md text-dark-on-secondary" data-design-text-token="title-md">Folklore riddle</span>
+            <span class="font-body text-body-sm text-dark-on-secondary-container" data-design-text-token="body-sm">A new one every day: one guess</span>
+          </button>
+          <button type="button" class="h-full p-gutter-md rounded-md bg-dark-surface-container-high border border-dark-outline-variant border-b-2 text-left flex flex-col gap-gutter-xs hover:bg-dark-surface-container-highest">
+            <span class="font-title text-title-md text-dark-on-surface" data-design-text-token="title-md">Tell off</span>
+            <span class="font-body text-body-sm text-dark-on-surface-variant" data-design-text-token="body-sm">Only when they misbehave</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- UPGRADED SECTION 1: Quick Preferences 2x2 Tactile Tile Deck (Replaces native blue checkboxes) -->
+      <section class="p-gutter-lg rounded-lg bg-dark-surface-container border border-dark-outline-variant flex flex-col gap-gutter-md">
+        <div class="flex items-center justify-between">
+          <h3 class="font-headline text-headline-md text-dark-on-surface" data-design-text-token="headline-md">Quick settings</h3>
+          <button type="button" class="font-label text-label-sm text-dark-primary hover:underline">
+            <span data-design-text-token="label-sm">How buttons work</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-gutter-sm">
+          <button type="button" role="switch" aria-checked="true" class="p-gutter-md rounded-md bg-dark-primary-container border border-dark-primary text-left flex items-center justify-between gap-gutter-xs">
+            <div class="flex items-center gap-gutter-xs">
+              <span class="material-symbols-outlined text-title-md text-dark-primary" aria-hidden="true">volume_up</span>
+              <span class="font-label text-label-sm text-dark-on-surface" data-design-text-token="label-sm">Sounds</span>
+            </div>
+            <span class="w-2 h-2 rounded-full bg-dark-primary"></span>
+          </button>
+
+          <button type="button" role="switch" aria-checked="false" class="p-gutter-md rounded-md bg-dark-surface-container-low border border-dark-outline-variant text-left flex items-center justify-between gap-gutter-xs">
+            <div class="flex items-center gap-gutter-xs">
+              <span class="material-symbols-outlined text-title-md text-dark-on-surface-variant" aria-hidden="true">bedtime</span>
+              <span class="font-label text-label-sm text-dark-on-surface-variant" data-design-text-token="label-sm">Quiet nights</span>
+            </div>
+            <span class="w-2 h-2 rounded-full bg-dark-outline"></span>
+          </button>
+
+          <button type="button" role="switch" aria-checked="true" class="p-gutter-md rounded-md bg-dark-primary-container border border-dark-primary text-left flex items-center justify-between gap-gutter-xs">
+            <div class="flex items-center gap-gutter-xs">
+              <span class="material-symbols-outlined text-title-md text-dark-primary" aria-hidden="true">badge</span>
+              <span class="font-label text-label-sm text-dark-on-surface" data-design-text-token="label-sm">Public card</span>
+            </div>
+            <span class="w-2 h-2 rounded-full bg-dark-primary"></span>
+          </button>
+
+          <button type="button" role="switch" aria-checked="true" class="p-gutter-md rounded-md bg-dark-primary-container border border-dark-primary text-left flex items-center justify-between gap-gutter-xs">
+            <div class="flex items-center gap-gutter-xs">
+              <span class="material-symbols-outlined text-title-md text-dark-primary" aria-hidden="true">family_history</span>
+              <span class="font-label text-label-sm text-dark-on-surface" data-design-text-token="label-sm">Brood book</span>
+            </div>
+            <span class="w-2 h-2 rounded-full bg-dark-primary"></span>
+          </button>
+        </div>
+
+        <!-- Tactile Action Pair -->
+        <div class="grid grid-cols-2 gap-gutter-sm">
+          <button data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="inline-flex items-center justify-center gap-gutter-xs px-gutter-md py-gutter-md rounded-full bg-dark-surface-container-highest text-dark-on-surface border border-dark-outline-variant border-b-2 font-label text-label-sm">
+            <span class="material-symbols-outlined text-body-md" aria-hidden="true">notifications_off</span>
+            <span data-design-text-token="label-sm">Reminders off</span>
+          </button>
+          <button data-component-id="button-primary" data-component-type="button" data-component-variant="primary" type="button" class="inline-flex items-center justify-center gap-gutter-xs px-gutter-md py-gutter-md rounded-full bg-dark-secondary text-dark-on-secondary border-b-2 border-dark-secondary-container font-label text-label-sm">
+            <span class="material-symbols-outlined text-body-md" aria-hidden="true">share</span>
+            <span data-design-text-token="label-sm">Share card</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- UPGRADED SECTION 2: Watch Again & Scrapbook (Replaces native select + flat pill) -->
+      <section class="p-gutter-lg rounded-lg bg-dark-surface-container border border-dark-outline-variant flex flex-col gap-gutter-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-headline text-headline-md text-dark-secondary" data-design-text-token="headline-md">Watch again</h3>
+            <p class="font-body text-body-sm text-dark-on-surface-variant" data-design-text-token="body-sm">Hatch films and growing-up memories.</p>
+          </div>
+          <span class="material-symbols-outlined text-headline-md text-dark-secondary" aria-hidden="true">theaters</span>
+        </div>
+
+        <div class="flex items-center gap-gutter-sm">
+          <button type="button" class="flex-1 flex items-center justify-between px-gutter-md py-gutter-md rounded-md bg-dark-surface-container-low border border-dark-outline-variant text-left">
+            <span class="font-body text-body-md text-dark-on-surface" data-design-text-token="body-md">Child: dancing</span>
+            <span class="material-symbols-outlined text-title-md text-dark-on-surface-variant" aria-hidden="true">unfold_more</span>
+          </button>
+          <button type="button" class="inline-flex items-center gap-gutter-xs px-gutter-lg py-gutter-md rounded-full bg-dark-secondary text-dark-on-secondary border-b-2 border-dark-secondary-container font-label text-label-lg">
+            <span class="material-symbols-outlined text-title-md" aria-hidden="true">play_arrow</span>
+            <span data-design-text-token="label-lg">Watch</span>
+          </button>
+        </div>
+
+        <button data-component-id="button-with-icon" data-component-type="button" data-component-variant="with-icon" type="button" class="w-full inline-flex items-center justify-between px-gutter-lg py-gutter-md rounded-md bg-dark-surface-container-high text-dark-on-surface border border-dark-outline-variant border-b-2">
+          <span class="inline-flex items-center gap-gutter-sm">
+            <span class="material-symbols-outlined text-title-md text-dark-secondary" aria-hidden="true">menu_book</span>
+            <span class="font-label text-label-lg" data-design-text-token="label-lg">Open scrapbook (every page, ever)</span>
+          </span>
+          <span class="material-symbols-outlined text-title-md text-dark-on-surface-variant" aria-hidden="true">chevron_right</span>
+        </button>
+
+        <!-- Tighter Timeline Log -->
+        <div class="pt-gutter-sm border-t border-dark-outline-variant flex flex-col gap-gutter-sm">
+          <div class="flex flex-col gap-gutter-xs">
+            <span class="font-mono text-mono-sm text-dark-on-surface-variant" data-design-text-token="mono-sm">Nov 24, 7:50 AM</span>
+            <p class="font-body text-body-sm text-dark-on-surface" data-design-text-token="body-sm">Fed Firecracker at breakfast. Pure delight.</p>
+          </div>
+          <div class="flex flex-col gap-gutter-xs">
+            <span class="font-mono text-mono-sm text-dark-on-surface-variant" data-design-text-token="mono-sm">Nov 24, 7:50 AM</span>
+            <p class="font-body text-body-sm text-dark-on-surface" data-design-text-token="body-sm">Firecracker grumbled the whole time you tidied. &#34;It was FINE.&#34;</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+
+</body></html>
