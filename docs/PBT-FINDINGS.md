@@ -105,6 +105,14 @@ Found while mapping requirements to properties:
 - public-feed R5: "ticked by default". Now off by default (owner, 19 Nov).
 **Solution:** Kiro updates the three requirements with the date and reason. 10 minutes.
 
+### F8 (Low, found by CI on its own, 24 Nov) A Haggling named "00000" could never get an AI line
+**Property S16** ("the written diary always passes the same checks"), run 248 in GitHub CI, seed
+`-953072770`. The safety check blocks numbers of 5+ digits (phone numbers) but did not skip the
+Haggling's own name, so a Haggling named with digits always failed. Players still saw the written line.
+**Fix:** numbers and links are now checked outside the name (as blocked words already were); the case is
+pinned as a regression test. **Why it matters:** nobody wrote this case. The random inputs found it a day
+after the property was written, and CI stopped the build until it was fixed.
+
 ## What held (38 properties), so you can say so with confidence
 - Bars always 0-100 whole numbers; Health XP never above 100; "sick" always matches Health XP below 0.
 - Life XP never goes down, through any mix of care, weather, Photo Treats and time.
