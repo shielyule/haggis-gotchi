@@ -97,8 +97,8 @@ and the commits name the spec and task. There are 16 specs in `.kiro/specs`.
 - **Amazon Bedrock gave us zero tokens.** We built the AI diary, photo reactions and riddles on Amazon
   Nova (Bedrock). Our new AWS account turned out to have a daily token quota of **0**, marked "not
   adjustable"; every call returned "Too many tokens per day" (14 calls, 0 successful). The quota AWS
-  Support suggested was not adjustable either, and the support case was closed automatically by an AI
-  helper. Because every AI feature has a written fallback, players never saw a failure. The full record is
+  Support suggested was not adjustable either, an AI helper closed the first case, and when a person
+  finally looked, AWS declined because the account was new, advising us to "use 90%" of a limit of zero. Because every AI feature has a written fallback, players never saw a failure. The full record is
   in `docs/INCIDENT-2026-11-23-aws-bedrock-quota.md`.
 - **Recognising a can of Irn-Bru.** Rekognition often can't read the sideways logo. Testing real
   photos showed it reads the slogan "ORIGINAL AND BEST" at 98-100% in any orientation, so the rule

@@ -27,6 +27,18 @@ a nightly diary, a reaction to a photo, and a daily folklore riddle. Volume capp
 | 24 Nov | Owner tries that request. Service Quotas: **"This quota isn't adjustable and you can't request a quota increase."** |
 | 24 Nov | Owner opens a support case. It goes straight to **Complete**: an AI helper replied "I'm unable to offer a recommendation ... The current support interaction has been closed." No human saw it. |
 | 24 Nov 10:40 | Owner's own riddle and photo on the live game: both AI calls refused (429). Written lines used. |
+| 24 Nov | Owner opens a case through Account and billing; it reaches a person. |
+| 24 Nov 13:56 | **AWS declines.** Billing and Accounts team, after asking the Bedrock service team: the account is "relatively new (created on November 2 2026) and the overall usage is limited", so they "couldn't approve and process this limit increase request". Advice: build usage history by using "about 90%" of the existing limit, wait for the next billing cycle and ask again, or contact AWS Sales. |
+
+## Why AWS's advice cannot work here
+- "Use about 90% of your existing limit": the existing limit is **0 tokens a day**. 90% of 0 is 0; there is
+  no usage to build.
+- "Wait for the next billing cycle": that is 1 December, three days before the submission deadline, with no
+  promise of a different answer.
+- "Contact Sales for an Account Manager": a sales route for a hobby game capped at 400 short calls a day.
+So for a new account, AWS's own published default (5,760,000,000 tokens a day for Nova Lite) is shown in the
+docs, the console says the model is enabled, and there is no route to a single usable token within the
+hackathon window.
 
 ## Evidence (from `public.ai_calls`, 23-24 Nov)
 - **14 AI calls, 0 successful.**
@@ -65,5 +77,5 @@ tokens, no self-service increase, and support that closes the request automatica
 hackathon resources (or pre-seeded quotas for entrants) would save others the same lost day.
 
 ## Status
-Open. Decision with the owner: keep the written lines for the submission, or switch the AI words to another
-provider (needs a new key and a privacy notice change).
+**Closed by AWS (declined, 24 Nov).** Decision with the owner: keep the written lines for the submission, or
+switch the AI words to another provider (needs a new key and a privacy notice change).
