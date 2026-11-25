@@ -98,7 +98,9 @@ and the commits name the spec and task. There are 16 specs in `.kiro/specs`.
   Nova (Bedrock). Our new AWS account turned out to have a daily token quota of **0**, marked "not
   adjustable"; every call returned "Too many tokens per day" (14 calls, 0 successful). The quota AWS
   Support suggested was not adjustable either, an AI helper closed the first case, and when a person
-  finally looked, AWS declined because the account was new, advising us to "use 90%" of a limit of zero. Because every AI feature has a written fallback, players never saw a failure. The full record is
+  finally looked, AWS declined because the account was new, advising us to "use 90%" of a limit of zero.
+  A second reply acknowledged the hackathon deadline, then said only that the request "may take some time".
+  We moved the AI words to Google Gemini instead, which meant making the game 18+ (Gemini's terms). Because every AI feature has a written fallback, players never saw a failure. The full record is
   in `docs/INCIDENT-2026-11-23-aws-bedrock-quota.md`.
 - **Recognising a can of Irn-Bru.** Rekognition often can't read the sideways logo. Testing real
   photos showed it reads the slogan "ORIGINAL AND BEST" at 98-100% in any orientation, so the rule
@@ -245,3 +247,16 @@ Built in Kiro IDE, spec-first, from 16 Nov 2026 (see "pre-existing work").
   about Kiro and how it changed the way you build. It is judged on original thoughts, so write this one
   in your own words.
 - Post both on submission day (the idea stays private until then).
+
+---
+
+## Feedback for the sponsor (paste into any "feedback" or "anything else" field)
+```
+Amazon Bedrock was unusable on our new AWS account for the whole build window. Nova Lite and Nova Micro
+had a daily token quota of 0, marked "not adjustable"; every call returned "Too many tokens per day"
+(0 of 14 calls succeeded), while the same account's Amazon Rekognition worked first time. AWS Support's
+first reply declined because the account was new and advised using "90%" of a zero limit; the second
+acknowledged the hackathon deadline and said only that the request "may take some time". We lost two
+days and moved to another provider. Please pre-seed Bedrock quotas for registered entrants, or warn
+entrants in the resources. Full record: docs/INCIDENT-2026-11-23-aws-bedrock-quota.md in our repo.
+```

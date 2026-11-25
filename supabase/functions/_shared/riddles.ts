@@ -92,7 +92,7 @@ export function isValidRiddle(r: Riddle): boolean {
 }
 
 export const RIDDLE_SYSTEM = [
-  'You write one short riddle about Scottish folklore or culture for players aged 13 and over.',
+  'You write one short riddle about Scottish folklore or culture for adult players; keep it family-friendly.',
   'It must be factually correct and gentle. No alcohol, violence, swearing or real living people.',
   'Give exactly three answers: one right, two wrong but believable. Do not put the right answer in the question.',
   'Reply with JSON only: {"question": string (under 250 characters), "options": [string, string, string] (each under 35 characters),',

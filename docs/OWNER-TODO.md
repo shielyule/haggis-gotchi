@@ -13,7 +13,7 @@ Last updated 22 Nov 2026.
   - [ ] Sounds tick box: chirps on and off.
   - [ ] Reminders on, then tick **Quiet nights**. Untick and tick again: it stays as you left it.
   - [ ] `/privacy` while signed in shows **Delete my account** (do not press it on your real account).
-  - [ ] Sign-up: the 13+ box must be ticked; "six weeks" line shows; new identity wording.
+  - [ ] Sign-up: the 18+ box must be ticked; "six weeks" line shows; new identity wording.
 
 ## Art still to come
 - [x] Old-age films: Douce, Skeigh (22 Nov), Ill-trickit, Radge (23 Nov).
@@ -26,7 +26,8 @@ Last updated 22 Nov 2026.
 ## AI words (built 23 Nov)
 - [x] AWS permission (23 Nov): works.
 - [x] AWS Bedrock: quota 0, not adjustable, support closed automatically. Logged: `docs/INCIDENT-2026-11-23-aws-bedrock-quota.md`.
-- [ ] **Decide A, B or C** in `docs/GEMINI-SETUP.md`: Gemini's terms need the app to be **18+** (we are 13+). A = go 18+ and use Gemini; B = keep 13+ and the written lines; C = keep 13+ and Kiro checks another AI company's terms.
+- [x] Decided (25 Nov): Gemini, and Haggis-gotchi is 18+ (live).
+- [ ] **Gemini key:** `docs/GEMINI-SETUP.md` Steps 1-6 (about 10 minutes). Then tell Kiro "Gemini key added".
 - [x] Book art and opening film (23 Nov): live.
 - [ ] Android check: demo egg -> demo menu -> Write tonight's diary now; Folklore riddle; Photo Treat on a dog or a plant; Open the scrapbook.
 

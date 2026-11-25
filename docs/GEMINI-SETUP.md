@@ -14,8 +14,7 @@ Google's terms say two things that matter here (rephrased from the terms page):
 
 1. **Age.** You must be 18 or over to use the Gemini API, and you must not use it in an app that is aimed at,
    or likely to be used by, **anyone under 18**.
-   Haggis-gotchi currently says **13 and up** (we chose that on 22 Nov because most younger children have no
-   email address).
+   Haggis-gotchi said **13 and up** from 22 Nov; on 25 Nov the owner changed it to **18+** for Gemini.
 2. **UK.** Apps used by people in the UK (or EEA, Switzerland) may use **only the paid Gemini service**.
    Paid means your Google Cloud project has an active billing account. You have that, so this part is fine,
    and on the paid service Google does **not** use our prompts or replies to improve its products (it keeps
@@ -29,7 +28,8 @@ So, before any setup, choose one:
 | **B. Keep 13+, keep the written lines** | Nothing | No AI words. Everything already works (diary, reactions, 22 riddles). |
 | **C. Keep 13+, try a different AI company** | Kiro checks that company's terms for 13-17 users first | Unknown until checked. |
 
-**Tell Kiro A, B or C.** Only do the steps below if you choose **A**.
+**Decided 25 Nov: option A.** Haggis-gotchi is now 18+ (sign-up box, terms, privacy notice: done and live).
+Next: your steps below, then Kiro's.
 
 ---
 

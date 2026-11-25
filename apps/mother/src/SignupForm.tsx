@@ -37,7 +37,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
   const [botReset, setBotReset] = useState(0)
   const [busy, setBusy] = useState(false)
   const [showInFeed, setShowInFeed] = useState(false) // off by default (owner, 19 Nov)
-  const [ageOk, setAgeOk] = useState(false) // 13+ (owner, 22 Nov)
+  const [ageOk, setAgeOk] = useState(false) // 18+ (owner, 24 Nov: Gemini terms; was 13+ from 22 Nov)
   const teenInfoTitleId = useId()
   const chaosInfoTitleId = useId()
   const temperament = temperamentForChaos(answers.chaos)
@@ -66,7 +66,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       return
     }
     if (!ageOk) {
-      setError('Haggis-gotchi is for ages 13 and up. Tick the box to say you are 13 or older.')
+      setError('Haggis-gotchi is for adults (18 and over). Tick the box to say you are 18 or older.')
       return
     }
     if (supabaseConfigured && !botToken) {
@@ -364,7 +364,7 @@ export function SignupForm({ demoCompress, presetEmail, onCancel, onClaimed }: P
       <label className="check age-check">
         <input type="checkbox" checked={ageOk} onChange={(e) => setAgeOk(e.target.checked)} />
         <span>
-          I am 13 or older, and I agree to the <a href="/terms" target="_blank" rel="noopener">terms</a> and{' '}
+          I am 18 or older, and I agree to the <a href="/terms" target="_blank" rel="noopener">terms</a> and{' '}
           <a href="/privacy" target="_blank" rel="noopener">privacy notice</a>
         </span>
       </label>

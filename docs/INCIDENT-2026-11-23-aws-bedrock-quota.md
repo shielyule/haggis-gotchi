@@ -8,6 +8,10 @@ and the support replies the owner received.
 > "AWS is a major fail. Offering a service with zero tokens and no way to get them increased, and
 > giving utterly dud advice."
 
+> (25 Nov, on AWS's "we'll get back to you") "They acknowledge the hackathon and do not offer a
+> solution. Getting back to me is not acceptable in this age when AI is making the majority of
+> decisions. Big time FAIL for AWS and it needs flagged."
+
 ## What we were trying to do
 Add three AI features (spec `.kiro/specs/ai-haggling`) using **Amazon Bedrock** with **Amazon Nova Lite**
 in Europe (London), in the same AWS account the game already uses for Amazon Rekognition (which works):
@@ -28,7 +32,9 @@ a nightly diary, a reaction to a photo, and a daily folklore riddle. Volume capp
 | 24 Nov | Owner opens a support case. It goes straight to **Complete**: an AI helper replied "I'm unable to offer a recommendation ... The current support interaction has been closed." No human saw it. |
 | 24 Nov 10:40 | Owner's own riddle and photo on the live game: both AI calls refused (429). Written lines used. |
 | 24 Nov | Owner opens a case through Account and billing; it reaches a person. |
-| 24 Nov 13:56 | **AWS declines.** Billing and Accounts team, after asking the Bedrock service team: the account is "relatively new (created on November 2 2026) and the overall usage is limited", so they "couldn't approve and process this limit increase request". Advice: build usage history by using "about 90%" of the existing limit, wait for the next billing cycle and ask again, or contact AWS Sales. |
+| 24 Nov 13:56 | **AWS declines** (first reply). Billing and Accounts team, after asking the Bedrock service team: the account is "relatively new (created on November 2 2026) and the overall usage is limited", so they "couldn't approve and process this limit increase request". Advice: build usage history by using "about 90%" of the existing limit, wait for the next billing cycle and ask again, or contact AWS Sales. |
+| 25 Nov | **Second AWS reply** (a different support agent): acknowledges the Kiroween 2026 hackathon, that the quota "can't be increased directly", and that "your hackathon deadline makes this time-sensitive". Says the Nova Lite and Nova Micro request "is being reviewed. This may take some time." No date, no workaround, "no action is needed from you". |
+| 25 Nov | Owner decides not to wait: the AI words move to Google Gemini (paid), and Haggis-gotchi becomes 18+ (Gemini's terms). |
 
 ## Why AWS's advice cannot work here
 - "Use about 90% of your existing limit": the existing limit is **0 tokens a day**. 90% of 0 is 0; there is
@@ -72,10 +78,16 @@ hackathon window.
 - Keep the **written fallback** rule for any third-party AI: it turned an outage into a non-event for players.
 
 ## Feedback for the hackathon (AWS is the sponsor)
-For entrants on new AWS accounts, Bedrock may be unusable for the whole submission window: zero daily
-tokens, no self-service increase, and support that closes the request automatically. A note in the
-hackathon resources (or pre-seeded quotas for entrants) would save others the same lost day.
+For entrants on new AWS accounts, Bedrock may be unusable for the whole submission window:
+- zero daily tokens on a model the console calls enabled, marked not adjustable;
+- the first support reply declined because the account was new, and advised using "90%" of a zero limit;
+- the second reply acknowledged the hackathon and the deadline, then offered only "being reviewed. This may
+  take some time": no date, no workaround;
+- meanwhile the same account's Amazon Rekognition worked first time.
+Two days of an 11-day window went on this. Suggestions: pre-seed Bedrock quotas for registered entrants,
+put a warning in the hackathon resources, or give support a fast route for hackathon accounts.
 
 ## Status
-**Closed by AWS (declined, 24 Nov).** Decision with the owner: keep the written lines for the submission, or
-switch the AI words to another provider (needs a new key and a privacy notice change).
+**Still unresolved by AWS (25 Nov: "being reviewed", no date).** We stopped waiting: the AI words move to
+Google Gemini (paid), and Haggis-gotchi is now 18+ because Gemini's terms require it. If AWS ever grants the
+quota, Bedrock can come back with one setting; the written lines stay as the fallback either way.

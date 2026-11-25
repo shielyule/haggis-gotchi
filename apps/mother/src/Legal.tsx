@@ -3,7 +3,7 @@ import { deleteMyAccount } from './lib/cloud'
 import { supabase } from './lib/supabase'
 
 /** Privacy notice, terms and delete-account (review 22 Nov). Plain words, short. */
-const UPDATED = '23 November 2026'
+const UPDATED = '24 November 2026'
 const CONTACT = 'hello@haggisgotchi.com'
 
 function Shell({ title, children }: { title: string; children: React.ReactNode }) {
@@ -89,7 +89,7 @@ export function PrivacyPage() {
       </p>
 
       <h2>Age</h2>
-      <p>Haggis-gotchi is for ages 13 and up.</p>
+      <p>Haggis-gotchi is for adults: 18 and over.</p>
 
       <h2>Your rights</h2>
       <p>
@@ -107,7 +107,7 @@ export function TermsPage() {
   return (
     <Shell title="Terms">
       <ul>
-        <li>Haggis-gotchi is a free game for ages 13 and up.</li>
+        <li>Haggis-gotchi is a free game for adults (18 and over).</li>
         <li>It is a hackathon project. It may change, break or close, and your Haggling may be lost. We will try to warn you first.</li>
         <li>
           Clean fun: the game never swears. A joke about the carer&rsquo;s whisky only turns up once a Haggling is

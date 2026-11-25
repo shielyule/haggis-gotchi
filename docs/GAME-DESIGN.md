@@ -58,7 +58,7 @@ Life XP only ever goes up and sets the level.
 - **"What's that?"**: any non-treat photo gets an in-character reaction (labels only; bars unchanged).
 - **Folklore riddle** (second game): one a day for everyone, three answers, Mood +8 right / +2 for a go.
 - **Scrapbook book** at `/scrapbook`: every page ever, tabs All / Diary / Photos & riddles / Week 1-6.
-- No news on purpose: unsafe for 13+, can't be checked, often sad, and licensing. The weather and calendar do the job.
+- No news on purpose: not right for a gentle game, can't be checked, often sad, and licensing. The weather and calendar do the job.
 
 ## Level unlocks (suggestions, not built)
 Levels from Life XP: 2 at 100, 3 at 300, 4 at 600, 5 at 1000, then every 500.
