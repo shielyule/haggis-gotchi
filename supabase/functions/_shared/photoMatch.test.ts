@@ -67,6 +67,22 @@ for (const k of ['owner-can-rot0', 'owner-can-rot90', 'owner-can-rot270']) {
   })
 }
 
+// 25 Nov: the owner's Scottish tablet (wrapper), four angles, and with the brand name covered (filming).
+const tabletFx = JSON.parse(
+  readFileSync(new URL('./fixtures/photo/rekognition-2026-11-25-tablet.json', import.meta.url), 'utf8'),
+) as Record<string, Detected>
+for (const k of Object.keys(tabletFx)) {
+  test(`owner's tablet (${k}) -> tablet`, () => {
+    assert.equal(matchTreat(tabletFx[k])?.id, 'tablet')
+  })
+}
+test('an iPad is not tablet: the word alone, or with a gadget label, never counts', () => {
+  const words = [{ text: 'Tablet', confidence: 99 }]
+  assert.equal(matchTreat({ labels: [{ name: 'Electronics', confidence: 98 }, { name: 'Tablet Computer', confidence: 97 }, { name: 'Sweets', confidence: 90 }], words })?.id ?? null, null)
+  assert.equal(matchTreat({ labels: [{ name: 'Electronics', confidence: 98 }], words })?.id ?? null, null)
+  assert.equal(matchTreat({ labels: [{ name: 'Sweets', confidence: 99 }], words: [] })?.id ?? null, null, 'sweets without the word: not sure it is tablet')
+})
+
 test('Photo Treat line changes with age', () => {
   assert.match(treatLine('irn-bru', 'baby', 'Wee Yin'), /wee jig/)
   assert.match(treatLine('irn-bru', 'teen', 'Wee Yin'), /national anthem/)

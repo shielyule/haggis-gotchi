@@ -1451,3 +1451,5 @@ body:has(.care) { background: var(--ledger-surface); }
 .book-side-single .book-ink { left: 18%; right: 17%; top: 14%; bottom: 17%; }
 .book-title-single { margin-top: 12%; }
 .book-title-script { font: italic 400 1.7em/1.2 var(--font-display); color: #4a3424; margin: 0 0 0.6rem; }
+/* Owner, 25 Nov: two whole single pages side by side on a computer (no halved spread). */
+.book-spread:not(.book-spread-one) { gap: 0.75rem; max-width: 52rem; margin: 0 auto; width: 100%; }

@@ -831,7 +831,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
             disabled={treatBusy}
           >
             <span>{treatBusy ? 'Looking…' : 'Photo Treat'}</span>
-            <small>Snap Irn-Bru, bagpipes, a kilt, heather or shortbread: once a day</small>
+            <small>Snap Irn-Bru, tablet, shortbread, tartan, heather or bagpipes: once a day</small>
           </button>
           <input
             ref={fileInput}

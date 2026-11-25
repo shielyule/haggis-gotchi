@@ -162,11 +162,11 @@ Deno.serve(async (req) => {
           read,
           reaction: reaction.text,
           reactionScrap,
-          hint: 'Not a Scottish treat, so the bars stay the same. Try shortbread, heather, tartan, bagpipes or an Irn-Bru can (turn the can so IRN BRU reads left to right).',
+          hint: 'Not a Scottish treat, so the bars stay the same. Try tablet, shortbread, heather, tartan, bagpipes or an Irn-Bru can (turn the can so IRN BRU reads left to right).',
           error:
             `${row.name} squints. ${seen.length ? `That looks like ${seen.join(', ').toLowerCase()}, ` : ''}but it is not a Scottish treat. ` +
             (read.length ? `(Could read: ${read.join(' ')}.) ` : '(Could not read any words.) ') +
-            'Irn-Bru writes sideways: turn your phone so IRN BRU reads left to right. Or try bagpipes, a kilt or tartan, heather or shortbread.',
+            'Irn-Bru writes sideways: turn your phone so IRN BRU reads left to right. Or try tablet, shortbread, a kilt or tartan, heather or bagpipes.',
         })
       }
       treatId = match.id

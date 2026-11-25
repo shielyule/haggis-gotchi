@@ -67,11 +67,13 @@ export default function ScrapbookBook() {
   const born = book?.child?.born_at ?? book?.child?.created_at ?? new Date().toISOString()
   const list = useMemo(() => (book ? entriesFor(tab, book.entries, born) : []), [book, tab, born])
   const name = book?.child?.name ?? 'your Haggling'
-  const titles: Side[] = narrow ? [{ kind: 'title-single' }] : [{ kind: 'title-left' }, { kind: 'title-right' }]
+  // Owner, 25 Nov: every page uses the single-page art (the halved spread looked chopped). A computer shows two
+  // whole pages side by side; a phone shows one.
+  const titles: Side[] = [{ kind: 'title-single' }]
   const sides: Side[] = [...titles, ...paginate(list, PER_SIDE).map((entries) => ({ kind: 'entries' as const, entries }))]
   const step = narrow ? 1 : 2
   const last = Math.max(0, sides.length - 1)
-  const start = narrow ? Math.min(at, last) : Math.min(at - (at % 2), last - (last % 2))
+  const start = narrow ? Math.min(at, last) : Math.min(at - (at % 2), Math.max(0, last - (last % 2)))
   const shown = sides.slice(start, start + step)
 
   function openBook() {
@@ -160,8 +162,8 @@ export default function ScrapbookBook() {
           <div className={`book-spread${narrow ? ' book-spread-one' : ''}`}>
             {shown.map((side, i) => {
               const index = start + i
-              const half = narrow ? 'single' : index % 2 === 0 ? 'left' : 'right'
-              const bg = narrow ? ART.page : index < 2 ? ART.title : ART.blank
+              const half = 'single'
+              const bg = ART.page
               return (
                 <div
                   key={index}

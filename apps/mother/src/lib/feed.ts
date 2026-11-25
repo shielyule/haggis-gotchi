@@ -7,6 +7,7 @@ const TREAT_NAMES: Record<string, string> = {
   kilt: 'a look at a kilt',
   heather: 'a sprig of heather',
   shortbread: 'some shortbread',
+  tablet: 'a bit of tablet',
 }
 
 export function feedSentence(e: FeedEvent): string {

@@ -1,0 +1,1022 @@
+{
+ "owner-tablet-wrapper": {
+  "labels": [
+   {
+    "name": "Food",
+    "confidence": 99.6,
+    "parents": []
+   },
+   {
+    "name": "Sweets",
+    "confidence": 99.6,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Candy",
+    "confidence": 92.5,
+    "parents": [
+     "Food",
+     "Sweets"
+    ]
+   },
+   {
+    "name": "Book",
+    "confidence": 63.4,
+    "parents": [
+     "Publication"
+    ]
+   },
+   {
+    "name": "Publication",
+    "confidence": 63.4,
+    "parents": []
+   },
+   {
+    "name": "Mayonnaise",
+    "confidence": 54.4,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Bread",
+    "confidence": 53.9,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Cracker",
+    "confidence": 53.9,
+    "parents": [
+     "Bread",
+     "Food"
+    ]
+   },
+   {
+    "name": "Noodle",
+    "confidence": 53.6,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Snack",
+    "confidence": 53.4,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Dairy",
+    "confidence": 53.2,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Produce",
+    "confidence": 53.2,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Incense",
+    "confidence": 53,
+    "parents": []
+   },
+   {
+    "name": "Blade",
+    "confidence": 52.7,
+    "parents": [
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Cooking",
+    "confidence": 52.7,
+    "parents": []
+   },
+   {
+    "name": "Knife",
+    "confidence": 52.7,
+    "parents": [
+     "Blade",
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Sliced",
+    "confidence": 52.7,
+    "parents": [
+     "Blade",
+     "Cooking",
+     "Knife",
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Weapon",
+    "confidence": 52.7,
+    "parents": []
+   },
+   {
+    "name": "Jelly",
+    "confidence": 52.6,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Nut",
+    "confidence": 52.3,
+    "parents": [
+     "Food",
+     "Plant",
+     "Produce",
+     "Vegetable"
+    ]
+   },
+   {
+    "name": "Plant",
+    "confidence": 52.3,
+    "parents": []
+   },
+   {
+    "name": "Vegetable",
+    "confidence": 52.3,
+    "parents": [
+     "Food",
+     "Plant",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Grain",
+    "confidence": 52.2,
+    "parents": [
+     "Food",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Seasoning",
+    "confidence": 51.6,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Sesame",
+    "confidence": 51.6,
+    "parents": [
+     "Food",
+     "Seasoning"
+    ]
+   },
+   {
+    "name": "Ketchup",
+    "confidence": 51.2,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Peanut",
+    "confidence": 50.9,
+    "parents": [
+     "Food",
+     "Nut",
+     "Plant",
+     "Produce",
+     "Vegetable"
+    ]
+   },
+   {
+    "name": "Pasta",
+    "confidence": 50.6,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Vermicelli",
+    "confidence": 50.6,
+    "parents": [
+     "Food",
+     "Noodle",
+     "Pasta"
+    ]
+   },
+   {
+    "name": "Powder",
+    "confidence": 50.3,
+    "parents": []
+   },
+   {
+    "name": "Lollipop",
+    "confidence": 50,
+    "parents": [
+     "Candy",
+     "Food",
+     "Sweets"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "MrsTilly's",
+    "confidence": 85.7
+   },
+   {
+    "text": "OTER",
+    "confidence": 25.6
+   },
+   {
+    "text": "FREE",
+    "confidence": 98.2
+   },
+   {
+    "text": "FAMOUS",
+    "confidence": 98.4
+   },
+   {
+    "text": "Scottish",
+    "confidence": 99.5
+   },
+   {
+    "text": "Tablet",
+    "confidence": 99.6
+   }
+  ]
+ },
+ "owner-tablet-r90": {
+  "labels": [
+   {
+    "name": "Food",
+    "confidence": 99.9,
+    "parents": []
+   },
+   {
+    "name": "Sweets",
+    "confidence": 99.9,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Candy",
+    "confidence": 99.6,
+    "parents": [
+     "Food",
+     "Sweets"
+    ]
+   },
+   {
+    "name": "Dairy",
+    "confidence": 54,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Jelly",
+    "confidence": 53.4,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Produce",
+    "confidence": 52.7,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Snack",
+    "confidence": 51.8,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Bread",
+    "confidence": 51.6,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Cracker",
+    "confidence": 51.6,
+    "parents": [
+     "Bread",
+     "Food"
+    ]
+   },
+   {
+    "name": "Mayonnaise",
+    "confidence": 51.6,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Chocolate",
+    "confidence": 50.4,
+    "parents": [
+     "Dessert",
+     "Food"
+    ]
+   },
+   {
+    "name": "Dessert",
+    "confidence": 50.4,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Purple",
+    "confidence": 50.2,
+    "parents": []
+   },
+   {
+    "name": "Seasoning",
+    "confidence": 50.2,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Sesame",
+    "confidence": 50.2,
+    "parents": [
+     "Food",
+     "Seasoning"
+    ]
+   },
+   {
+    "name": "Caramel",
+    "confidence": 50.1,
+    "parents": [
+     "Dessert",
+     "Food"
+    ]
+   },
+   {
+    "name": "Incense",
+    "confidence": 50.1,
+    "parents": []
+   }
+  ],
+  "words": [
+   {
+    "text": "FREE",
+    "confidence": 98.8
+   },
+   {
+    "text": "NETTO",
+    "confidence": 41.9
+   },
+   {
+    "text": "FAMOUS",
+    "confidence": 98.5
+   },
+   {
+    "text": "Scottish",
+    "confidence": 99.4
+   },
+   {
+    "text": "Tablet",
+    "confidence": 99.7
+   }
+  ]
+ },
+ "owner-tablet-r180": {
+  "labels": [
+   {
+    "name": "Food",
+    "confidence": 99.2,
+    "parents": []
+   },
+   {
+    "name": "Sweets",
+    "confidence": 99.2,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Candy",
+    "confidence": 85.5,
+    "parents": [
+     "Food",
+     "Sweets"
+    ]
+   },
+   {
+    "name": "Incense",
+    "confidence": 54.2,
+    "parents": []
+   },
+   {
+    "name": "Produce",
+    "confidence": 54.1,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Snack",
+    "confidence": 53.9,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Bread",
+    "confidence": 53.5,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Cracker",
+    "confidence": 53.5,
+    "parents": [
+     "Bread",
+     "Food"
+    ]
+   },
+   {
+    "name": "Jelly",
+    "confidence": 53.3,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Noodle",
+    "confidence": 52.7,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Mayonnaise",
+    "confidence": 52.6,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Grain",
+    "confidence": 52.3,
+    "parents": [
+     "Food",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Seasoning",
+    "confidence": 52,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Sesame",
+    "confidence": 52,
+    "parents": [
+     "Food",
+     "Seasoning"
+    ]
+   },
+   {
+    "name": "Dairy",
+    "confidence": 51.9,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Blade",
+    "confidence": 51.8,
+    "parents": [
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Cooking",
+    "confidence": 51.8,
+    "parents": []
+   },
+   {
+    "name": "Knife",
+    "confidence": 51.8,
+    "parents": [
+     "Blade",
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Sliced",
+    "confidence": 51.8,
+    "parents": [
+     "Blade",
+     "Cooking",
+     "Knife",
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Weapon",
+    "confidence": 51.8,
+    "parents": []
+   },
+   {
+    "name": "Nut",
+    "confidence": 51.3,
+    "parents": [
+     "Food",
+     "Plant",
+     "Produce",
+     "Vegetable"
+    ]
+   },
+   {
+    "name": "Plant",
+    "confidence": 51.3,
+    "parents": []
+   },
+   {
+    "name": "Vegetable",
+    "confidence": 51.3,
+    "parents": [
+     "Food",
+     "Plant",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Pollen",
+    "confidence": 51.2,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Peanut",
+    "confidence": 50.8,
+    "parents": [
+     "Food",
+     "Nut",
+     "Plant",
+     "Produce",
+     "Vegetable"
+    ]
+   },
+   {
+    "name": "Mustard",
+    "confidence": 50.7,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Powder",
+    "confidence": 50.5,
+    "parents": []
+   },
+   {
+    "name": "Seed",
+    "confidence": 50.4,
+    "parents": [
+     "Food",
+     "Grain",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Ketchup",
+    "confidence": 50.3,
+    "parents": [
+     "Food"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "MrsTilly's",
+    "confidence": 79.5
+   },
+   {
+    "text": "are",
+    "confidence": 36.3
+   },
+   {
+    "text": "FREE",
+    "confidence": 98.3
+   },
+   {
+    "text": "FAMOUS",
+    "confidence": 98.6
+   },
+   {
+    "text": "Scottish",
+    "confidence": 99.4
+   },
+   {
+    "text": "Tablet",
+    "confidence": 99.6
+   }
+  ]
+ },
+ "owner-tablet-r270": {
+  "labels": [
+   {
+    "name": "Food",
+    "confidence": 100,
+    "parents": []
+   },
+   {
+    "name": "Sweets",
+    "confidence": 100,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Candy",
+    "confidence": 99.7,
+    "parents": [
+     "Food",
+     "Sweets"
+    ]
+   },
+   {
+    "name": "Can",
+    "confidence": 76,
+    "parents": [
+     "Tin"
+    ]
+   },
+   {
+    "name": "Tin",
+    "confidence": 76,
+    "parents": []
+   },
+   {
+    "name": "Dairy",
+    "confidence": 54,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Jelly",
+    "confidence": 52.9,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Chocolate",
+    "confidence": 51.4,
+    "parents": [
+     "Dessert",
+     "Food"
+    ]
+   },
+   {
+    "name": "Dessert",
+    "confidence": 51.4,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Snack",
+    "confidence": 51.3,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Bread",
+    "confidence": 51.2,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Cracker",
+    "confidence": 51.2,
+    "parents": [
+     "Bread",
+     "Food"
+    ]
+   },
+   {
+    "name": "Produce",
+    "confidence": 51.1,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Mayonnaise",
+    "confidence": 50.8,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Incense",
+    "confidence": 50.7,
+    "parents": []
+   }
+  ],
+  "words": [
+   {
+    "text": "MrsTilly's",
+    "confidence": 65.9
+   },
+   {
+    "text": "EUTEN",
+    "confidence": 25.3
+   },
+   {
+    "text": "FREE",
+    "confidence": 97.9
+   },
+   {
+    "text": "FAMOUS",
+    "confidence": 98.7
+   },
+   {
+    "text": "Scottish",
+    "confidence": 99.5
+   },
+   {
+    "text": "Tablet",
+    "confidence": 99.7
+   }
+  ]
+ },
+ "owner-tablet-brand-covered": {
+  "labels": [
+   {
+    "name": "Food",
+    "confidence": 96.2,
+    "parents": []
+   },
+   {
+    "name": "Sweets",
+    "confidence": 96.2,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Blade",
+    "confidence": 81.7,
+    "parents": [
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Dagger",
+    "confidence": 81.7,
+    "parents": [
+     "Blade",
+     "Knife",
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Knife",
+    "confidence": 81.7,
+    "parents": [
+     "Blade",
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Weapon",
+    "confidence": 81.7,
+    "parents": []
+   },
+   {
+    "name": "Produce",
+    "confidence": 55.8,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Candy",
+    "confidence": 55.6,
+    "parents": [
+     "Food",
+     "Sweets"
+    ]
+   },
+   {
+    "name": "Incense",
+    "confidence": 55.2,
+    "parents": []
+   },
+   {
+    "name": "Grain",
+    "confidence": 55.1,
+    "parents": [
+     "Food",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Bread",
+    "confidence": 53.9,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Cracker",
+    "confidence": 53.9,
+    "parents": [
+     "Bread",
+     "Food"
+    ]
+   },
+   {
+    "name": "Powder",
+    "confidence": 53.6,
+    "parents": []
+   },
+   {
+    "name": "Seed",
+    "confidence": 53.5,
+    "parents": [
+     "Food",
+     "Grain",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Nut",
+    "confidence": 53,
+    "parents": [
+     "Food",
+     "Plant",
+     "Produce",
+     "Vegetable"
+    ]
+   },
+   {
+    "name": "Plant",
+    "confidence": 53,
+    "parents": []
+   },
+   {
+    "name": "Vegetable",
+    "confidence": 53,
+    "parents": [
+     "Food",
+     "Plant",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Snack",
+    "confidence": 52.9,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Noodle",
+    "confidence": 52.9,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Jelly",
+    "confidence": 52.9,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Cooking",
+    "confidence": 52.8,
+    "parents": []
+   },
+   {
+    "name": "Sliced",
+    "confidence": 52.8,
+    "parents": [
+     "Blade",
+     "Cooking",
+     "Knife",
+     "Weapon"
+    ]
+   },
+   {
+    "name": "Seasoning",
+    "confidence": 52.6,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Sesame",
+    "confidence": 52.6,
+    "parents": [
+     "Food",
+     "Seasoning"
+    ]
+   },
+   {
+    "name": "Mayonnaise",
+    "confidence": 52,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Pollen",
+    "confidence": 52,
+    "parents": [
+     "Plant"
+    ]
+   },
+   {
+    "name": "Peanut",
+    "confidence": 51.9,
+    "parents": [
+     "Food",
+     "Nut",
+     "Plant",
+     "Produce",
+     "Vegetable"
+    ]
+   },
+   {
+    "name": "Mustard",
+    "confidence": 50.5,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Granola",
+    "confidence": 50.3,
+    "parents": [
+     "Food",
+     "Grain",
+     "Produce"
+    ]
+   },
+   {
+    "name": "Spice",
+    "confidence": 50.2,
+    "parents": [
+     "Food"
+    ]
+   },
+   {
+    "name": "Food Presentation",
+    "confidence": 50.1,
+    "parents": [
+     "Food"
+    ]
+   }
+  ],
+  "words": [
+   {
+    "text": "FREE",
+    "confidence": 98
+   },
+   {
+    "text": "FAMOUS",
+    "confidence": 96.5
+   },
+   {
+    "text": "Scottish",
+    "confidence": 99.6
+   },
+   {
+    "text": "Tablet",
+    "confidence": 99.8
+   }
+  ]
+ }
+}
