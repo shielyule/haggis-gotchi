@@ -47,8 +47,8 @@ export function PrivacyPage() {
 
       <h2>AI</h2>
       <p>
-        Your Haggling&rsquo;s diary, its reaction to a photo and the daily riddle are written by an AI (Google Gemini, paid
-        service). The words are checked before they reach you, and if the AI is not available a written line is used
+        Your Haggling&rsquo;s nightly diary and its reaction to a photo are written by an AI (Google Gemini, paid
+        service). The daily folklore riddles are written by hand. The words are checked before they reach you, and if the AI is not available a written line is used
         instead. You never chat with the AI.
       </p>
 
@@ -71,8 +71,8 @@ export function PrivacyPage() {
         <li><strong>Resend</strong> (sends our emails).</li>
         <li><strong>Amazon Web Services: Rekognition</strong> (looks at Photo Treat photos, does not keep them).</li>
         <li>
-          <strong>Google Gemini</strong> (paid service: an AI that writes your Haggling&rsquo;s nightly diary, its reaction to a
-          photo, and the daily riddle). It gets only the day&rsquo;s facts: your Haggling&rsquo;s name and type, the weather, the
+          <strong>Google Gemini</strong> (paid service: an AI that writes your Haggling&rsquo;s nightly diary and its reaction
+          to a photo). It gets only the day&rsquo;s facts: your Haggling&rsquo;s name and type, the weather, the
           nearest town, what care it had, and for a photo the names of the things seen in it (like &ldquo;dog&rdquo; or
           &ldquo;box&rdquo;). Never your name, email, exact location, the photo itself or anything you type. On the paid
           service Google does not use this to improve its products; it keeps it for a short time to check for misuse,

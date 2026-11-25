@@ -41,9 +41,9 @@ Every entry lives in a scrapbook book that keeps every page, ever.
 
 ### R5 Folklore riddle (second game)
 1. THE SYSTEM SHALL offer one Scottish folklore riddle per day, the same for every carer, with three answers to pick from.
-2. THE riddle SHALL be written by the AI once a day from a rotating topic list, checked (R5.3), stored, and reused for everyone that day.
+2. THE riddle SHALL come from the hand-written bank, one per topic, by a rotating topic list, stored, and reused for everyone that day. *(Updated 25 Nov 2026, owner: was AI-written; a live Gemini riddle mixed up two legends, and the checks can test a riddle's shape but not its facts.)*
 3. A riddle SHALL have a question of at most 300 characters, three different answers of at most 40 characters each, exactly one right answer, an explanation of at most 200 characters, and no blocked word; the right answer SHALL NOT appear in the question.
-4. IF the AI fails or R5.3 fails, THEN THE SYSTEM SHALL use a riddle from the written bank.
+4. Every topic SHALL have its own bank riddle, so a full topic cycle never repeats one (property S22).
 5. Each Haggling SHALL get one guess per day. Right: Mood +8 and a scrapbook page. Wrong: Mood +2 ("nice try") and the explanation.
 
 ### R6 Limits and safety

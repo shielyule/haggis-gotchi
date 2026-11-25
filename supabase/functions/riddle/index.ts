@@ -10,35 +10,21 @@
 import { createClient, type SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { localTime } from '../../../packages/care-engine/src/index.ts'
 import { safeName } from '../_shared/aiText.ts'
-import { aiLine } from '../_shared/ai.ts'
-import { arrange, parseRiddle, RIDDLE_SYSTEM, riddleFor, riddlePrompt, topicFor, type Riddle } from '../_shared/riddles.ts'
+import { riddleFor, type Riddle } from '../_shared/riddles.ts'
 
 const ORIGINS = ['https://haggisgotchi.com', 'https://www.haggisgotchi.com', 'https://haggis-gotchi-mother.pages.dev', 'http://localhost:5173']
 
 type Row = { day: string; topic: string; question: string; options: string[]; answer: number; explain: string; source: string }
 
-/** Today's riddle, making it if this is the first ask of the day (R5.2). Same for everyone. */
+/**
+ * Today's riddle (R5.2, owner 25 Nov): always from the hand-written bank, never the AI, because an AI
+ * riddle can get a legend wrong. Same for everyone; stored so the answer is fixed for the day.
+ */
 async function todaysRiddle(admin: SupabaseClient, day: string): Promise<Row> {
   const { data: have } = await admin.from('daily_riddles').select('*').eq('day', day).maybeSingle()
   if (have) return have as Row
-  const topic = topicFor(day)
-  let made: Riddle = riddleFor(day)
-  let source: 'ai' | 'bank' = 'bank'
-  const r = await aiLine(
-    admin,
-    'riddle',
-    { system: RIDDLE_SYSTEM, prompt: riddlePrompt(day), maxTokens: 300, temperature: 0.7 },
-    (raw) => {
-      const p = parseRiddle(raw, topic)
-      return p ? JSON.stringify(arrange(p, day)) : null
-    },
-    () => JSON.stringify(made),
-  )
-  if (r.source === 'ai') {
-    made = JSON.parse(r.text) as Riddle
-    source = 'ai'
-  }
-  await admin.from('daily_riddles').upsert({ day, topic: made.topic, question: made.question, options: made.options, answer: made.answer, explain: made.explain, source }, { onConflict: 'day', ignoreDuplicates: true })
+  const made: Riddle = riddleFor(day)
+  await admin.from('daily_riddles').upsert({ day, topic: made.topic, question: made.question, options: made.options, answer: made.answer, explain: made.explain, source: 'bank' }, { onConflict: 'day', ignoreDuplicates: true })
   const { data } = await admin.from('daily_riddles').select('*').eq('day', day).single()
   return data as Row
 }

@@ -56,7 +56,7 @@ Life XP only ever goes up and sets the level.
 ### AI words (23 Nov, spec `.kiro/specs/ai-haggling`)
 - **Nightly diary** at the carer's 21:00: Google Gemini writes from today's weather and town, care, stage, season.
 - **"What's that?"**: any non-treat photo gets an in-character reaction (labels only; bars unchanged).
-- **Folklore riddle** (second game): one a day for everyone, three answers, Mood +8 right / +2 for a go.
+- **Folklore riddle** (second game): hand-written only (owner, 25 Nov), 24 riddles, one per topic; one a day for everyone, three answers, Mood +8 right / +2 for a go.
 - **Scrapbook book** at `/scrapbook`: every page ever, tabs All / Diary / Photos & riddles / Week 1-6.
 - No news on purpose: not right for a gentle game, can't be checked, often sad, and licensing. The weather and calendar do the job.
 

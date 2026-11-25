@@ -13,7 +13,11 @@ export const TOPICS = [
   'the Fairy Flag of Dunvegan', 'the Stone of Destiny', 'shortbread', 'Up Helly Aa', 'the Cailleach', 'heather', 'the Corryvreckan whirlpool',
 ]
 
-/** Written by hand (checked facts). Right answer listed first; `arrange` shuffles per day. */
+/**
+ * Written by hand (checked facts). Right answer listed first; `arrange` shuffles per day.
+ * Owner, 25 Nov: the game uses ONLY these (an AI riddle mixed up two legends). One per topic, so the
+ * 24-day cycle never repeats a riddle.
+ */
 export const RIDDLE_BANK: Riddle[] = [
   { topic: 'the kelpie', question: 'I look like a fine horse by the loch, but climb on my back and I gallop into the water. What am I?', options: ['A kelpie', 'A selkie', 'A brownie'], answer: 0, explain: 'A kelpie is a shape-shifting water horse from Scottish lochs and rivers.' },
   { topic: 'the selkie', question: 'In the sea I am a seal. On land I take off my skin and walk like you. What am I?', options: ['A selkie', 'A kelpie', 'A wulver'], answer: 0, explain: 'Selkies are seal folk who can shed their skins and come ashore as people.' },
@@ -36,6 +40,8 @@ export const RIDDLE_BANK: Riddle[] = [
   { topic: 'Up Helly Aa', question: 'In Lerwick each winter, people dressed as Vikings burn a longship. What am I?', options: ['Up Helly Aa', 'Hogmanay', 'Beltane'], answer: 0, explain: 'Up Helly Aa is Shetland\'s fire festival, ending with a burning galley.' },
   { topic: 'the Cailleach', question: 'I am the old woman of winter. I bring the snow and shape the mountains with my hammer. Who am I?', options: ['The Cailleach', 'Saint Bride', 'The Fairy Queen'], answer: 0, explain: 'The Cailleach is the winter hag of Scottish and Irish folklore.' },
   { topic: 'heather', question: 'I turn the hills purple in late summer, and a white sprig of me is lucky. What am I?', options: ['Heather', 'Gorse', 'Bracken'], answer: 0, explain: 'Heather colours the moors purple; white heather is said to bring luck.' },
+  { topic: 'the Loch Ness monster', question: 'Folk say I swim in a deep loch near Inverness, and they call me Nessie. What am I?', options: ['The Loch Ness Monster', 'A kelpie', 'The Blue Men of the Minch'], answer: 0, explain: 'Nessie is said to live in Loch Ness, near Inverness. The famous modern sightings began in 1933.' },
+  { topic: 'the Fairy Flag of Dunvegan', question: 'I am a faded silk banner in a castle on Skye. Legend says waving me brings the fairies to help the clan. What am I?', options: ['The Fairy Flag', 'The saltire', 'The Stone of Destiny'], answer: 0, explain: 'The Fairy Flag is kept at Dunvegan Castle, home of Clan MacLeod.' },
   { topic: 'the Corryvreckan whirlpool', question: 'I roar between Jura and Scarba, one of the biggest whirlpools in the world. What am I?', options: ['The Corryvreckan', 'Loch Ness', 'The Pentland Firth'], answer: 0, explain: 'The Gulf of Corryvreckan holds one of the world\'s largest whirlpools.' },
 ]
 

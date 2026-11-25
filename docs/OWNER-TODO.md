@@ -27,9 +27,9 @@ Last updated 22 Nov 2026.
 - [x] AWS permission (23 Nov): works.
 - [x] AWS Bedrock: quota 0, not adjustable, support closed automatically. Logged: `docs/INCIDENT-2026-11-23-aws-bedrock-quota.md`.
 - [x] Decided (25 Nov): Gemini, and Haggis-gotchi is 18+ (live).
-- [x] Gemini key and budget (25 Nov). Live and tested: diary, photo reactions and riddles now written by Gemini.
+- [x] Gemini key and budget (25 Nov). Live and tested: diary and photo reactions now written by Gemini.
 - [ ] (Optional) Rename the Supabase secret `GEMINI_API_KEY\`` to `GEMINI_API_KEY` (no backtick). Both work.
-- [ ] Decide: AI riddles (can mix up a legend) or hand-checked riddles only.
+- [x] Riddles: hand-written only (25 Nov), 24 riddles, one per topic.
 - [x] Book art and opening film (23 Nov): live.
 - [ ] Android check: demo egg -> demo menu -> Write tonight's diary now; Folklore riddle; Photo Treat on a dog or a plant; Open the scrapbook.
 

@@ -357,6 +357,14 @@ test('S20 riddles: every bank riddle is valid, parseRiddle accepts only valid ri
   assert.equal(parseRiddle('not json at all', 'x'), null)
 })
 
+test('S22 every topic has its own hand-written riddle, so a 24-day cycle never repeats (owner 25 Nov: bank only)', () => {
+  const start = Date.parse('2026-12-01T12:00:00Z')
+  const days = TOPICS.map((_, i) => new Date(start + i * 86_400_000).toISOString().slice(0, 10))
+  const questions = new Set(days.map((d) => riddleFor(d).question))
+  assert.equal(questions.size, TOPICS.length)
+  for (const d of days) assert.equal(riddleFor(d).topic, topicFor(d), `bank riddle for ${topicFor(d)}`)
+})
+
 test('S21 the day\'s topic is fixed for the day and cycles through every topic; shuffling keeps the right answer (R5.2)', () => {
   const start = Date.parse('2026-12-01T12:00:00Z')
   const seen = new Set<string>()

@@ -41,7 +41,8 @@ copied, only moved.
   day it's all about the storm. Every page ever is kept in an ornate scrapbook book, with tabs by week.
 - **Show it anything.** Photograph something that isn't a treat and it reacts in character ("A dog!
   Wee Yin is up the curtains"). Only the object labels go to the AI, never the photo, never people.
-- **A second game:** a daily Scottish folklore riddle (kelpies, selkies, the Callanish Stones...),
+- **A second game:** a daily Scottish folklore riddle (kelpies, selkies, the Callanish Stones...), written and
+  fact-checked by hand (we tried AI riddles; one mixed up two legends),
   the same for everyone, one guess a day.
 - **It reminds you** (push notifications) at meal times and bedtime, with a quiet-nights setting.
 - **Life ends.** After about six weeks it goes to the glen: an epitaph written from how it was
@@ -64,7 +65,7 @@ and the commits name the spec and task. There are 16 specs in `.kiro/specs`.
   Supabase Postgres with row-level security, Edge Functions and pg_cron (reminders every 15 minutes,
   weather three times a day, lifecycle every 5 minutes), Supabase Vault for secrets, Web Push (VAPID),
   Resend for email, Cloudflare Turnstile, Open-Meteo, Amazon Rekognition, and Google Gemini
-  (Gemini 3.5 Flash-Lite, paid tier) for the diary, photo reactions and riddles, after Amazon Bedrock gave
+  (Gemini 3.5 Flash-Lite, paid tier) for the diary and photo reactions, after Amazon Bedrock gave
   our account zero tokens (see Challenges). Every AI line is checked by our own
   rules and has a written fallback, so the game never depends on the AI.
 - **Steering** keeps Kiro on our rules: Scottish folklore voice, security, tech choices, how to
