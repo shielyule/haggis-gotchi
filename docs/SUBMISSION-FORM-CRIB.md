@@ -35,7 +35,7 @@ You can save drafts on Devpost and edit until the deadline. After it, nothing ca
 > and tick "Demo wait". On a demo egg, tap the Haggling's name 5 times for the demo menu
 > (+1 day, Next stage, Skip to the end, any weather). On a computer, https://haggisgotchi.com/mother
 > shows the mother page, the public scrapbook and the graveyard; /haggis-graveyard is the painted kirkyard.
-> Photo Treat recognises shortbread, heather, tartan, bagpipes and Irn-Bru.
+> Photo Treat recognises shortbread, tablet, heather, tartan, bagpipes and Irn-Bru.
 
 ## The "How Kiro was used" write-up
 The rules ask about each Kiro feature. Kiro will draft it; these are the true facts to use.
