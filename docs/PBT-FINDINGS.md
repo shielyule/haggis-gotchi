@@ -113,6 +113,22 @@ Haggling's own name, so a Haggling named with digits always failed. Players stil
 pinned as a regression test. **Why it matters:** nobody wrote this case. The random inputs found it a day
 after the property was written, and CI stopped the build until it was fixed.
 
+### F9 (Medium, found live 25 Nov) Gemini called a Haggling "he"
+Not found by a property: the first real Gemini reaction said "he's bouncin aff the walls". The identity design (20 Nov)
+says every Haggling is they/them unless they tell you otherwise. **Fix:** the AI is told "never he or she", and the
+checker now rejects he/she/him/her lines (which then get the written line). Added to property S15.
+
+### F10 (Low, found by S15/S16 the same hour) One-letter and punctuation names broke the checker
+Once the he/she rule existed, the random names found three edge cases in minutes:
+- a Haggling called **"t"**: removing the name deleted every t, so "Another" became "ano her" and failed;
+- a Haggling called **"s"**: the "s" in "she's" was taken for the name, hiding the "she";
+- a Haggling called **"-"**: counted as named in any line.
+**Fix:** the name only counts as a whole word (letters, digits and apostrophes around it do not count), and a name needs
+at least one letter or digit (else the AI uses "Wee Yin"). All three are pinned as regression tests.
+
+### F11 (Low) A photo label could slip a banned word into the written reaction
+A label such as "HE" made the written fallback say "sniffed the he". **Fix:** the fallback picks the first safe label.
+
 ## What held (38 properties), so you can say so with confidence
 - Bars always 0-100 whole numbers; Health XP never above 100; "sick" always matches Health XP below 0.
 - Life XP never goes down, through any mix of care, weather, Photo Treats and time.

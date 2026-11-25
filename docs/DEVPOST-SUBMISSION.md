@@ -36,7 +36,7 @@ copied, only moved.
 - **Who they are is theirs to decide.** If the carer opts in, at Teen the Haggling may tell them
   who they are: still a laddie or lassie, trans, non-binary (they/them) or not sure yet. It is
   random on purpose and every answer scores the same. The carer's only job is to support them.
-- **It keeps a diary.** Every night Amazon Nova writes a page in the Haggling's own voice from what
+- **It keeps a diary.** Every night Google Gemini writes a page in the Haggling's own voice from what
   really happened: the weather in your town, the care it got, its life stage, the season. On a stormy
   day it's all about the storm. Every page ever is kept in an ornate scrapbook book, with tabs by week.
 - **Show it anything.** Photograph something that isn't a treat and it reacts in character ("A dog!
@@ -63,8 +63,9 @@ and the commits name the spec and task. There are 16 specs in `.kiro/specs`.
 - **Stack:** React + Vite PWA on Cloudflare Pages (with a Pages Function for share-card previews),
   Supabase Postgres with row-level security, Edge Functions and pg_cron (reminders every 15 minutes,
   weather three times a day, lifecycle every 5 minutes), Supabase Vault for secrets, Web Push (VAPID),
-  Resend for email, Cloudflare Turnstile, Open-Meteo, Amazon Rekognition, and Amazon Bedrock
-  (Amazon Nova Lite) for the diary, photo reactions and riddles. Every AI line is checked by our own
+  Resend for email, Cloudflare Turnstile, Open-Meteo, Amazon Rekognition, and Google Gemini
+  (Gemini 3.5 Flash-Lite, paid tier) for the diary, photo reactions and riddles, after Amazon Bedrock gave
+  our account zero tokens (see Challenges). Every AI line is checked by our own
   rules and has a written fallback, so the game never depends on the AI.
 - **Steering** keeps Kiro on our rules: Scottish folklore voice, security, tech choices, how to
   write instructions for a non-specialist owner, and property-based tests on every feature.
@@ -143,7 +144,7 @@ and the commits name the spec and task. There are 16 specs in `.kiro/specs`.
 kiro, typescript, react, vite, node.js, deno, supabase, postgresql, pg-cron,
 supabase-edge-functions, cloudflare-pages, cloudflare-pages-functions, cloudflare-turnstile,
 amazon-web-services, amazon-rekognition, open-meteo, web-push, pwa, service-workers,
-web-audio-api, fast-check, model-context-protocol, resend, github-actions, amazon-bedrock
+web-audio-api, fast-check, model-context-protocol, resend, github-actions, google-gemini
 ```
 
 ## "Try it out" links

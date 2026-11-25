@@ -1,6 +1,8 @@
 # Kiro - Requirements: ai-haggling
 Status: AGREED with the owner, 23 Nov 2026 (ideas 1, 2 and 4; no free chat).
-AI: Amazon Bedrock, Amazon Nova Lite, Europe (London) `eu-west-2`, same AWS account as Rekognition.
+AI: **Google Gemini** (`gemini-3.5-flash-lite`, paid tier) since 25 Nov 2026. Was Amazon Bedrock (Amazon Nova Lite,
+eu-west-2), which gave the account a 0-token quota (`docs/INCIDENT-2026-11-23-aws-bedrock-quota.md`); the Bedrock path
+remains behind `AI_PROVIDER=bedrock`. Gemini's terms require an 18+ service: the game is 18+ from 25 Nov.
 
 ## Overview
 Three AI features that never let a player type freely to the AI:

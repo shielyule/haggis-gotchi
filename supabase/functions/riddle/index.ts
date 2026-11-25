@@ -10,7 +10,7 @@
 import { createClient, type SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { localTime } from '../../../packages/care-engine/src/index.ts'
 import { safeName } from '../_shared/aiText.ts'
-import { aiLine } from '../_shared/bedrock.ts'
+import { aiLine } from '../_shared/ai.ts'
 import { arrange, parseRiddle, RIDDLE_SYSTEM, riddleFor, riddlePrompt, topicFor, type Riddle } from '../_shared/riddles.ts'
 
 const ORIGINS = ['https://haggisgotchi.com', 'https://www.haggisgotchi.com', 'https://haggis-gotchi-mother.pages.dev', 'http://localhost:5173']

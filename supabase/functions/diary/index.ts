@@ -12,7 +12,7 @@ import { createClient, type SupabaseClient } from 'https://esm.sh/@supabase/supa
 import { homePlace, lifeStatus, localTime } from '../../../packages/care-engine/src/index.ts'
 import { seasonFor } from '../../../apps/mother/src/data/costumes.ts'
 import { isAuthorizedCron } from '../_shared/auth.ts'
-import { aiLine } from '../_shared/bedrock.ts'
+import { aiLine } from '../_shared/ai.ts'
 import { checkLine, cleanAiLine, DIARY_SYSTEM, diaryPrompt, fallbackDiary, nearestTown, placeName, safeName, type DayWeather, type DiaryInput } from '../_shared/aiText.ts'
 
 const ORIGINS = ['https://haggisgotchi.com', 'https://www.haggisgotchi.com', 'https://haggis-gotchi-mother.pages.dev', 'http://localhost:5173']
@@ -71,7 +71,7 @@ async function writeDiary(admin: SupabaseClient, c: Child, now: number, tz: stri
   const result = await aiLine(
     admin,
     'diary',
-    { system: DIARY_SYSTEM, prompt: diaryPrompt(input), maxTokens: 160 },
+    { system: DIARY_SYSTEM, prompt: diaryPrompt(input), maxTokens: 300 },
     (raw) => {
       const t = cleanAiLine(raw)
       return checkLine(t, name, 300) ? t : null

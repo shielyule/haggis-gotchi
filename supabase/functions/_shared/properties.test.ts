@@ -213,7 +213,7 @@ test('S14 a treat line always names the Haggling, at every stage', () => {
 })
 
 // ---------------------------------------------------------------- AI words (.kiro/specs/ai-haggling)
-import { BLOCKED, checkLine, cleanAiLine, diaryFacts, diaryPrompt, fallbackDiary, fallbackReaction, FAR_AWAY, nearestTown, reactionPrompt, safeLabels, safeName, TOWNS, type DiaryInput } from './aiText.ts'
+import { BLOCKED, GENDERED, checkLine, wholeWord, cleanAiLine, diaryFacts, diaryPrompt, fallbackDiary, fallbackReaction, FAR_AWAY, nearestTown, reactionPrompt, safeLabels, safeName, TOWNS, type DiaryInput } from './aiText.ts'
 import { arrange, isValidRiddle, parseRiddle, RIDDLE_BANK, riddleFor, topicFor, TOPICS } from './riddles.ts'
 
 const BUCKETS = ['sunny', 'crisp', 'frost', 'hot', 'grey', 'rain', 'storm', 'snow', 'windy', 'humid', 'fog', 'haar']
@@ -235,13 +235,17 @@ const diaryInput = fc.record({
 
 /** An independent re-statement of R3.6, so checkLine is tested against the rule, not itself. */
 function obeysRules(t: string, name: string, max: number): boolean {
-  const lower = t.toLowerCase().split(name.toLowerCase()).join(' ')
-  const words = lower.split(/[^a-z']+/)
-  return t.length <= max && t.toLowerCase().includes(name.toLowerCase()) && !BLOCKED.some((b) => words.includes(b)) && !/https?:|www\.|@/.test(lower) && !/\d{5,}/.test(lower)
+  // Independent restatement: walk the words; the name's own words do not count against the line.
+  const nameWords = name.toLowerCase().split(/[^\p{L}\p{N}']+/u).filter(Boolean)
+  const all = t.toLowerCase().split(/[^\p{L}\p{N}']+/u).filter(Boolean)
+  const named = all.some((_, i) => nameWords.length > 0 && nameWords.every((w, j) => all[i + j] === w))
+  const words = all.filter((w) => !nameWords.includes(w))
+  const lower = words.join(' ')
+  return t.length <= max && named && !BLOCKED.some((b) => words.includes(b)) && !GENDERED.some((g) => words.includes(g)) && !/https?:|www\.|@/.test(lower) && !/\d{5,}/.test(lower)
 }
 
 test('S15 checkLine only lets through lines that obey every rule (ai-haggling R3.6, R4.3)', () => {
-  const pieces = fc.oneof(fc.string({ maxLength: 40 }), fc.constantFrom(' shit ', ' whisky ', ' http://x.co ', ' a@b.com ', ' 123456 ', ' {name} ', '. ', '! ', ' wee ', ' dreich ', ' drama '))
+  const pieces = fc.oneof(fc.string({ maxLength: 40 }), fc.constantFrom(' he ', " she's ", ' hen ', ' shit ', ' whisky ', ' http://x.co ', ' a@b.com ', ' 123456 ', ' {name} ', '. ', '! ', ' wee ', ' dreich ', ' drama '))
   fc.assert(
     fc.property(safeLabelName(), fc.array(pieces, { maxLength: 12 }), (name, parts) => {
       const text = cleanAiLine(`${name} ${parts.join('')}`)
@@ -256,6 +260,15 @@ test('S15 checkLine only lets through lines that obey every rule (ai-haggling R3
   // Found by S16 in CI (24 Nov, seed -953072770): a Haggling named with digits.
   assert.ok(checkLine('Another day in the life of 00000. Hoping for more visits tomorrow.', '00000', 300), 'a numeric name is not a phone number')
   assert.ok(!checkLine('00000 says call 0131 4960000 now.', '00000', 300), 'other long numbers are still blocked')
+  // Found live 25 Nov (Gemini): "Wee Yin reckons that bonnie box is pure magic, so he's bouncin aff the walls".
+  assert.ok(!checkLine("Wee Yin reckons that box is magic, so he's bouncin aff the walls.", 'Wee Yin', 200), 'no he/she for a Haggling')
+  assert.ok(checkLine('Wee Yin reckons that box is magic, so they are bouncin aff the walls.', 'Wee Yin', 200), 'they is fine')
+  assert.ok(checkLine('Wee Yin met a hen and a hedgehog today.', 'Wee Yin', 200), 'words starting he- are fine')
+  // Found by S16 (25 Nov): a Haggling called "t" turned "Another" into "ano her".
+  assert.ok(checkLine('Another day in the life of t. Hoping for more visits tomorrow.', 't', 300), 'a one-letter name only counts as a whole word')
+  assert.ok(!wholeWord('t').test('another'), 'not inside other words')
+  // Found by S15 (25 Nov): a Haggling called "s" hid the "she" in "she's".
+  assert.ok(!checkLine("s she's lovely.", 's', 300), 'apostrophes are part of a word')
 })
 function safeLabelName() {
   return hagName.map(safeName)

@@ -3,7 +3,7 @@ import { deleteMyAccount } from './lib/cloud'
 import { supabase } from './lib/supabase'
 
 /** Privacy notice, terms and delete-account (review 22 Nov). Plain words, short. */
-const UPDATED = '24 November 2026'
+const UPDATED = '25 November 2026'
 const CONTACT = 'hello@haggisgotchi.com'
 
 function Shell({ title, children }: { title: string; children: React.ReactNode }) {
@@ -47,8 +47,8 @@ export function PrivacyPage() {
 
       <h2>AI</h2>
       <p>
-        Your Haggling&rsquo;s diary, its reaction to a photo and the daily riddle are written by an AI (Amazon Nova, through
-        Amazon Bedrock). The words are checked before they reach you, and if the AI is not available a written line is used
+        Your Haggling&rsquo;s diary, its reaction to a photo and the daily riddle are written by an AI (Google Gemini, paid
+        service). The words are checked before they reach you, and if the AI is not available a written line is used
         instead. You never chat with the AI.
       </p>
 
@@ -71,10 +71,12 @@ export function PrivacyPage() {
         <li><strong>Resend</strong> (sends our emails).</li>
         <li><strong>Amazon Web Services: Rekognition</strong> (looks at Photo Treat photos, does not keep them).</li>
         <li>
-          <strong>Amazon Web Services: Bedrock</strong> (an AI that writes your Haggling&rsquo;s nightly diary, its reaction to
-          a photo, and the daily riddle). It gets only the day&rsquo;s facts: your Haggling&rsquo;s name and type, the weather,
-          the nearest town, and what care it had. Never your name, email, exact location, photos or anything you type.
-          AWS does not use it to train its AI.
+          <strong>Google Gemini</strong> (paid service: an AI that writes your Haggling&rsquo;s nightly diary, its reaction to a
+          photo, and the daily riddle). It gets only the day&rsquo;s facts: your Haggling&rsquo;s name and type, the weather, the
+          nearest town, what care it had, and for a photo the names of the things seen in it (like &ldquo;dog&rdquo; or
+          &ldquo;box&rdquo;). Never your name, email, exact location, the photo itself or anything you type. On the paid
+          service Google does not use this to improve its products; it keeps it for a short time to check for misuse,
+          and may process it outside the UK.
         </li>
         <li><strong>Open-Meteo</strong> (weather forecasts, gets your rounded area only).</li>
         <li><strong>Cloudflare</strong> (hosts the website and runs the &ldquo;I am human&rdquo; check, Turnstile).</li>

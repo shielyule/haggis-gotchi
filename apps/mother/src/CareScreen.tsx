@@ -583,7 +583,7 @@ export function CareScreen({ egg, onChange, onBack }: Props) {
               onClick={() => {
                 setDemoNote('Writing in the diary…')
                 void writeDiaryNow(h.cloudChildId!).then(async (r) => {
-                  setDemoNote(r.ok ? `Diary (${r.data.source === 'ai' ? 'written by Amazon Nova' : 'written template'}): ${r.data.text}` : r.error)
+                  setDemoNote(r.ok ? `Diary (${r.data.source === 'ai' ? 'written by the AI' : 'written template'}): ${r.data.text}` : r.error)
                   await refreshFromCloud()
                 })
               }}

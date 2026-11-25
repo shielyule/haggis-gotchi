@@ -88,6 +88,7 @@ Two days of an 11-day window went on this. Suggestions: pre-seed Bedrock quotas 
 put a warning in the hackathon resources, or give support a fast route for hackathon accounts.
 
 ## Status
-**Still unresolved by AWS (25 Nov: "being reviewed", no date).** We stopped waiting: the AI words move to
-Google Gemini (paid), and Haggis-gotchi is now 18+ because Gemini's terms require it. If AWS ever grants the
+**Still unresolved by AWS (25 Nov: "being reviewed", no date).** We stopped waiting: the AI words moved to
+Google Gemini (paid) on 25 Nov, and Haggis-gotchi is now 18+ because Gemini's terms require it. Gemini's first real
+call worked in about 1 second, from the same Supabase server. If AWS ever grants the
 quota, Bedrock can come back with one setting; the written lines stay as the fallback either way.

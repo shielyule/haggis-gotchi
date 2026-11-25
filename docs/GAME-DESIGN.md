@@ -54,7 +54,7 @@ Life XP only ever goes up and sets the level.
 - Questioning is not a phase: 1 in 4 stay questioning as adults.
 
 ### AI words (23 Nov, spec `.kiro/specs/ai-haggling`)
-- **Nightly diary** at the carer's 21:00: Amazon Nova Lite writes from today's weather and town, care, stage, season.
+- **Nightly diary** at the carer's 21:00: Google Gemini writes from today's weather and town, care, stage, season.
 - **"What's that?"**: any non-treat photo gets an in-character reaction (labels only; bars unchanged).
 - **Folklore riddle** (second game): one a day for everyone, three answers, Mood +8 right / +2 for a go.
 - **Scrapbook book** at `/scrapbook`: every page ever, tabs All / Diary / Photos & riddles / Week 1-6.

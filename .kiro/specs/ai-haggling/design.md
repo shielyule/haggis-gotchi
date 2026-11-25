@@ -1,7 +1,9 @@
 # Kiro - Design: ai-haggling
 
 ## Pieces
-- `supabase/functions/_shared/bedrock.ts`: Bedrock Converse call (aws4fetch, `bedrock` service,
+- `supabase/functions/_shared/ai.ts` (25 Nov): Gemini `generateContent` (Google safety filters at BLOCK_LOW_AND_ABOVE;
+  any finish other than STOP falls back) or Bedrock Converse, chosen by `AI_PROVIDER` / which key is set.
+  Was `bedrock.ts`: Bedrock Converse call (aws4fetch, `bedrock` service,
   model `amazon.nova-lite-v1:0`, region `AWS_REGION`), 10 s timeout, temperature 0.8, max 200 tokens.
 - `supabase/functions/_shared/aiText.ts` (pure): `nearestTown`, `diaryFacts`, `diaryPrompt`,
   `fallbackDiary`, `reactionPrompt`, `fallbackReaction`, `cleanAiLine`, `checkLine`, blocklist.
@@ -30,4 +32,7 @@
 - **A9** (R2.3) For any set of entries, the book's tabs partition them correctly: All has every entry;
   Week n has exactly the entries from that week of life; Diary has exactly the diary entries.
 - **A10** (R1.3) Every entry gets exactly one kind.
-Not properties: the AI's wording (checked by `checkLine`), the book's look, Bedrock availability.
+- **S15b** (identity design, 20 Nov; found live 25 Nov) No AI line calls the Haggling he or she; the name only counts as a
+  whole word (a Haggling called "t" or "s" must not hide words), and a name needs a letter or digit.
+Not properties: the AI's wording (checked by `checkLine`), the book's look, provider availability, folklore accuracy of
+AI riddles (structure is checked, facts are not).

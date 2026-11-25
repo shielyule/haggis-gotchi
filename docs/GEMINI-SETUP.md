@@ -29,7 +29,7 @@ So, before any setup, choose one:
 | **C. Keep 13+, try a different AI company** | Kiro checks that company's terms for 13-17 users first | Unknown until checked. |
 
 **Decided 25 Nov: option A.** Haggis-gotchi is now 18+ (sign-up box, terms, privacy notice: done and live).
-Next: your steps below, then Kiro's.
+**Done 25 Nov:** key added, budget set, first real call worked (about 1 second), all three features switched to Gemini.
 
 ---
 

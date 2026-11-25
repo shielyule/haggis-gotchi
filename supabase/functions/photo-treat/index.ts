@@ -15,7 +15,7 @@ import { matchTreat, seenSummary, treatLine, type TreatId } from '../_shared/pho
 import { detect, rekognitionConfigured } from '../_shared/rekognition.ts'
 import { localClock } from '../_shared/reminders.ts'
 import { checkLine, cleanAiLine, fallbackReaction, reactionPrompt, REACTION_SYSTEM, safeLabels, safeName } from '../_shared/aiText.ts'
-import { aiLine } from '../_shared/bedrock.ts'
+import { aiLine } from '../_shared/ai.ts'
 
 const TEMPERAMENT_LABEL: Record<string, string> = { douce: 'Douce', skeigh: 'Skeigh', 'ill-trickit': 'Ill-trickit', ree: 'Ree', radge: 'Radge', 'fair-wud': 'Fair Wud' }
 
@@ -146,7 +146,7 @@ Deno.serve(async (req) => {
           ? await aiLine(
               admin,
               'reaction',
-              { system: REACTION_SYSTEM, prompt: reactionPrompt(row.name, TEMPERAMENT_LABEL[row.temperament_id] ?? 'wee', labels), maxTokens: 90 },
+              { system: REACTION_SYSTEM, prompt: reactionPrompt(row.name, TEMPERAMENT_LABEL[row.temperament_id] ?? 'wee', labels), maxTokens: 200 },
               (raw) => {
                 const t = cleanAiLine(raw)
                 return checkLine(t, name, 200) ? t : null

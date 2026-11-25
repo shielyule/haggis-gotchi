@@ -9,10 +9,20 @@
 /** Same words as public.feed_blocklist, plus drink (AI lines stay drink-free for every age). */
 export const BLOCKED = ['bastard', 'bitch', 'cunt', 'fuck', 'piss', 'shit', 'twat', 'wank', 'whisky', 'whiskey', 'beer', 'wine', 'vodka', 'drunk', 'booze', 'pint', 'dram', 'kill', 'dead', 'die']
 
+/** The name as a whole word, any case. Letters, digits and apostrophes either side do not count ("s" is not in "she's"). */
+export function wholeWord(name: string, flags = ''): RegExp {
+  const esc = name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`(?<![\\p{L}\\p{N}'\u2019])${esc}(?![\\p{L}\\p{N}'\u2019])`, `u${flags}`)
+}
+
+/** Gendered words the AI must not use for the Haggling (they/them or the name only). */
+export const GENDERED = ['he', "he's", 'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself']
+
 /** Names go into prompts: letters, spaces, apostrophes and hyphens only, 30 characters. */
 export function safeName(raw: string): string {
   const s = String(raw ?? '').replace(/[^\p{L}\p{N} '-]+/gu, ' ').replace(/\s+/g, ' ').trim().slice(0, 30).trim()
-  return s || 'Wee Yin'
+  // A name needs at least one letter or digit ("-" alone is not a name; PBT S15, 25 Nov).
+  return /[\p{L}\p{N}]/u.test(s) ? s : 'Wee Yin'
 }
 
 /** Tidy what the model sends back: quotes, markdown, labels, extra spaces. Never adds words. */
@@ -31,15 +41,19 @@ export function checkLine(text: string, name: string, max: number): boolean {
   const t = String(text ?? '')
   if (t.length < 10 || t.length > max) return false
   const lower = t.toLowerCase()
-  const n = name.toLowerCase()
-  if (!lower.includes(n)) return false
-  const withoutName = lower.split(n).join(' ')
+  // The name counts only as a whole word: a Haggling called "t" must not delete every t (PBT S16, 25 Nov).
+  if (!/[\p{L}\p{N}]/u.test(name)) return false
+  const nameRe = wholeWord(name)
+  if (!nameRe.test(lower)) return false
+  const withoutName = lower.replace(wholeWord(name, 'g'), ' ')
   const words = withoutName.split(/[^a-z']+/)
   if (BLOCKED.some((b) => words.includes(b) || words.some((w) => w.startsWith(b) && b.length >= 4 && !['killie', 'diet', 'drama', 'dramatic', 'deadly'].includes(w)))) return false
   // Checked outside the name: a Haggling called "00000" is fine (PBT S16, 24 Nov).
   if (/https?:|www\.|\.com\b|@/.test(withoutName)) return false
   if (/\d{5,}/.test(withoutName)) return false
   if (/[{}<>]/.test(t)) return false
+  // Every Haggling is "they/them" or their name (identity design, 20 Nov). Found live 25 Nov: "he's bouncin".
+  if (GENDERED.some((g) => words.includes(g))) return false
   const sentences = t.split(/[.!?]+(\s|$)/).filter((s) => s.trim().length > 2).length
   return sentences >= 1 && sentences <= 3
 }
@@ -153,6 +167,7 @@ export const DIARY_SYSTEM = [
   'Readers are adults, but keep it family-friendly. No swearing, no alcohol, no news, no real people, no violence, no brand names except Irn-Bru.',
   'Use only the facts given. Do not invent places or events.',
   'Write 1 to 3 short sentences, under 280 characters in total. Use the Haggling\'s name once.',
+  'Never call the Haggling he or she: use its name, I/me (it is their own diary), or they/them.',
   'If there was a storm, the entry is about the storm and staying cosy in the burrow.',
   'Reply with the diary entry only.',
 ].join(' ')
@@ -206,7 +221,7 @@ export function safeLabels(labels: { name: string; confidence: number }[]): stri
 export const REACTION_SYSTEM = [
   'You write one sentence: how a wee Scottish folklore creature called a Haggling reacts to something it is shown in a photo.',
   'Funny and kind, a Scots word or two. Readers are adults, but keep it family-friendly. No swearing, no alcohol, no real people, no brand names.',
-  'Use the Haggling\'s name once. Under 180 characters. Reply with the sentence only.',
+  'Use the Haggling\'s name once, and call the Haggling they/them, never he or she. Under 180 characters. Reply with the sentence only.',
 ].join(' ')
 
 export function reactionPrompt(name: string, temperament: string, labels: string[]): string {
@@ -217,6 +232,8 @@ export function reactionPrompt(name: string, temperament: string, labels: string
 export function fallbackReaction(name: string, labels: string[]): string {
   const n = safeName(name)
   if (!labels.length) return `${n} gave you a wee wave.`
-  const thing = labels[0].toLowerCase()
+  // The first label that is safe to say (no blocked or he/she words), else a plain phrase.
+  const ok = (l: string) => !l.toLowerCase().split(/[^a-z']+/).some((w) => BLOCKED.includes(w) || GENDERED.includes(w))
+  const thing = (labels.find(ok) ?? 'new thing').toLowerCase()
   return `${n} sniffed the ${thing}, decided it was not a treat, and found it very interesting all the same.`
 }
