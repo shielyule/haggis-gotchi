@@ -28,8 +28,8 @@ copied, only moved.
 - **It feels your weather.** Three times a day the real forecast for your rough area (about 11 km,
   never your exact location) changes its mood. Douce loves rain, Skeigh hides from thunder,
   Fair Wud lives for storms, and every haggis loves the haar.
-- **Photo Treat**: snap shortbread, heather, tartan, bagpipes or Irn-Bru and Amazon Rekognition
-  checks it. Every bar fills. A Coke can is politely refused.
+- **Photo Treat**: snap tablet, shortbread, heather, tartan, bagpipes or Irn-Bru and Amazon Rekognition
+  checks it. Every bar fills. Show it anything else and it tells you what it thinks.
 - **It grows up** through Baby, Child, Teen, Adult and Old age, with new art and films at each
   stage, life-stage rules (teens refuse cuddles in public, old knees prefer gentle walks), and
   seasonal costumes (Halloween, St Andrew's Day, Christmas, Burns Night, Easter).
@@ -48,11 +48,11 @@ copied, only moved.
 - **Life ends.** After about six weeks it goes to the glen: an epitaph written from how it was
   treated, a stone in the mother's graveyard, and an optional wee ghost.
 - **The mother page** (desktop) shows the brood, a live public scrapbook ("Fred just fed Harry ·
-  2 min ago") and a painted 3D kirkyard. Each Haggling can have a public share card.
+  2 min ago") and a painted kirkyard. Each Haggling can have a public share card.
 
 ## How we built it
 Built in **Kiro IDE**, spec first. Every feature went requirements (EARS) → design → tasks → code,
-and the commits name the spec and task. There are 16 specs in `.kiro/specs`.
+and the commits name the spec and task. There are 17 specs in `.kiro/specs`.
 
 - **One care engine, everywhere.** `packages/care-engine` is pure TypeScript. The same rules run on
   the phone, in Supabase Edge Functions (Deno) and in tests. A Haggling decays continuously, for
@@ -76,7 +76,7 @@ and the commits name the spec and task. There are 16 specs in `.kiro/specs`.
 - **MCP:** we wrote our own `haggis-weather` MCP server, so Kiro could ask "what would a Radge
   Haggling feel on a hot day?" while designing, and used the AWS documentation MCP server to build
   the Rekognition integration.
-- **Property-based testing:** Kiro turned the EARS requirements into 50 fast-check properties
+- **Property-based testing:** Kiro turned the EARS requirements into 62 fast-check properties
   (hundreds of random Hagglings, care sequences, names and time zones each). Tests run in GitHub CI
   *and* inside the Cloudflare build, so a broken rule cannot be deployed.
 - **Parallel Kiro sessions:** a second Kiro session built the 3D graveyard in its own git worktree,
@@ -113,8 +113,8 @@ and the commits name the spec and task. There are 16 specs in `.kiro/specs`.
 ## Accomplishments that we're proud of
 - It's a real product: live at haggisgotchi.com, installable, with push notifications, a privacy
   notice, account deletion, security headers and a bot check.
-- 166 automated tests, 50 of them property-based, written from the specs. They found 7 real bugs
-  that example tests missed, and every one is fixed.
+- 184 automated tests, 62 of them property-based, written from the specs. They found 11 real
+  problems that example tests missed, and every one is fixed.
 - Original art for six temperaments across five life stages: 36 short films (hatching, playing
   and one for each stage), ghosts, and 30 seasonal costumes.
 - A pet that respects you: rough location only, photos never stored, public pages off by default,
@@ -143,9 +143,9 @@ and the commits name the spec and task. There are 16 specs in `.kiro/specs`.
 ## 2-3. Built with (25 tags)
 ```
 kiro, typescript, react, vite, node.js, deno, supabase, postgresql, pg-cron,
-supabase-edge-functions, cloudflare-pages, cloudflare-pages-functions, cloudflare-turnstile,
+supabase-edge-functions, cloudflare-pages, cloudflare-turnstile,
 amazon-web-services, amazon-rekognition, open-meteo, web-push, pwa, service-workers,
-web-audio-api, fast-check, model-context-protocol, resend, github-actions, google-gemini
+web-audio-api, fast-check, model-context-protocol, resend, github-actions, google-gemini, ffmpeg
 ```
 
 ## "Try it out" links
