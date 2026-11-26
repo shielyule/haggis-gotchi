@@ -1,7 +1,7 @@
 # X (Twitter) posts (drafts)
 
 **Before posting:** the Social Blitz post must **start with `#KiroweenHackathon26`**. Standard X posts are
-280 characters; each post below is counted (links count as 23, emoji as 2). Replace `[YOUTUBE LINK]`.
+280 characters; each post below is counted (links count as 23, emoji as 2). Replace `https://www.youtube.com/watch?v=CC7yj3gtvZY`.
 Post the main one with the video attached, then reply to it with the thread.
 
 ---
@@ -31,7 +31,7 @@ Steering = the rules Kiro follows every time. After one setup guide cost me two 
 Plot twist: AWS Bedrock gave my new account 0 tokens a day, "not adjustable". Every AI feature had a written fallback, so players saw nothing wrong, and the diary moved to Gemini in an afternoon. Fallbacks are not optional.
 
 **6/** · 108 characters
-Watch the demo: [YOUTUBE LINK]
+Watch the demo: https://www.youtube.com/watch?v=CC7yj3gtvZY
 Specs, steering and hooks are all in the repo: https://github.com/shielyule/haggis-gotchi
 
 #Kiro

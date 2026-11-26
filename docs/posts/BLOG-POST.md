@@ -4,7 +4,7 @@
 - The **Bonus Blog** prize needs a public post on a third-party site (dev.to, Medium, Hashnode or a LinkedIn
   article) that **says it was written for the Kiroween 2026 hackathon** (the first line does) and is published
   before **4 Dec 2026, 2:00pm PT**. Put the URL on the Devpost form.
-- Make the GitHub repo public first, then check every link. Replace `[YOUTUBE LINK]`.
+- Make the GitHub repo public first, then check every link. Replace `https://www.youtube.com/watch?v=CC7yj3gtvZY`.
 - It is written in your voice. Read it through and change anything that isn't how you'd say it.
 - On dev.to, the code blocks keep their formatting; on LinkedIn articles, they don't, so dev.to or Medium is better.
 
@@ -300,7 +300,7 @@ reasoning is in `docs/PIVOT-2026-11-17-phone-first.md`. Test the whole flow on a
 ## Try it
 
 - 🥚 Get your own egg: [haggisgotchi.com](https://haggisgotchi.com) (best on an Android phone)
-- 🎬 The demo video: [YOUTUBE LINK]
+- 🎬 The demo video: https://www.youtube.com/watch?v=CC7yj3gtvZY
 - 💻 The code, specs, steering and hooks: [github.com/shielyule/haggis-gotchi](https://github.com/shielyule/haggis-gotchi)
 
 Built for the Kiroween 2026 hackathon with [Kiro](https://kiro.dev). Art from my own sketches, with Google Gemini and

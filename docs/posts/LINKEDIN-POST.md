@@ -1,7 +1,7 @@
 # LinkedIn post (draft)
 
 **Before posting:**
-- Replace `[YOUTUBE LINK]` and check the GitHub link works (the repo must be public first).
+- Replace `https://www.youtube.com/watch?v=CC7yj3gtvZY` and check the GitHub link works (the repo must be public first).
 - For the **Social Blitz** prize the post must **start with `#KiroweenHackathon26`** (keep it as the very first word)
   and is judged on original thoughts, not AI writing. Read it aloud and change anything that doesn't sound like you.
   The `[YOUR WORDS]` line is the one the judges care about most.
@@ -24,7 +24,7 @@ How Kiro changed the way I worked:
 
 Not everything went to plan: Amazon Bedrock gave my brand-new AWS account a daily limit of zero tokens, and support couldn't lift it in time. Because every AI feature had a written fallback, players never noticed, and the diary moved to Google Gemini in an afternoon.
 
-🎬 Watch: [YOUTUBE LINK]
+🎬 Watch: https://www.youtube.com/watch?v=CC7yj3gtvZY
 🥚 Get your own egg: https://haggisgotchi.com
 💻 Code (with the specs, steering and hooks): https://github.com/shielyule/haggis-gotchi
 

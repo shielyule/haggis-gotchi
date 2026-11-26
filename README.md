@@ -5,7 +5,7 @@ six weeks, and gets a stone in the mother's kirkyard at the end. Built spec-firs
 for the **Kiroween 2026** hackathon.
 
 🥚 **Play:** [haggisgotchi.com](https://haggisgotchi.com) (best on an Android phone; on a computer it opens the mother page)
-🎬 **Demo video:** [YOUTUBE LINK]
+🎬 **Demo video:** https://www.youtube.com/watch?v=CC7yj3gtvZY
 📄 **Licence:** MIT, see [LICENSE](./LICENSE) · © Shiel Yule
 
 ---
