@@ -1,4 +1,4 @@
-# Blog post (draft, about 2,700 words)
+# Blog post (draft, about 3,000 words)
 
 **Before publishing:**
 - The **Bonus Blog** prize needs a public post on a third-party site (dev.to, Medium, Hashnode or a LinkedIn
