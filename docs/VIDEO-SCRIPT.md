@@ -12,8 +12,8 @@ How to record and add it: `docs/SUBMISSION-VIDEO-CRIB.md` (voice-over section).
 
 | Time | What | Fix |
 |---|---|---|
-| **0:10 - 0:16** | Your email address (`shielyule@gmail.com`) on the sign-in screen | Blur it (iMovie: add a blurred still over that area, or crop) |
-| **1:14** | A **WhatsApp notification from Fiona Watson** ("I have another flat tyr...") drops down for about a second | **Must** blur or cut: it is someone else's private message |
+| **0:10 - 0:16** | Your email address on the sign-in screen | Blur it (iMovie: add a blurred still over that area, or crop) |
+| **1:14** | A personal message notification drops down for about a second | **Must** blur or cut: it is someone else's private message |
 | 1:36 - 1:41 | Tablet wrapper | Fine: glare hides most of the brand, only "Scottish Tablet" reads |
 
 ---
