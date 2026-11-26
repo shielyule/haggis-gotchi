@@ -1,72 +1,95 @@
-# Kiro - Demo video script (cut down, 25 Nov 2026)
+# Kiro - Voice-over, synced to "Test movie_feedback_Haggisgotchi.mp4" (26 Nov 2026)
 
-**Target: 2:40, never over 3:00.** App screens only, plus an optional 15-second Kiro glimpse.
-You do **not** need to show the `.kiro` files: judges read the repo and the "How Kiro was used" write-up for that.
-The video is scored on **Presentation**: does it show the app working end to end, who it is for, and why it matters.
+**Cut length: 2:52** (under the 3:00 limit). Silent, so this voice-over is the only sound.
+**About 245 words**, spoken at a relaxed pace with gaps where the films play. Each line has its start time:
+start speaking on that time and stop by the next one. Lines in *(brackets)* are directions, not to be read.
 
-**Voice: about 210 words in total.** Read slowly. Let the films and pictures do the work.
-How to film, edit and upload: `docs/SUBMISSION-VIDEO-CRIB.md`.
-
-## Rules for the edit
-- **One idea per shot, 3-5 seconds each.** Cut the waiting: claim form, code entry and the birth wait are 2 seconds each.
-- **Speed up** the sign-up part (CapCut or iMovie: speed x2-x4).
-- If it is over 3:00, **cut a shot, never squash the voice.** Cut in this order: section 3 riddle, section 3 weather, the Kiro glimpse.
-- **No Irn-Bru, Coke or "Mrs Tilly's" on screen.** Film tablet with your thumb over the brand (tested: still recognised), or shortbread.
-- Use a throwaway email, or blur it.
-
-## Set up before filming
-1. Demo egg: `haggisgotchi.com/?demo=1&new=1`, tick **Demo wait**, both **teen identity** boxes and **18 or older**. Name it **Wee Yin**.
-2. Hidden demo menu: tap the name **5 times quickly**.
-3. Mac signed in on `haggisgotchi.com/mother` (Retrieve my Haggling), for the kirkyard at the end.
+How to record and add it: `docs/SUBMISSION-VIDEO-CRIB.md` (voice-over section).
 
 ---
 
-## 1. Hook (0:00 - 0:12) · 30 words
-**Shots:** the phone in a hand at a rainy window -> the care screen, rain chip showing.
-> "Tamagotchis lived in your pocket and died in a drawer. Haggis-gotchi is a wee Scottish folklore pet that
-> lives on your phone, and notices your real world."
+## Fix before upload (found in this cut)
 
-## 2. Born (0:12 - 0:35) · 35 words
-**Shots (fast):** scan the mother's QR -> Add to home screen -> claim form, slide Douce to Fair Wud -> birth story -> **hatch film** (let it play 4 s) -> name it.
-> "Scan, install from the browser, no app store. Tell the mother about yourself, and she writes your egg a
-> birth story. Six Scots temperaments, from douce to fair wud."
-
-## 3. Living with it (0:35 - 1:25) · 70 words
-**Shots (one each):** Feed (bars move) -> **Haggis Run** (two guesses) -> demo weather **Storm**: the swing banner ->
-**Photo Treat on tablet**: bars fill -> **"What's that?"** on a dog or a plant -> **Folklore riddle** (pick an answer).
-> "Feed them, play Haggis Run: a wild haggis has longer legs on one side, so it only runs one way round the hill.
-> They feel your real weather. Douce loves rain, Skeigh hides from thunder. Snap some tablet and every bar fills.
-> Show them anything else and they'll tell you what they think. And a new folklore riddle every day."
-
-## 4. A life (1:25 - 2:15) · 55 words
-**Shots:** demo menu **Next stage** -> Growing-up pop-up + film -> demo menu **Write tonight's diary now** ->
-**Open scrapbook**: the book opening film (let it play) -> one page -> demo menu **Skip to the end** -> the epitaph ->
-the Mac: the painted kirkyard with the stone.
-> "Over six weeks they grow up, with new art and films at every age. Each night they write a diary about their
-> real day, and the scrapbook keeps every page. When their time is up, they get a stone in the kirkyard."
-
-## 5. Close (2:15 - 2:30) · 20 words
-**Shots:** the phone in a hand -> end card **haggisgotchi.com**.
-> "Real weather, real folklore, one wee pet. Get your own egg at haggisgotchi dot com."
-
-## 6. Optional Kiro glimpse (2:30 - 2:45) · no voice, or one line
-Only if the cut is under 2:30. Three 4-second screen grabs with a caption each:
-1. The `.kiro/specs` folder open in Kiro. Caption: **"17 specs, built spec-first in Kiro"**
-2. The test run ending in green. Caption: **"62 property tests, 11 real problems found"**
-3. GitHub showing the green CI tick. Caption: **"Tests gate every deploy"**
-
-Optional line: > "Built spec-first in Kiro, with tests that throw thousands of random Hagglings at every rule."
+| Time | What | Fix |
+|---|---|---|
+| **0:10 - 0:16** | Your email address (`shielyule@gmail.com`) on the sign-in screen | Blur it (iMovie: add a blurred still over that area, or crop) |
+| **1:14** | A **WhatsApp notification from Fiona Watson** ("I have another flat tyr...") drops down for about a second | **Must** blur or cut: it is someone else's private message |
+| 1:36 - 1:41 | Tablet wrapper | Fine: glare hides most of the brand, only "Scottish Tablet" reads |
 
 ---
 
-## Shooting order
-1. Mac: QR screen, kirkyard (and the Kiro glimpse, if used).
-2. Phone, new demo egg: section 2.
-3. Phone, Baby: section 3 (do the Photo Treat early: once a day).
-4. Phone: Next stage, Write diary, Open scrapbook, Skip to the end.
-5. Mac: kirkyard with the new stone.
-6. Outside / window: the phone in a hand (sections 1 and 5).
+## The script
 
-## Cut from this version (in the write-up instead)
-Tell off and mischief, Put to bed, costumes, identity, quiet settings, share card, notifications, the AWS story.
-If you have spare seconds, a **St Andrew's costume** (real from 28 Nov - 1 Dec) is the best single extra shot.
+**0:00** *(mother page on the Mac)*
+> Tamagotchis lived in your pocket and died in a drawer. Haggis-gotchi lives on your phone.
+
+**0:06** *(phone camera scans the QR)*
+> Scan the mother's code. No app store: it installs straight from the browser, and one email code signs you in.
+
+**0:16** *(the claim questions, then the six temperaments)*
+> Tell the mother a little about yourself, and she writes your egg its own birth story.
+> There are six Scots temperaments, from douce, as gentle as they come, to fair wud: completely wild.
+
+**0:34** *("Hatching in 19 seconds")*
+> Twenty seconds later, something taps at the shell.
+
+*(0:38 - 0:46: let the hatch film play, no voice)*
+
+**0:46** *(naming)*
+> Give them a name, and they're yours for about six weeks.
+
+**0:54** *(care screen: the rain line)*
+> They feel your real weather. Douce loves the rain.
+
+**1:00** *(Feed, Cuddle, the bars)*
+> Feed them, cuddle them, and keep an eye on the bars: hungry, happy, tired, messy.
+
+**1:09** *(Haggis Run)*
+> Play Haggis Run: guess which way round the hill they'll run.
+
+**1:14** *(hot weather: "lay flat on the cold flags")*
+> A heatwave? They'll lie flat on the cold floor and sulk.
+
+**1:21** *(Bampot: the car-keys banner and the poop)*
+> Some days, they're trouble. Bampot has hidden the car keys in the porridge.
+
+**1:27** *(the ghost costume)*
+> And on special days, like Halloween, they dress up.
+
+**1:34** *(camera on the tablet)*
+> Snap something Scottish, like a bit of tablet...
+
+**1:41** *("Every bar is full")*
+> ...and every bar fills. Sugar rush!
+
+**1:46** *(Watch again: picking the film)*
+> As they grow up, new films unlock. Here's one out on a skateboard.
+
+*(1:52 - 2:03: let the film play, no voice)*
+
+**2:04** *(the scrapbook opening)*
+> Every night, an AI writes their diary from their real day: the weather, the care, the mischief.
+
+**2:12** *(turning the pages)*
+> And the scrapbook keeps every page, ever.
+
+**2:19** *(the mother page, then the kirkyard)*
+> On a computer, the mother keeps the brood.
+> After six weeks, every Haggling gets a stone in her kirkyard, with an epitaph written from how they were loved.
+
+*(2:32 - 2:42: let the kirkyard play, day to night, no voice)*
+
+**2:43** *(back to the mother, then the end card)*
+> Built spec-first with Kiro. Get your own egg at haggisgotchi dot com.
+
+---
+
+## Notes
+- **Say it slowly.** If a line overruns, drop the second sentence of that line rather than speeding up.
+- **"An AI writes their diary"** is true (Google Gemini, with a written fallback). Don't say "Amazon" here:
+  only Rekognition (the photo check) is AWS.
+- **Names:** the cut shows three Hagglings (Cutie pie, Bampot, Firecracker). The script names only Bampot,
+  where it's on screen; everything else says "they".
+- **Not in this cut** (fine, they're in the write-up): the riddle, "What's that?", growing up to Teen, Tell off, the AI
+  diary being written, the Kiro screens.
+- **Record:** a quiet room, phone voice-memo app 20 cm from your mouth, one take per line. Drop each clip in at its time.
