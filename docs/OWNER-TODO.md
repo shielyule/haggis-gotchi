@@ -4,8 +4,9 @@ Kiro cannot send reminders by itself. Open this file, or ask Kiro, any time.
 Last updated 22 Nov 2026.
 
 ## Today
-- [ ] **Cloudflare A:** real Turnstile key. `docs/OWNER-CLOUDFLARE-STEPS.md` Part A. Tell Kiro "Turnstile done".
-- [ ] **Cloudflare B:** phone.haggisgotchi.com redirect. Same file, Part B. Tell Kiro "redirect done".
+- [x] Cloudflare A (26 Nov): real Turnstile key live; Kiro tested that fake answers are refused and nothing is saved.
+- [x] Cloudflare B (26 Nov): phone.haggisgotchi.com redirects (301) to haggisgotchi.com.
+- [ ] One real sign-up on your phone, to see the new "I am human" box pass.
 - [ ] **Android QA** (from `docs/REVIEW-2026-11-22.md`):
   - [ ] Haggis Run: five guesses, then Done. Mood goes up, Energy down, scrapbook line.
   - [ ] Tell off with the mischief banner showing (small Mood drop) and without it (bigger drop, Health XP -3).
