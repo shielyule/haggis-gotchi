@@ -88,6 +88,24 @@ For entrants on new AWS accounts, Bedrock may be unusable for the whole submissi
 Two days of an 11-day window went on this. Suggestions: pre-seed Bedrock quotas for registered entrants,
 put a warning in the hackathon resources, or give support a fast route for hackathon accounts.
 
+## Owner's conclusion (27 Nov 2026, in their words)
+> "We have moved over to Google and adapted the game to fit that platform. I was never an AWS fan, so I'm happy
+> not to use them in future projects. I would like it recorded that we have had these issues with Bedrock and AWS
+> in general: they do not communicate that these services are in effect unavailable to existing paid customers who
+> have a history of use. Google doesn't have these limits, which is why I love using the GCP products."
+
+**The facts behind it, from this record:**
+- AWS's documentation and console present Amazon's own Bedrock models as enabled by default. Nothing in the setup
+  path said the account's daily token quota was 0; it was only visible by searching Service Quotas, after the
+  calls had failed.
+- The account was already a paying AWS customer, using Amazon Rekognition for Photo Treat since 17 Nov. AWS
+  judged it "relatively new" (created 2 Nov 2026) and declined three times, finally asking for spending history
+  on other services before any review.
+- Google Gemini (paid tier, same server, same day) worked on its first call, in about a second, with no quota
+  request. Like any provider it has rate limits; none got in the way at this game's volume.
+- Haggis-gotchi now uses Google Gemini for its AI words. The only AWS service still in use is Amazon Rekognition
+  for photo recognition, which has worked throughout.
+
 ## Status
 **Declined by AWS (27 Nov, after review).** We stopped waiting: the AI words moved to
 Google Gemini (paid) on 25 Nov, and Haggis-gotchi is now 18+ because Gemini's terms require it. Gemini's first real
