@@ -35,6 +35,7 @@ a nightly diary, a reaction to a photo, and a daily folklore riddle. Volume capp
 | 24 Nov 13:56 | **AWS declines** (first reply). Billing and Accounts team, after asking the Bedrock service team: the account is "relatively new (created on November 2 2026) and the overall usage is limited", so they "couldn't approve and process this limit increase request". Advice: build usage history by using "about 90%" of the existing limit, wait for the next billing cycle and ask again, or contact AWS Sales. |
 | 25 Nov | **Second AWS reply** (a different support agent): acknowledges the Kiroween 2026 hackathon, that the quota "can't be increased directly", and that "your hackathon deadline makes this time-sensitive". Says the Nova Lite and Nova Micro request "is being reviewed. This may take some time." No date, no workaround, "no action is needed from you". |
 | 25 Nov | Owner decides not to wait: the AI words move to Google Gemini (paid), and Haggis-gotchi becomes 18+ (Gemini's terms). |
+| 27 Nov | **Third AWS reply: declined after review.** Quotas "might be updated depending on regional factors, payment history, your past Bedrock usage, and surge in demand"; "utilize your current limits and build usage and spending history", and ask again "after the next billing cycle". The current Bedrock limit is 0, so the only way to build history is spending on *other* AWS services. |
 
 ## Why AWS's advice cannot work here
 - "Use about 90% of your existing limit": the existing limit is **0 tokens a day**. 90% of 0 is 0; there is
@@ -88,7 +89,7 @@ Two days of an 11-day window went on this. Suggestions: pre-seed Bedrock quotas 
 put a warning in the hackathon resources, or give support a fast route for hackathon accounts.
 
 ## Status
-**Still unresolved by AWS (25 Nov: "being reviewed", no date).** We stopped waiting: the AI words moved to
+**Declined by AWS (27 Nov, after review).** We stopped waiting: the AI words moved to
 Google Gemini (paid) on 25 Nov, and Haggis-gotchi is now 18+ because Gemini's terms require it. Gemini's first real
 call worked in about 1 second, from the same Supabase server. If AWS ever grants the
 quota, Bedrock can come back with one setting; the written lines stay as the fallback either way.
